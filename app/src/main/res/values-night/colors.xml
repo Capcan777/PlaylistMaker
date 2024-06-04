@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#1A1B22</color>
+    <color name="background_night">#1A1B22</color>
+    <color name="text_night">#ffffff</color>
+    <color name="switch_color_night">#3772e7</color>
+
 
 </resources>

@@ -6,9 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/blue_background"
     android:orientation="vertical"
-    android:theme="@style/Base.Theme.PlaylistMaker"
-    tools:context=".MainActivity"
-    android:padding="4dp">
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -18,20 +16,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:padding="12dp"
-            android:paddingTop="12dp"
+            android:fontFamily="@font/yandex_sans_display_bold"
+            android:paddingTop="14dp"
+            android:paddingStart="16dp"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="@dimen/primary_text_size" />
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="16dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="40dp">
 
 
         <Button
@@ -42,52 +40,58 @@
             android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
+            android:fontFamily="@font/yandex_sans_display_bold"
             android:foreground="?attr/selectableItemBackground"
-            android:letterSpacing="0"
             android:text="@string/search"
+            android:letterSpacing="0"
             android:textAllCaps="false"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/primary_text_size"
             app:cornerRadius="16dp"
-            app:icon="@drawable/search"
+            app:icon="@drawable/icon_search"
             app:iconGravity="textStart"
-            app:iconTint="@color/black" />
+            app:iconTint="@color/dark_grey" />
 
         <Button
-            android:id="@+id/mediatek"
+            android:id="@+id/mediateca"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:letterSpacing="0"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
+            android:fontFamily="@font/yandex_sans_display_bold"
             android:foreground="?attr/selectableItemBackground"
-            android:text="@string/mediatek"
+            android:text="@string/mediateca"
             android:textAllCaps="false"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/primary_text_size"
-            android:layout_marginBottom="16dp"
             app:cornerRadius="16dp"
-            app:icon="@drawable/mediatec"
+            app:icon="@drawable/icon_mediateca"
             app:iconGravity="textStart"
-            app:iconTint="@color/black" />
+            app:iconTint="@color/dark_grey" />
 
         <Button
             android:id="@+id/settings"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
+            android:layout_marginBottom="28dp"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
+            android:fontFamily="@font/yandex_sans_display_bold"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/settings"
+            android:letterSpacing="0"
+
             android:textAllCaps="false"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/primary_text_size"
-            android:layout_marginBottom="28dp"
             app:cornerRadius="16dp"
-            app:icon="@drawable/settings"
+            app:icon="@drawable/icon_settings"
             app:iconGravity="textStart"
-            app:iconTint="@color/black" />
+            app:iconTint="@color/dark_grey" />
 
     </LinearLayout>
 </LinearLayout>

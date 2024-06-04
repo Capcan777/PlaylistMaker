@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name" translatable="false">Playlist maker</string>
     <string name="search">Поиск</string>
-    <string name="mediatek">Медиатека</string>
+    <string name="mediateca">Медиатека</string>
     <string name="settings">Настройки</string>
     <string name="set_dark_theme">Темная тема</string>
     <string name="share_app">Поделиться приложением</string>
     <string name="wright_to_support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="back">Назад</string>
 </resources>
