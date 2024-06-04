@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/blue_background"
     android:orientation="vertical"
+    android:paddingHorizontal="@dimen/padding_16dp"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -17,8 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:fontFamily="@font/yandex_sans_display_bold"
-            android:paddingTop="14dp"
-            android:paddingStart="16dp"
+            android:paddingTop="@dimen/padding_14dp"
             android:text="@string/app_name"
             android:textColor="@color/white"
             android:textSize="@dimen/primary_text_size" />
@@ -28,26 +28,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
         android:paddingTop="40dp">
 
 
         <Button
             android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:fontFamily="@font/yandex_sans_display_bold"
             android:foreground="?attr/selectableItemBackground"
-            android:text="@string/search"
             android:letterSpacing="0"
+            android:text="@string/search"
             android:textAllCaps="false"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/primary_text_size"
-            app:cornerRadius="16dp"
+            app:cornerRadius="@dimen/radiusCorner"
             app:icon="@drawable/icon_search"
             app:iconGravity="textStart"
             app:iconTint="@color/dark_grey" />
@@ -55,19 +53,19 @@
         <Button
             android:id="@+id/mediateca"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
-            android:letterSpacing="0"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:fontFamily="@font/yandex_sans_display_bold"
             android:foreground="?attr/selectableItemBackground"
+            android:letterSpacing="0"
             android:text="@string/mediateca"
             android:textAllCaps="false"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/primary_text_size"
-            app:cornerRadius="16dp"
+            app:cornerRadius="@dimen/radiusCorner"
             app:icon="@drawable/icon_mediateca"
             app:iconGravity="textStart"
             app:iconTint="@color/dark_grey" />
@@ -75,20 +73,19 @@
         <Button
             android:id="@+id/settings"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="28dp"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:fontFamily="@font/yandex_sans_display_bold"
             android:foreground="?attr/selectableItemBackground"
-            android:text="@string/settings"
             android:letterSpacing="0"
-
+            android:text="@string/settings"
             android:textAllCaps="false"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/primary_text_size"
-            app:cornerRadius="16dp"
+            app:cornerRadius="@dimen/radiusCorner"
             app:icon="@drawable/icon_settings"
             app:iconGravity="textStart"
             app:iconTint="@color/dark_grey" />
