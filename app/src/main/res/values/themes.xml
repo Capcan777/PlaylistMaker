@@ -7,5 +7,4 @@
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 
-    <style name="Theme.MaterialComponents.DayNight.NoActionBar" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

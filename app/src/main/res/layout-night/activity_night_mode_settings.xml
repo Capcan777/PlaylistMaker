@@ -3,24 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background_night"
     android:orientation="vertical"
     tools:context=".SettingsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="10">
 
         <ImageView
-            android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:layout_marginStart="4dp"
             android:layout_weight="0"
-            android:contentDescription="@string/back"
             android:foreground="?attr/selectableItemBackground"
+            android:onClick="onClickClose"
             android:src="@drawable/icon_arrow_back_light" />
 
 
@@ -31,9 +29,9 @@
             android:layout_weight="1"
             android:fontFamily="@font/yandex_sans_display_bold"
             android:letterSpacing="0"
-            android:paddingStart="@dimen/padding_12dp"
+            android:paddingStart="24dp"
             android:text="@string/settings"
-            android:textColor="@color/dark_grey"
+            android:textColor="@color/text_night"
             android:textSize="@dimen/primary_text_size" />
 
     </LinearLayout>
@@ -44,15 +42,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:checked="false"
+        android:checked="true"
         android:clickable="true"
         android:fontFamily="@font/yandex_sans_display_regular"
+        android:paddingHorizontal="16dp"
         android:paddingVertical="21dp"
-        android:paddingStart="@dimen/padding_16dp"
-        android:paddingEnd="8dp"
         android:text="@string/set_dark_theme"
-        android:textColor="@color/text_color_settings"
+        android:textColor="@color/text_night"
         android:textSize="@dimen/secondary_text_size"
+        android:thumbTint="@color/switch_color_night"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <LinearLayout
@@ -60,28 +58,28 @@
         android:layout_height="wrap_content"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/padding_16dp"
-        >
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="21dp">
 
         <TextView
             android:id="@+id/textViewShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/padding_21dp"
             android:layout_weight="1"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:text="@string/share_app"
-            android:textColor="@color/text_color_settings"
+            android:textColor="@color/text_night"
             android:textSize="@dimen/secondary_text_size" />
 
         <ImageView
             android:id="@+id/imageViewShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/padding_21dp"
+            android:layout_marginEnd="11dp"
             android:layout_weight="0"
-            android:contentDescription="@string/wright_to_support"
-            android:src="@drawable/icon_share" />
+            android:clickable="true"
+            android:src="@drawable/icon_share"
+            android:tint="@color/text_night" />
 
 
     </LinearLayout>
@@ -91,28 +89,27 @@
         android:layout_height="wrap_content"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/padding_16dp"
-        android:paddingEnd="14dp">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="21dp">
 
         <TextView
             android:id="@+id/textViewSupport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/padding_21dp"
             android:layout_weight="1"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:text="@string/wright_to_support"
-            android:textColor="@color/text_color_settings"
+            android:textColor="@color/text_night"
             android:textSize="@dimen/secondary_text_size" />
 
         <ImageView
             android:id="@+id/imageViewSupport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/padding_21dp"
+            android:layout_marginEnd="11dp"
             android:layout_weight="0"
-            android:contentDescription="@null"
-            android:src="@drawable/icon_support" />
+            android:src="@drawable/icon_support"
+            android:tint="@color/text_night" />
 
 
     </LinearLayout>
@@ -120,36 +117,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/padding_16dp"
-        android:paddingEnd="20dp">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="21dp">
 
         <TextView
             android:id="@+id/textViewUserAgreement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/padding_21dp"
             android:layout_weight="1"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:text="@string/user_agreement"
-            android:textColor="@color/text_color_settings"
+            android:textColor="@color/text_night"
             android:textSize="@dimen/secondary_text_size" />
 
         <ImageView
             android:id="@+id/imageViewUserAgreement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="24dp"
+            android:layout_marginEnd="18dp"
             android:layout_weight="0"
-            android:contentDescription="@null"
-            android:src="@drawable/icon_arrow_forward" />
+            android:src="@drawable/icon_arrow_forward"
+            android:tint="@color/text_night" />
 
 
     </LinearLayout>
 
 
 </LinearLayout>
-
-
-

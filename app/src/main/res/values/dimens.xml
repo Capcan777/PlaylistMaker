@@ -2,4 +2,9 @@
 <resources>
     <dimen name="primary_text_size">22sp</dimen>
     <dimen name="secondary_text_size">16sp</dimen>
+    <dimen name="padding_14dp">14dp</dimen>
+    <dimen name="padding_16dp">16dp</dimen>
+    <dimen name="padding_12dp">12dp</dimen>
+    <dimen name="padding_21dp">21dp</dimen>
+    <dimen name="radiusCorner">16dp</dimen>
 </resources>
