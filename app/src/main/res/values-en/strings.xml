@@ -9,4 +9,7 @@
     <string name="wright_to_support">Write to support</string>
     <string name="user_agreement">User agreement</string>
     <string name="back">Back</string>
+    <string name="topic_of_email">A message to the developers of the Playlist Maker app</string>
+    <string name="text_in_body_email">Thanks to the developers for the cool app!</string>
+    <string name="searching">Search</string>
 </resources>
