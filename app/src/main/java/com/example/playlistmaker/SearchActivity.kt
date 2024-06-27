@@ -27,27 +27,21 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
-            val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+            hideKeyboard(inputEditText)
         }
 
-        val searchTextWatcher = object : TextWatcher {
+        inputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 inputEditTextState = s.toString()
                 clearButton.visibility = clearButtonVisibly(s)
-
             }
 
             override fun afterTextChanged(s: Editable?) {
             }
-
-        }
-        inputEditText.addTextChangedListener(searchTextWatcher)
-
+        })
     }
 
     private fun clearButtonVisibly(s: CharSequence?): Int {
@@ -73,6 +67,12 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         inputEditTextState = savedInstanceState.getString(EDIT_TEXT_STATE, inputEditTextState)
         findViewById<EditText>(R.id.textSearch).setText(inputEditTextState)
+    }
+
+    fun hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 

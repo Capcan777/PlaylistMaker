@@ -25,7 +25,7 @@
             style="@style/TextBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="@dimen/size_12dp"
             android:text="@string/search" />
 
     </LinearLayout>
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_8dp"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="@dimen/size_12dp"
         android:layout_marginHorizontal="@dimen/size_16dp"
         android:background="@drawable/rounded_text_field">
 
@@ -43,7 +43,7 @@
             style="@style/SearchingHintStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingVertical="8dp"
+            android:paddingVertical="@dimen/size_8dp"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/icon_search_et"
             android:drawablePadding="@dimen/size_8dp"
