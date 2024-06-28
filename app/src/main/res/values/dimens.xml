@@ -2,9 +2,15 @@
 <resources>
     <dimen name="primary_text_size">22sp</dimen>
     <dimen name="secondary_text_size">16sp</dimen>
-    <dimen name="padding_14dp">14dp</dimen>
-    <dimen name="padding_16dp">16dp</dimen>
-    <dimen name="padding_12dp">12dp</dimen>
-    <dimen name="padding_21dp">21dp</dimen>
+    <dimen name="size_14dp">14dp</dimen>
+    <dimen name="size_16dp">16dp</dimen>
+    <dimen name="size_12dp">12dp</dimen>
+    <dimen name="size_21dp">21dp</dimen>
     <dimen name="radiusCorner">16dp</dimen>
+    <dimen name="size_4dp">4dp</dimen>
+    <dimen name="size_8dp">8dp</dimen>
+    <dimen name="size_40dp">40dp</dimen>
+    <dimen name="size_24dp">24dp</dimen>
+    <dimen name="size_20dp">20dp</dimen>
+    <dimen name="size_28dp">28dp</dimen>
 </resources>
