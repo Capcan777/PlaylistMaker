@@ -13,5 +13,6 @@
     <string name="text_in_body_email">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="practicum_link" translatable="false">https://practicum.yandex.ru/profile/android-developer-plus/?from=learn_subscriptions-with-prof-recommendations</string>
     <string name="legal_practicum_offer" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
-    <string name="e_mail_developer">lawyer@shultzlaw.ru</string>
+    <string name="e_mail_developer" translatable="false">lawyer@shultzlaw.ru</string>
+    <string name="empty_string" translatable="false">""</string>
 </resources>
