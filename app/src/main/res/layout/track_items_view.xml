@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginHorizontal="13dp"
     android:orientation="horizontal">
 
@@ -12,11 +12,11 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="start|center_vertical"
-        app:srcCompat="@drawable/placeholder_24" />
+        tools:src="@drawable/placeholder_24" />
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/size_14dp"
         android:layout_marginStart="@dimen/size_8dp"
@@ -29,14 +29,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/size_16dp"
-            android:lines="1"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="Название песни" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
 
@@ -45,15 +45,23 @@
                 style="@style/ArtistTrackTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="1"
                 android:maxLines="1"
                 android:ellipsize="end"
-                tools:text="Название" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_dot"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Название группы" />
 
             <ImageView
+                android:id="@+id/iv_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvTrackTime"
+                app:layout_constraintStart_toEndOf="@+id/tvArtistName"
+                app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/icon_dot" />
 
             <TextView
@@ -61,13 +69,15 @@
                 style="@style/ArtistTrackTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="1"
                 android:maxLines="1"
-                android:ellipsize="end"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/iv_dot"
+                app:layout_constraintStart_toEndOf="@+id/iv_dot"
+                app:layout_constraintTop_toTopOf="parent"
                 android:textSize="@dimen/size_11sp"
                 tools:text="4:11" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>
