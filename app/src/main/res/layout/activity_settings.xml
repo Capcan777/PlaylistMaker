@@ -30,8 +30,8 @@
     </LinearLayout>
 
 
-    <Switch
-        android:id="@+id/switcher"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/theme_switcher"
         android:theme="@style/SwitcherStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

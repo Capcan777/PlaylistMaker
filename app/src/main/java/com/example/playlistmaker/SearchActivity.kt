@@ -12,13 +12,14 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -32,6 +33,7 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ItunesApiService::class.java)
     val tracks = ArrayList<Track>()
     val trackListAdapter = TrackAdapter()
+    val historyAdapter = TrackAdapter()
     private lateinit var placeholderMessageNotInternet: LinearLayout
     private lateinit var placeholderMessageNotFound: LinearLayout
     private lateinit var inputEditText: EditText
@@ -49,10 +51,12 @@ class SearchActivity : AppCompatActivity() {
         clearButton = binding.clearIcon
         refreshButton = binding.updateButton
         back = binding.back
-
-        val recyclerView = binding.recyclerView
+        val sharedPreferences = getSharedPreferences(Constants.SEARCH_HISTORY_PREF, MODE_PRIVATE)
         trackListAdapter.items = tracks
-        recyclerView.adapter = trackListAdapter
+        binding.recyclerView.adapter = trackListAdapter
+        historyAdapter.items = tracks
+        binding.recyclerViewHistory.adapter = historyAdapter
+
 
         back.setOnClickListener {
             finish()
@@ -64,7 +68,10 @@ class SearchActivity : AppCompatActivity() {
             tracks.clear()
             trackListAdapter.notifyDataSetChanged()
         }
-
+        inputEditText.setOnFocusChangeListener { v, hasFocus ->
+            binding.history.visibility =
+                if (hasFocus && inputEditText.text.isEmpty() && tracks.isNotEmpty()) View.VISIBLE else View.GONE
+        }
         inputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -123,7 +130,6 @@ class SearchActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                     if (response.code() == 200) {
                         tracks.clear()
-
                         if (response.body()?.results?.isNotEmpty() == true) {
                             tracks.addAll(response.body()?.results!!)
                             trackListAdapter.notifyDataSetChanged()

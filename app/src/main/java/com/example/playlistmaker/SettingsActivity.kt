@@ -7,16 +7,26 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        val back = findViewById<ImageView>(R.id.back)
-        val shareButton = findViewById<LinearLayout>(R.id.share)
-        val supportButton = findViewById<LinearLayout>(R.id.support)
-        val userAgreementButton = findViewById<LinearLayout>(R.id.userAgreement)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val back = binding.back
+        val shareButton = binding.share
+        val supportButton = binding.support
+        val userAgreementButton = binding.userAgreement
+        val themeSwitcher = binding.themeSwitcher
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
 
         back.setOnClickListener {
             finish()
