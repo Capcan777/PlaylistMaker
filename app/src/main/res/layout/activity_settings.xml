@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".SettingsActivity">
 
@@ -36,8 +37,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_24dp"
-        android:checked="false"
-        android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:paddingVertical="@dimen/size_21dp"
         android:paddingStart="@dimen/size_16dp"

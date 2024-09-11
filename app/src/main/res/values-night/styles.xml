@@ -24,6 +24,7 @@
     <style name="SwitcherStyle" parent="NameTrackTextStyle">
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/searching_icon_color</item>
+        <item name="colorControlActivated">#3772E7</item>
     </style>
 
 
@@ -41,6 +42,8 @@
         <item name="android:radius">54dp</item>
         <item name="android:textColor">@color/dark_grey</item>
         <item name="android:background">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textFontWeight">500</item>
         <item name="android:paddingVertical">10dp</item>
         <item name="android:paddingHorizontal">14dp</item>
     </style>

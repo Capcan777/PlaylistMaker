@@ -15,4 +15,8 @@
     <string name="legal_practicum_offer" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="e_mail_developer" translatable="false">lawyer@shultzlaw.ru</string>
     <string name="empty_string" translatable="false">""</string>
+    <string name="clear_history">Очистить историю</string>
+    <string name="you_searched">Вы искали</string>
+    <string name="update">Обновить</string>
+    <string name="nothing_found">Ничего не нашлось</string>
 </resources>
