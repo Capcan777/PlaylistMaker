@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(
+    var trackArrayList: ArrayList<Track>,
+    private val onTrackClicked: (Track) -> Unit
+) : RecyclerView.Adapter<TrackViewHolder>() {
 
     private lateinit var sharedPreferences: SharedPreferences
-    var trackArrayList: ArrayList<Track> = arrayListOf()
+
 
     // Метод для установки SharedPreferences
     fun setSharedPreferences(sharedPreferences: SharedPreferences) {
@@ -36,27 +39,7 @@ class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
         holder.bind(track)
 
         holder.itemView.setOnClickListener {
-            val searchHistory = SearchHistory(sharedPreferences)
-
-            // Чтение текущей истории поиска
-            val currentHistory = searchHistory.readTracksFromHistory()
-
-            // Удаление трека из истории, если он уже существует (по уникальному идентификатору)
-            currentHistory.removeAll { it.trackId == track.trackId }
-
-            // Добавление трека в начало списка
-            currentHistory.add(0, track)
-            notifyDataSetChanged()
-
-            // Установка ограничения списка треков в истории
-            if (currentHistory.size > 10) {
-                currentHistory.removeAt(10)
-                notifyItemRemoved(10)
-                notifyItemRangeChanged(0, currentHistory.size - 1)
-            }
-
-            // Сохранение обновленной истории
-            searchHistory.saveTrackToHistory(currentHistory)
+            onTrackClicked(track)
         }
     }
 }

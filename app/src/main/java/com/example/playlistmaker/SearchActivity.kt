@@ -67,11 +67,15 @@ class SearchActivity : AppCompatActivity() {
         searchHistory = SearchHistory(sharedPreferences)
 
         // Настройка адаптеров
-        trackListAdapter = TrackAdapter().apply {
+        trackListAdapter = TrackAdapter(tracks) { tracks ->
+            onTrackSelected(tracks)
+        }.apply {
             updateTrackList(tracks)
             setSharedPreferences(sharedPreferences)
         }
-        historyAdapter = TrackAdapter().apply {
+        historyAdapter = TrackAdapter(tracks) { tracks ->
+            onTrackSelected(tracks)
+        }.apply {
             updateTrackList(searchHistory.readTracksFromHistory())
             setSharedPreferences(sharedPreferences)
         }
@@ -90,6 +94,7 @@ class SearchActivity : AppCompatActivity() {
             hideKeyboard(inputEditText)
             tracks.clear()
             trackListAdapter.notifyDataSetChanged()
+            historyLayout.visibility = View.VISIBLE
         }
 
         // Очистка истории поиска по нажатию кнопки "Очистить"
@@ -100,7 +105,9 @@ class SearchActivity : AppCompatActivity() {
 
         // Отображение истории поиска при фокусе на EditText
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            showHistory(hasFocus)
+            if (hasFocus && inputEditText.text.isEmpty()) {
+                showHistory()
+            }
         }
 
         // Слушатель изменения текста в EditText
@@ -110,10 +117,10 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 inputEditTextState = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
-                showHistory(inputEditText.hasFocus() && s.isNullOrEmpty())
 
                 if (s.isNullOrEmpty()) {
                     tracks.clear()
+                    showHistory()
                     trackListAdapter.notifyDataSetChanged()
                 }
             }
@@ -212,8 +219,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     // Отображение истории поиска
-    private fun showHistory(show: Boolean) {
-        if (show && historyAdapter.trackArrayList.isNotEmpty()) {
+    private fun showHistory() {
+        if (historyAdapter.trackArrayList.isNotEmpty()) {
             historyLayout.visibility = View.VISIBLE
             getHistory()
             historyAdapter.notifyDataSetChanged()
@@ -233,6 +240,23 @@ class SearchActivity : AppCompatActivity() {
     private fun clearHistory() {
         historyAdapter.trackArrayList.clear()
         searchHistory.clearHistoryPref()
+        historyAdapter.notifyDataSetChanged()
+    }
+
+    // Функция нажатия кнопки выбора трека
+    private fun onTrackSelected(track: Track) {
+        val currentHistory = searchHistory.readTracksFromHistory()
+        currentHistory.removeAll {
+            it.trackId == track.trackId
+        }
+        currentHistory.add(0, track)
+        // Установка ограничения списка треков в истории
+        if (currentHistory.size > 10) {
+            currentHistory.removeAt(10)
+            historyAdapter.notifyItemRemoved(10)
+            historyAdapter.notifyItemRangeChanged(0, currentHistory.size - 1)
+        }
+        searchHistory.saveTrackToHistory(currentHistory)
         historyAdapter.notifyDataSetChanged()
     }
 

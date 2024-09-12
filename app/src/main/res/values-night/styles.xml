@@ -24,7 +24,9 @@
     <style name="SwitcherStyle" parent="NameTrackTextStyle">
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/searching_icon_color</item>
-        <item name="colorControlActivated">#3772E7</item>
+        <item name="colorControlActivated">@color/dark_blue</item>
+        <item name="android:thumbTint">@color/dark_blue</item>
+        <item name="android:trackTint">@color/blue_light</item>
     </style>
 
 

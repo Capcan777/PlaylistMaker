@@ -50,6 +50,7 @@
             android:hint="@string/search"
             android:imeOptions="actionDone"
             android:inputType="text"
+            android:textCursorDrawable="@drawable/custom_cursor"
             android:maxLines="1"
             android:paddingVertical="@dimen/size_8dp"
             android:singleLine="true" />
