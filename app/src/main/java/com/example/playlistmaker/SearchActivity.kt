@@ -61,23 +61,16 @@ class SearchActivity : AppCompatActivity() {
         historyLayout = binding.history
         clearHistoryButton = binding.clearHistoryButton
 
-
         // Настройка SharedPreferences
         sharedPreferences = getSharedPreferences(Constants.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
         // Настройка адаптеров
-        trackListAdapter = TrackAdapter(tracks) { tracks ->
-            onTrackSelected(tracks)
-        }.apply {
-            updateTrackList(tracks)
-            setSharedPreferences(sharedPreferences)
+        trackListAdapter = TrackAdapter(tracks) { track ->
+            onTrackSelected(track)
         }
-        historyAdapter = TrackAdapter(tracks) { tracks ->
-            onTrackSelected(tracks)
-        }.apply {
-            updateTrackList(searchHistory.readTracksFromHistory())
-            setSharedPreferences(sharedPreferences)
+        historyAdapter = TrackAdapter(searchHistory.readTracksFromHistory()) { track ->
+            onTrackSelected(track)
         }
 
         binding.recyclerView.adapter = trackListAdapter
@@ -220,27 +213,23 @@ class SearchActivity : AppCompatActivity() {
 
     // Отображение истории поиска
     private fun showHistory() {
-        if (historyAdapter.trackArrayList.isNotEmpty()) {
+        if (historyAdapter.itemCount > 0) {
             historyLayout.visibility = View.VISIBLE
             getHistory()
-            historyAdapter.notifyDataSetChanged()
         } else {
             historyLayout.visibility = View.GONE
-            historyAdapter.notifyDataSetChanged()
         }
     }
 
     // Чтение истории поиска
     private fun getHistory() {
-        historyAdapter.trackArrayList = searchHistory.readTracksFromHistory()
-        historyAdapter.notifyDataSetChanged()
+        historyAdapter.updateTrackList(searchHistory.readTracksFromHistory())
     }
 
     // Удаление истории поиска
     private fun clearHistory() {
-        historyAdapter.trackArrayList.clear()
+        historyAdapter.updateTrackList(tracks)
         searchHistory.clearHistoryPref()
-        historyAdapter.notifyDataSetChanged()
     }
 
     // Функция нажатия кнопки выбора трека
@@ -253,11 +242,9 @@ class SearchActivity : AppCompatActivity() {
         // Установка ограничения списка треков в истории
         if (currentHistory.size > 10) {
             currentHistory.removeAt(10)
-            historyAdapter.notifyItemRemoved(10)
-            historyAdapter.notifyItemRangeChanged(0, currentHistory.size - 1)
         }
         searchHistory.saveTrackToHistory(currentHistory)
-        historyAdapter.notifyDataSetChanged()
+        historyAdapter.updateTrackList(currentHistory)
     }
 
     companion object {
@@ -265,3 +252,4 @@ class SearchActivity : AppCompatActivity() {
         const val DEFAULT_EDIT_STATE = ""
     }
 }
+
