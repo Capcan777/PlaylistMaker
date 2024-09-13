@@ -26,7 +26,6 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .transform(RoundedCorners(dpToPx(2.0F, itemView.context)))
             .into(ivPoster)
 
-
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {

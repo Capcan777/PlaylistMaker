@@ -8,4 +8,6 @@
     <color name="grey">#AEAFB4</color>
     <color name="icon_et_color">@color/grey</color>
     <color name="searching_icon_color">@color/grey</color>
+    <color name="blue_light">#9FBBF3</color>
+    <color name="light_gray">#E6E8EB</color>
 </resources>

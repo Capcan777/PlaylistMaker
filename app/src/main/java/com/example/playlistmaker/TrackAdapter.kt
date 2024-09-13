@@ -1,11 +1,29 @@
 package com.example.playlistmaker
 
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
-    var items = ArrayList<Track>()
+class TrackAdapter(
+    var trackArrayList: ArrayList<Track>,
+    private val onTrackClicked: (Track) -> Unit
+) : RecyclerView.Adapter<TrackViewHolder>() {
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+
+    // Метод для установки SharedPreferences
+    fun setSharedPreferences(sharedPreferences: SharedPreferences) {
+        this.sharedPreferences = sharedPreferences
+    }
+
+    // Метод для обновления списка треков
+    fun updateTrackList(trackArrayList: ArrayList<Track>) {
+        this.trackArrayList = trackArrayList
+        notifyDataSetChanged()  // Уведомляем адаптер о необходимости обновить отображение данных
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.track_items_view, parent, false)
@@ -13,11 +31,15 @@ class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return trackArrayList.size
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(items[position])
-    }
+        val track = trackArrayList[position]
+        holder.bind(track)
 
+        holder.itemView.setOnClickListener {
+            onTrackClicked(track)
+        }
+    }
 }
