@@ -1,11 +1,9 @@
 package com.example.playlistmaker
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 
 class TrackAdapter(
     var trackArrayList: ArrayList<Track>,
