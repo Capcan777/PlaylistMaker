@@ -1,9 +1,11 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 
 class TrackAdapter(
     var trackArrayList: ArrayList<Track>,
@@ -40,6 +42,9 @@ class TrackAdapter(
 
         holder.itemView.setOnClickListener {
             onTrackClicked(track)
+            val playerIntent = Intent(holder.itemView.context, PlayerActivity::class.java)
+            playerIntent.putExtra("track", Gson().toJson(track))
+            holder.itemView.context.startActivity(playerIntent)
         }
     }
 }

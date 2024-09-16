@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -245,6 +246,8 @@ class SearchActivity : AppCompatActivity() {
         }
         searchHistory.saveTrackToHistory(currentHistory)
         historyAdapter.updateTrackList(currentHistory)
+
+
     }
 
     companion object {
