@@ -42,9 +42,7 @@ class TrackAdapter(
 
         holder.itemView.setOnClickListener {
             onTrackClicked(track)
-            val playerIntent = Intent(holder.itemView.context, PlayerActivity::class.java)
-            playerIntent.putExtra("track", Gson().toJson(track))
-            holder.itemView.context.startActivity(playerIntent)
+
         }
     }
 }

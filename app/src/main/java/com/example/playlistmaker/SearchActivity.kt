@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -246,6 +247,9 @@ class SearchActivity : AppCompatActivity() {
         }
         searchHistory.saveTrackToHistory(currentHistory)
         historyAdapter.updateTrackList(currentHistory)
+        val playerIntent = Intent(this, PlayerActivity::class.java)
+        playerIntent.putExtra("track", Gson().toJson(track))
+        startActivity(playerIntent)
 
 
     }
