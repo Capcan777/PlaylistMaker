@@ -43,7 +43,4 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         return gson.fromJson(json, itemType)
     }
 
-    fun getTrackFromHistoryPref(): Track {
-        return gson.fromJson(searchHistoryString, Track::class.java)
-    }
 }
