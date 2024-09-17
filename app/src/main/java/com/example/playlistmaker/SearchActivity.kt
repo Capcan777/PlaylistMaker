@@ -102,6 +102,8 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && inputEditText.text.isEmpty()) {
                 showHistory()
+                placeholderMessageNotFound.visibility = View.GONE
+
             }
         }
 
@@ -120,7 +122,9 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+
+            }
         })
 
         // Обновление списка треков при нажатии на кнопку обновления
@@ -173,6 +177,8 @@ class SearchActivity : AppCompatActivity() {
                             trackListAdapter.notifyDataSetChanged()
                             placeholderMessageNotFound.visibility = View.GONE
                             placeholderMessageNotInternet.visibility = View.GONE
+                            historyLayout.visibility = View.GONE
+
                         } else {
                             showMessage(placeholderMessageNotFound)
                         }
@@ -208,6 +214,7 @@ class SearchActivity : AppCompatActivity() {
                 tracks.clear()
                 placeholderMessageNotFound.visibility = View.VISIBLE
                 placeholderMessageNotInternet.visibility = View.GONE
+                historyLayout.visibility = View.GONE
                 trackListAdapter.notifyDataSetChanged()
             }
         }
@@ -248,7 +255,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistory.saveTrackToHistory(currentHistory)
         historyAdapter.updateTrackList(currentHistory)
         val playerIntent = Intent(this, PlayerActivity::class.java)
-        playerIntent.putExtra("track", Gson().toJson(track))
+        playerIntent.putExtra(getString(R.string.track_intent), Gson().toJson(track))
         startActivity(playerIntent)
 
 

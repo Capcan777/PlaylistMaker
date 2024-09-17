@@ -17,7 +17,10 @@ class PlayerActivity : AppCompatActivity() {
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val track = Gson().fromJson(intent.getStringExtra("track"), Track::class.java)
+        val track = Gson().fromJson(
+            intent.getStringExtra(getString(R.string.track_intent)),
+            Track::class.java
+        )
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

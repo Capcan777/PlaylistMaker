@@ -27,4 +27,5 @@
     <string name="year">Год</string>
     <string name="music_style">Жанр</string>
     <string name="artist_country">Страна</string>
+    <string name="track_intent">track</string>
 </resources>
