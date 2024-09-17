@@ -143,13 +143,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        getHistory()
-        binding.recyclerViewHistory.invalidate()
-    }
-
-
     // Определение видимости кнопки очистки
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
