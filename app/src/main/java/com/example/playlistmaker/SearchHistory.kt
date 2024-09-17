@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
     var historyTrackList: ArrayList<Track> = arrayListOf()
     private val gson = Gson()
-    val searchHistoryString = sharedPreferences.getString(Constants.PREF_KEY_HISTORY, null)
 
     // Сохранение списка треков в историю
     fun saveTrackToHistory(tracks: ArrayList<Track>) {
@@ -29,7 +28,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
     // Чтение списка треков из истории
     fun readTracksFromHistory(): ArrayList<Track> {
-
+        val searchHistoryString = sharedPreferences.getString(Constants.PREF_KEY_HISTORY, null)
         return if (!searchHistoryString.isNullOrEmpty()) {
             createTrackListFromJson(searchHistoryString)
         } else {
