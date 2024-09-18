@@ -256,7 +256,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistory.saveTrackToHistory(currentHistory)
         historyAdapter.updateTrackList(currentHistory)
         val playerIntent = Intent(this, PlayerActivity::class.java)
-        playerIntent.putExtra(getString(R.string.track_intent), Gson().toJson(track))
+        playerIntent.putExtra(Constants.TRACK_INTENT, Gson().toJson(track))
         startActivity(playerIntent)
 
 

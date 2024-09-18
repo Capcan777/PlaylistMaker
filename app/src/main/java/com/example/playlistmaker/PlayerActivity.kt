@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -18,7 +19,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val track = Gson().fromJson(
-            intent.getStringExtra(getString(R.string.track_intent)),
+            intent.getStringExtra(Constants.TRACK_INTENT),
             Track::class.java
         )
         binding = ActivityPlayerBinding.inflate(layoutInflater)
