@@ -37,8 +37,9 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     }
 
     // Преобразование JSON строки в список треков
-    private fun createTrackListFromJson(json: String): ArrayList<Track> {
+    fun createTrackListFromJson(json: String): ArrayList<Track> {
         val itemType = object : TypeToken<ArrayList<Track>>() {}.type
         return gson.fromJson(json, itemType)
     }
+
 }

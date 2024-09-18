@@ -10,4 +10,5 @@
     <color name="searching_icon_color">@color/grey</color>
     <color name="blue_light">#9FBBF3</color>
     <color name="light_gray">#E6E8EB</color>
+    <color name="ic_color_player">#331A1B22</color>
 </resources>

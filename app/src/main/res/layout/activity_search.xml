@@ -102,7 +102,7 @@
             android:background="@drawable/oval_shape"
             android:fontFamily="@font/ys_display_medium"
             android:letterSpacing="0"
-            android:text="Очистить историю"
+            android:text="@string/to_clear_history"
             android:textAllCaps="false" />
 
     </LinearLayout>
@@ -128,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_16dp"
             android:gravity="center"
-            android:text="Проблемы со связью" />
+            android:text="@string/problem_of_net" />
 
         <TextView
             style="@style/MessageStyle"
@@ -137,7 +137,7 @@
             android:layout_marginTop="@dimen/size_16dp"
             android:fontFamily="@font/ys_display_medium"
             android:gravity="center"
-            android:text="Загрузка не удалась. Проверьте подключение к интернету" />
+            android:text="@string/problem_of_loading" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/update_button"

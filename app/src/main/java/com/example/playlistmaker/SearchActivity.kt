@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -15,6 +16,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -100,6 +102,8 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && inputEditText.text.isEmpty()) {
                 showHistory()
+                placeholderMessageNotFound.visibility = View.GONE
+
             }
         }
 
@@ -118,7 +122,9 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+
+            }
         })
 
         // Обновление списка треков при нажатии на кнопку обновления
@@ -171,6 +177,8 @@ class SearchActivity : AppCompatActivity() {
                             trackListAdapter.notifyDataSetChanged()
                             placeholderMessageNotFound.visibility = View.GONE
                             placeholderMessageNotInternet.visibility = View.GONE
+                            historyLayout.visibility = View.GONE
+
                         } else {
                             showMessage(placeholderMessageNotFound)
                         }
@@ -206,6 +214,7 @@ class SearchActivity : AppCompatActivity() {
                 tracks.clear()
                 placeholderMessageNotFound.visibility = View.VISIBLE
                 placeholderMessageNotInternet.visibility = View.GONE
+                historyLayout.visibility = View.GONE
                 trackListAdapter.notifyDataSetChanged()
             }
         }
@@ -224,6 +233,7 @@ class SearchActivity : AppCompatActivity() {
     // Чтение истории поиска
     private fun getHistory() {
         historyAdapter.updateTrackList(searchHistory.readTracksFromHistory())
+        historyAdapter.notifyDataSetChanged()
     }
 
     // Удаление истории поиска
@@ -245,6 +255,11 @@ class SearchActivity : AppCompatActivity() {
         }
         searchHistory.saveTrackToHistory(currentHistory)
         historyAdapter.updateTrackList(currentHistory)
+        val playerIntent = Intent(this, PlayerActivity::class.java)
+        playerIntent.putExtra(Constants.TRACK_INTENT, Gson().toJson(track))
+        startActivity(playerIntent)
+
+
     }
 
     companion object {

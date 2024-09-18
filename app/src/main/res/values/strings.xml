@@ -19,4 +19,13 @@
     <string name="you_searched">Вы искали</string>
     <string name="update">Обновить</string>
     <string name="nothing_found">Ничего не нашлось</string>
+    <string name="trackCount">Длительность</string>
+    <string name="problem_of_loading">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="problem_of_net">Проблемы со связью</string>
+    <string name="to_clear_history">Очистить историю</string>
+    <string name="album">Альбом</string>
+    <string name="year">Год</string>
+    <string name="music_style">Жанр</string>
+    <string name="artist_country">Страна</string>
+    <string name="track_intent">track</string>
 </resources>

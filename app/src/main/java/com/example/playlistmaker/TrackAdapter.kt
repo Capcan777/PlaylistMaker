@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,14 +8,6 @@ class TrackAdapter(
     var trackArrayList: ArrayList<Track>,
     private val onTrackClicked: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
-
-    private lateinit var sharedPreferences: SharedPreferences
-
-
-    // Метод для установки SharedPreferences
-    fun setSharedPreferences(sharedPreferences: SharedPreferences) {
-        this.sharedPreferences = sharedPreferences
-    }
 
     // Метод для обновления списка треков
     fun updateTrackList(trackArrayList: ArrayList<Track>) {
@@ -40,6 +31,7 @@ class TrackAdapter(
 
         holder.itemView.setOnClickListener {
             onTrackClicked(track)
+
         }
     }
 }
