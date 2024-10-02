@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -11,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -47,6 +50,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: Button
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var searchHistory: SearchHistory
+    private lateinit var progressBar: FrameLayout
+    private val handler = Handler(Looper.getMainLooper())
+    private val runnable = Runnable { searchTracks() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +68,7 @@ class SearchActivity : AppCompatActivity() {
         back = binding.back
         historyLayout = binding.history
         clearHistoryButton = binding.clearHistoryButton
+        progressBar = binding.progressBar
 
         // Настройка SharedPreferences
         sharedPreferences = getSharedPreferences(Constants.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
@@ -112,6 +119,7 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clickDebounce()
                 inputEditTextState = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
 
@@ -166,31 +174,42 @@ class SearchActivity : AppCompatActivity() {
 
     // Поиск треков через iTunes API
     private fun searchTracks() {
-        iTunesService.search(inputEditText.text.toString())
-            .enqueue(object : Callback<ApiResponse> {
-                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                    if (response.isSuccessful) {
-                        tracks.clear()
-                        val results = response.body()?.results
-                        if (!results.isNullOrEmpty()) {
-                            tracks.addAll(results)
-                            trackListAdapter.notifyDataSetChanged()
-                            placeholderMessageNotFound.visibility = View.GONE
-                            placeholderMessageNotInternet.visibility = View.GONE
-                            historyLayout.visibility = View.GONE
+        if (inputEditText.text.isNotEmpty()) {
+            binding.recyclerView.visibility = View.GONE
+            historyLayout.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+            iTunesService.search(inputEditText.text.toString())
+                .enqueue(object : Callback<ApiResponse> {
+                    override fun onResponse(
+                        call: Call<ApiResponse>,
+                        response: Response<ApiResponse>
+                    ) {
+                        progressBar.visibility = View.GONE
+                        if (response.isSuccessful) {
+                            tracks.clear()
+                            val results = response.body()?.results
+                            if (!results.isNullOrEmpty()) {
+                                binding.recyclerView.visibility = View.VISIBLE
+                                tracks.addAll(results)
+                                trackListAdapter.notifyDataSetChanged()
+                                placeholderMessageNotFound.visibility = View.GONE
+                                placeholderMessageNotInternet.visibility = View.GONE
+                                historyLayout.visibility = View.GONE
 
+                            } else {
+                                showMessage(placeholderMessageNotFound)
+                            }
                         } else {
-                            showMessage(placeholderMessageNotFound)
+                            showMessage(placeholderMessageNotInternet)
                         }
-                    } else {
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                        progressBar.visibility = View.GONE
                         showMessage(placeholderMessageNotInternet)
                     }
-                }
-
-                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                    showMessage(placeholderMessageNotInternet)
-                }
-            })
+                })
+        }
     }
 
     // Скрытие клавиатуры
@@ -258,8 +277,12 @@ class SearchActivity : AppCompatActivity() {
         val playerIntent = Intent(this, PlayerActivity::class.java)
         playerIntent.putExtra(Constants.TRACK_INTENT, Gson().toJson(track))
         startActivity(playerIntent)
+    }
 
 
+    private fun clickDebounce() {
+        handler.removeCallbacks(runnable)
+        handler.postDelayed(runnable, Constants.CLICK_DEBOUNCE_DELAY)
     }
 
     companion object {
