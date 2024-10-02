@@ -28,7 +28,6 @@
             android:id="@+id/leftBorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/size_24dp"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="@dimen/size_24dp" />
 

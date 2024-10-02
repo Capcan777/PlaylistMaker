@@ -50,10 +50,11 @@
             android:hint="@string/search"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:textCursorDrawable="@drawable/custom_cursor"
             android:maxLines="1"
             android:paddingVertical="@dimen/size_8dp"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/custom_cursor" />
+
 
         <ImageView
             android:id="@+id/clearIcon"
@@ -64,6 +65,22 @@
             android:src="@drawable/icon_close_button"
             android:visibility="gone" />
 
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="140dp"
+        android:visibility="gone">
+
+
+        <ProgressBar
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:indeterminateTint="@color/dark_blue"
+            android:progress="45" />
     </FrameLayout>
 
     <LinearLayout
@@ -86,8 +103,8 @@
             android:id="@+id/recyclerViewHistory"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginTop="@dimen/size_16dp"
+            android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/track_items_view" />
 
