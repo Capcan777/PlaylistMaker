@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.theme
+package com.example.playlistmaker.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

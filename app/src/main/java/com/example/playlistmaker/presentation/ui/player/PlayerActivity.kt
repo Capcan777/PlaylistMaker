@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.player
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -20,6 +22,7 @@ class PlayerActivity : AppCompatActivity() {
     private var playerState = Constants.STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
     private lateinit var binding: ActivityPlayerBinding
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val handler = Handler(Looper.getMainLooper())
 
 
