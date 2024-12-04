@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain.use_cases_impl
 
-import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.api.TracksRepository
+import com.example.playlistmaker.domain.repository.TracksInteractor
+import com.example.playlistmaker.domain.repository.TracksRepository
 import com.example.playlistmaker.domain.models.Track
 import java.util.concurrent.Executors
 

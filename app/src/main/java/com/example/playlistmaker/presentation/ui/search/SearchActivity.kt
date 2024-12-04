@@ -22,9 +22,9 @@ import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.api.HistoryInteractor
-import com.example.playlistmaker.domain.api.SearchHistoryRepository
-import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.repository.HistoryInteractor
+import com.example.playlistmaker.domain.repository.SearchHistoryRepository
+import com.example.playlistmaker.domain.repository.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import retrofit2.Call
