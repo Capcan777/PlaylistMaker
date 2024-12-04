@@ -31,7 +31,7 @@ class App : Application() {
 //            .apply()
 //    }
 
-    private fun applyTheme(darkThemeEnabled: Boolean) {
+    fun applyTheme(darkThemeEnabled: Boolean) {
         darkTheme = darkThemeEnabled
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {

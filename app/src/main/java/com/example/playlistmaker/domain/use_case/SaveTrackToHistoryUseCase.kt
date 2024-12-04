@@ -4,7 +4,7 @@ import com.example.playlistmaker.domain.repository.SearchHistoryRepository
 import com.example.playlistmaker.domain.models.Track
 
 class SaveTrackToHistoryUseCase(private val repository: SearchHistoryRepository) {
-    fun execute(tracks: ArrayList<Track>) {
-        repository.saveTrackToHistory(tracks)
+    fun execute(tracks: ArrayList<Track>, track: Track) {
+        repository.saveTrackToHistory(tracks, track)
     }
 }

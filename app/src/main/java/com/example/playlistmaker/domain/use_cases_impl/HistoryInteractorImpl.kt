@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.use_cases_impl
 
-import com.example.playlistmaker.domain.repository.HistoryInteractor
+import com.example.playlistmaker.domain.use_case.HistoryInteractor
 import com.example.playlistmaker.domain.repository.SearchHistoryRepository
 import com.example.playlistmaker.domain.models.Track
 

@@ -16,21 +16,25 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.ApiResponse
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.repository.HistoryInteractor
+import com.example.playlistmaker.domain.use_case.HistoryInteractor
 import com.example.playlistmaker.domain.repository.SearchHistoryRepository
-import com.example.playlistmaker.domain.repository.TracksInteractor
+import com.example.playlistmaker.domain.repository.TracksUseCase
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
-import retrofit2.Call
 
 
 class SearchActivity : AppCompatActivity() {
+
+
+    companion object {
+        const val EDIT_TEXT_STATE = "EDIT_TEXT_STATE"
+        const val DEFAULT_EDIT_STATE = ""
+    }
 
     private var inputEditTextState: String? = DEFAULT_EDIT_STATE
     private lateinit var binding: ActivitySearchBinding
@@ -59,7 +63,7 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private val runnable = Runnable { searchTracks() }
     private lateinit var searchHistoryRepository: SearchHistoryRepository
-    private lateinit var tracksInteractor: TracksInteractor
+    private lateinit var tracksUseCase: TracksUseCase
     private lateinit var historyInteractor: HistoryInteractor
 
 
@@ -68,7 +72,7 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        tracksInteractor = Creator.provideTracksInteractor()
+        tracksUseCase = Creator.provideTracksUseCase()
         searchHistoryRepository = Creator.provideSearchHistoryRepository(this)
 
         // Инициализация View
@@ -191,9 +195,9 @@ class SearchActivity : AppCompatActivity() {
             binding.recyclerView.visibility = View.GONE
             historyLayout.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
-            tracksInteractor.searchTracks(
+            tracksUseCase.searchTracks(
                 inputEditText.text.toString(),
-                object : TracksInteractor.TracksConsumer {
+                object : TracksUseCase.TracksConsumer {
                     override fun consume(foundTracks: List<Track>) {
                         runOnUiThread {
                             progressBar.visibility = View.GONE
@@ -230,10 +234,10 @@ class SearchActivity : AppCompatActivity() {
 //
 //                    }
 
-                    override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                        progressBar.visibility = View.GONE
-                        showMessage(placeholderMessageNotInternet)
-                    }
+//                    override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+//                        progressBar.visibility = View.GONE
+//                        showMessage(placeholderMessageNotInternet)
+//                    }
 
                     override fun onSuccess(foundTracks: ArrayList<Track>) {
                         TODO("Not yet implemented")
@@ -330,9 +334,5 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(runnable, Constants.CLICK_DEBOUNCE_DELAY)
     }
 
-    companion object {
-        const val EDIT_TEXT_STATE = "EDIT_TEXT_STATE"
-        const val DEFAULT_EDIT_STATE = ""
-    }
 }
 

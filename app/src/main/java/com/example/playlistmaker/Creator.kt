@@ -4,14 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.example.playlistmaker.data.repository_impl.TracksRepositoryImpl
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
+import com.example.playlistmaker.data.repository_impl.PlayerRepositoryImpl
 import com.example.playlistmaker.data.repository_impl.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.data.repository_impl.SettingsRepositoryImpl
-import com.example.playlistmaker.domain.repository.HistoryInteractor
+import com.example.playlistmaker.domain.repository.PlayerRepository
+import com.example.playlistmaker.domain.use_case.HistoryInteractor
 import com.example.playlistmaker.domain.repository.SearchHistoryRepository
-import com.example.playlistmaker.domain.repository.TracksInteractor
+import com.example.playlistmaker.domain.repository.TracksUseCase
 import com.example.playlistmaker.domain.repository.TracksRepository
 import com.example.playlistmaker.domain.use_cases_impl.HistoryInteractorImpl
-import com.example.playlistmaker.domain.use_cases_impl.TracksInteractorImpl
+import com.example.playlistmaker.domain.use_cases_impl.TracksUseCaseImpl
 import com.example.playlistmaker.domain.repository.SettingsRepository
 import com.example.playlistmaker.domain.use_case.PlayerInteractor
 import com.example.playlistmaker.domain.use_case.SettingsInteractor
@@ -29,12 +31,12 @@ object Creator {
         }
     }
 
-    private fun getTracksRepository(): TracksRepository {
+    fun getTracksRepository(): TracksRepository {
         return TracksRepositoryImpl(RetrofitNetworkClient())
     }
 
-    fun provideTracksInteractor(): TracksInteractor {
-        return TracksInteractorImpl(getTracksRepository())
+    fun provideTracksUseCase(): TracksUseCase {
+        return TracksUseCaseImpl(getTracksRepository())
     }
 
     fun provideSearchHistoryRepository(context: Context): SearchHistoryRepository {
@@ -53,8 +55,12 @@ object Creator {
         return SettingsInteractorImpl(provideSettingsRepository())
     }
 
-    fun providePlayerInteractor(context: Context): PlayerInteractor {
-        return PlayerInteractorImpl(getTracksRepository())
+    fun providePlayerRepository(): PlayerRepository {
+        return PlayerRepositoryImpl()
+    }
+
+    fun providePlayerInteractor(): PlayerInteractor {
+        return PlayerInteractorImpl(providePlayerRepository())
     }
 
 

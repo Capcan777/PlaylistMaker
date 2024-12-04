@@ -7,6 +7,7 @@ interface PlayerRepository {
     fun startPlayer()
     fun pausePlayer()
     fun playBackControl()
-    fun musicTimer()
+
+    //    fun musicTimer()
     fun releaseMediaPlayer()
 }

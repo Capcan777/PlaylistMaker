@@ -1,15 +1,15 @@
 package com.example.playlistmaker.domain.use_cases_impl
 
-import com.example.playlistmaker.domain.repository.TracksInteractor
+import com.example.playlistmaker.domain.repository.TracksUseCase
 import com.example.playlistmaker.domain.repository.TracksRepository
 import com.example.playlistmaker.domain.models.Track
 import java.util.concurrent.Executors
 
-class TracksInteractorImpl(private val tracksRepository: TracksRepository) : TracksInteractor {
+class TracksUseCaseImpl(private val tracksRepository: TracksRepository) : TracksUseCase {
 
     private val executor = Executors.newCachedThreadPool()
 
-    override fun searchTracks(expression: String, consumer: TracksInteractor.TracksConsumer) {
+    override fun searchTracks(expression: String, consumer: TracksUseCase.TracksConsumer) {
         executor.execute {
             try {
                 val foundTracks = tracksRepository.searchTracks(expression) as ArrayList<Track>

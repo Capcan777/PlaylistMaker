@@ -19,7 +19,7 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val settingsInteractor = Creator.
+        val settingsInteractor = Creator.privideSettingsInteractor()
 
         val back = binding.back
         val shareButton = binding.share
@@ -27,8 +27,11 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreementButton = binding.userAgreement
         val themeSwitcher = binding.themeSwitcher
 
+        themeSwitcher.isChecked = Creator.privideSettingsInteractor().getDarkThemeState()
+
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+            settingsInteractor.saveDarkThemeState(checked)
+            (applicationContext as App).applyTheme(checked)
         }
 
         back.setOnClickListener {

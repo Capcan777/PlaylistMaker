@@ -1,11 +1,12 @@
 package com.example.playlistmaker.domain.use_cases_impl
 
+import com.example.playlistmaker.domain.repository.PlayerRepository
 import com.example.playlistmaker.domain.repository.TracksRepository
 import com.example.playlistmaker.domain.use_case.PlayerInteractor
 
-class PlayerInteractorImpl(private val repository: TracksRepository) : PlayerInteractor {
+class PlayerInteractorImpl(private val playerRepository: PlayerRepository) : PlayerInteractor {
     override fun preparePlayer(url: String) {
-        TODO("Not yet implemented")
+        playerRepository.preparePlayer(url)
     }
 
     override fun startPlayer() {
