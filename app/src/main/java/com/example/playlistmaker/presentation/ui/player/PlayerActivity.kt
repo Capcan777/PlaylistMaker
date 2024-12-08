@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.player
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
@@ -9,16 +9,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.domain.model.Track
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
-    private var playerState = Constants.STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
+    //    private var playerState = Constants.STATE_DEFAULT
+    private val playerInteractor = Creator.providePlayerInteractor()
+
+    //    private var mediaPlayer = MediaPlayer()
     private lateinit var binding: ActivityPlayerBinding
     private val handler = Handler(Looper.getMainLooper())
 
@@ -39,7 +44,8 @@ class PlayerActivity : AppCompatActivity() {
 
             fallBack.setOnClickListener() { finish() }
             ibPlay.setOnClickListener {
-                playBackControl()
+                playerInteractor.playBackControl()
+//                playBackControl()
             }
             tvTrackName.text = track.trackName
             tvArtistName.text = track.artistName
@@ -70,20 +76,24 @@ class PlayerActivity : AppCompatActivity() {
 
         }
 
-        preparePlayer(url)
+        playerInteractor.preparePlayer(url)
+
+
+//        preparePlayer(url)
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        playerInteractor.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        playerInteractor.releaseMediaPlayer()
     }
 
     private fun preparePlayer(url: String) {
+
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -105,23 +115,24 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun pausePlayer() {
-        mediaPlayer.pause()
+        playerInteractor.pausePlayer()
+//        mediaPlayer.pause()
         binding.ibPlay.setImageResource(R.drawable.ic_play_button)
-        playerState = Constants.STATE_PAUSED
+//        playerState = Constants.STATE_PAUSED
 
     }
-
-    private fun playBackControl() {
-        when (playerState) {
-            Constants.STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            Constants.STATE_PREPARED, Constants.STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
+//
+//    private fun playBackControl() {
+//        when (playerState) {
+//            Constants.STATE_PLAYING -> {
+//                pausePlayer()
+//            }
+//
+//            Constants.STATE_PREPARED, Constants.STATE_PAUSED -> {
+//                startPlayer()
+//            }
+//        }
+//    }
 
     private fun musicTimer() {
         handler.postDelayed(
