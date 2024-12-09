@@ -1,7 +1,6 @@
 package com.example.playlistmaker.presentation.ui.player
 
 import android.annotation.SuppressLint
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,24 +8,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.Creator
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.domain.PlayerListenerState
 import com.example.playlistmaker.domain.model.Track
 import com.google.gson.Gson
-import java.text.SimpleDateFormat
-import java.util.Locale
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), PlayerListenerState {
 
-    //    private var playerState = Constants.STATE_DEFAULT
     private val playerInteractor = Creator.providePlayerInteractor()
-
-    //    private var mediaPlayer = MediaPlayer()
     private lateinit var binding: ActivityPlayerBinding
     private val handler = Handler(Looper.getMainLooper())
-
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +28,7 @@ class PlayerActivity : AppCompatActivity() {
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val track = Gson().fromJson(
             intent.getStringExtra(Constants.TRACK_INTENT),
             Track::class.java
@@ -41,50 +36,36 @@ class PlayerActivity : AppCompatActivity() {
         val url = track.previewUrl
 
         binding.apply {
-
-            fallBack.setOnClickListener() { finish() }
-            ibPlay.setOnClickListener {
-                playerInteractor.playBackControl()
-//                playBackControl()
-            }
+            fallBack.setOnClickListener { finish() }
+            ibPlay.setOnClickListener { playerInteractor.playBackControl(this@PlayerActivity) }
             tvTrackName.text = track.trackName
             tvArtistName.text = track.artistName
-            timingTrack.text = formatTime(0)
-            countOfTrack.text = formatTime(track.trackTimeMillis)
+            timingTrack.text = playerInteractor.musicTimerFormat(0)
+            countOfTrack.text = playerInteractor.musicTimerFormat(track.trackTimeMillis)
             dataTrack.text = track.releaseDate.slice(0..3)
-
             styleTrack.text = track.primaryGenreName
             countryTrack.text = track.country
 
             Glide.with(applicationContext)
                 .load(track.getCoverArtwork())
                 .centerCrop()
-                .transform(
-                    RoundedCorners(
-                        resources.getDimensionPixelSize(R.dimen.radiusCorner_8)
-                    )
-                )
+                .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.radiusCorner_8)))
                 .placeholder(R.drawable.poster_placeholder)
-                .into(binding.ivPoster)
+                .into(ivPoster)
 
-            if (track.collectionName.isNotEmpty())
+            if (track.collectionName.isNotEmpty()) {
                 albumTrack.text = track.collectionName
-            else {
+            } else {
                 tvAlbumGroup.isVisible = false
             }
-
-
         }
 
-        playerInteractor.preparePlayer(url)
-
-
-//        preparePlayer(url)
+        playerInteractor.preparePlayer(url, this)
     }
 
     override fun onPause() {
         super.onPause()
-        playerInteractor.pausePlayer()
+        playerInteractor.pausePlayer(this)
     }
 
     override fun onDestroy() {
@@ -92,67 +73,29 @@ class PlayerActivity : AppCompatActivity() {
         playerInteractor.releaseMediaPlayer()
     }
 
-    private fun preparePlayer(url: String) {
-
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            binding.ibPlay.isEnabled = true
-            playerState = Constants.STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            binding.ibPlay.setImageResource(R.drawable.ic_play_button)
-            playerState = Constants.STATE_PREPARED
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        binding.ibPlay.setImageResource(R.drawable.ic_pause_button)
-        playerState = Constants.STATE_PLAYING
-        musicTimer()
-
-    }
-
-    private fun pausePlayer() {
-        playerInteractor.pausePlayer()
-//        mediaPlayer.pause()
-        binding.ibPlay.setImageResource(R.drawable.ic_play_button)
-//        playerState = Constants.STATE_PAUSED
-
-    }
-//
-//    private fun playBackControl() {
-//        when (playerState) {
-//            Constants.STATE_PLAYING -> {
-//                pausePlayer()
-//            }
-//
-//            Constants.STATE_PREPARED, Constants.STATE_PAUSED -> {
-//                startPlayer()
-//            }
-//        }
-//    }
-
-    private fun musicTimer() {
+    private fun updateMusicTimer() {
         handler.postDelayed(
             object : Runnable {
                 override fun run() {
-                    if (playerState == Constants.STATE_PLAYING) {
-                        binding.timingTrack.text = formatTime(mediaPlayer.currentPosition)
+                    if (playerInteractor.musicTimerFormat(0) != null) {
+                        binding.timingTrack.text = playerInteractor.musicTimerFormat(0)
                         handler.postDelayed(this, Constants.TIME_UPDATE_DELAY)
-                    } else if (playerState == Constants.STATE_PREPARED) {
-                        binding.timingTrack.text = formatTime(0)
                     }
                 }
-
             }, Constants.TIME_UPDATE_DELAY
         )
-
     }
 
-    private fun formatTime(time: Int): String {
-        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
+    override fun playerOnStart() {
+        binding.ibPlay.setImageResource(R.drawable.ic_pause_button)
+        updateMusicTimer()
     }
 
+    override fun playerOnStop() {
+        binding.ibPlay.setImageResource(R.drawable.ic_play_button)
+    }
+
+    override fun playerOnPause() {
+        binding.ibPlay.setImageResource(R.drawable.ic_play_button)
+    }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 
@@ -23,7 +24,12 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreementButton = binding.userAgreement
         val themeSwitcher = binding.themeSwitcher
 
+        val settingsInteractor = Creator.provideSettingsInteractor()
+
+        themeSwitcher.isChecked = settingsInteractor.getDarkThemeState()
+
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            settingsInteractor.saveDarkThemeState(checked)
             (applicationContext as App).switchTheme(checked)
         }
 

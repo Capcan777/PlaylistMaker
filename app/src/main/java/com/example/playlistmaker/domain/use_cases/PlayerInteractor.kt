@@ -1,10 +1,12 @@
 package com.example.playlistmaker.domain.use_cases
 
+import com.example.playlistmaker.domain.PlayerListenerState
+
 interface PlayerInteractor {
-    fun preparePlayer(url: String)
-    fun startPlayer()
-    fun pausePlayer()
-    fun playBackControl()
-    fun musicTimerFormat()
+    fun preparePlayer(url: String, playerListenerState: PlayerListenerState)
+    fun startPlayer(playerListenerState: PlayerListenerState)
+    fun pausePlayer(playerListenerState: PlayerListenerState)
+    fun playBackControl(playerListenerState: PlayerListenerState)
+    fun musicTimerFormat(time: Int): String
     fun releaseMediaPlayer()
 }
