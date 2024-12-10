@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.presentation.ui.mediatec.MediatecActivity
+import com.example.playlistmaker.presentation.ui.search.SearchActivity
+import com.example.playlistmaker.presentation.ui.settings.SettingsActivity
 
 
 class MainActivity : AppCompatActivity() {
