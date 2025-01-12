@@ -1,8 +1,8 @@
-package com.example.playlistmaker.domain.repository
+package com.example.playlistmaker.player.api
 
 import com.example.playlistmaker.domain.PlayerListenerState
 
-interface PlayerRepository {
+interface PlayerInteractor {
     fun preparePlayer(url: String, playerListenerState: PlayerListenerState)
     fun startPlayer(playerListenerState: PlayerListenerState)
     fun pausePlayer(playerListenerState: PlayerListenerState)

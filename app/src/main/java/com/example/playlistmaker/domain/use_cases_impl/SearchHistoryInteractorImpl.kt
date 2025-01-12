@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.use_cases_impl
 
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.domain.repository.SearchHistoryRepository
+import com.example.playlistmaker.search.domain.SearchHistoryRepository
 import com.example.playlistmaker.domain.use_cases.SearchHistoryInteractor
 
 class SearchHistoryInteractorImpl(val searchHistoryRepository: SearchHistoryRepository) :

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.repository
+package com.example.playlistmaker.settings.domain.api
 
 interface SettingsRepository {
     fun saveDarkThemeState(themeState: Boolean)

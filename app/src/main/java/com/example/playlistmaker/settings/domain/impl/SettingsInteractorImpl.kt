@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.use_cases_impl
+package com.example.playlistmaker.settings.domain.impl
 
-import com.example.playlistmaker.domain.repository.SettingsRepository
-import com.example.playlistmaker.domain.use_cases.SettingsInteractor
+import com.example.playlistmaker.settings.domain.api.SettingsRepository
+import com.example.playlistmaker.settings.domain.api.SettingsInteractor
 
 class SettingsInteractorImpl(val settingsRepository: SettingsRepository) : SettingsInteractor {
     override fun saveDarkThemeState(themeState: Boolean) {

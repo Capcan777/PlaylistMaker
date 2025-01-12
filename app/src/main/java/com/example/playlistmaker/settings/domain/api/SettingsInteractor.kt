@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.use_cases
+package com.example.playlistmaker.settings.domain.api
 
 interface SettingsInteractor {
     fun saveDarkThemeState(themeState: Boolean)

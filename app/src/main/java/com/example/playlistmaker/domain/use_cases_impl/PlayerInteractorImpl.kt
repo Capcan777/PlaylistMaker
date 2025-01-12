@@ -1,8 +1,8 @@
 package com.example.playlistmaker.domain.use_cases_impl
 
 import com.example.playlistmaker.domain.PlayerListenerState
-import com.example.playlistmaker.domain.repository.PlayerRepository
-import com.example.playlistmaker.domain.use_cases.PlayerInteractor
+import com.example.playlistmaker.player.api.PlayerRepository
+import com.example.playlistmaker.player.api.PlayerInteractor
 
 class PlayerInteractorImpl(val playerRepository: PlayerRepository) : PlayerInteractor {
     override fun preparePlayer(url: String, playerListenerState: PlayerListenerState) {
@@ -22,7 +22,7 @@ class PlayerInteractorImpl(val playerRepository: PlayerRepository) : PlayerInter
     }
 
     override fun musicTimerFormat(time: Int): String {
-        return playerRepository.musicTimerFormat(time)
+        return playerRepository.musicTimerFormater(time)
     }
 
     override fun releaseMediaPlayer() {

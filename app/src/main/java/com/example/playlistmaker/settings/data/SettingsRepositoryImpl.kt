@@ -1,9 +1,9 @@
-package com.example.playlistmaker.data.repository_impl
+package com.example.playlistmaker.settings.data
 
 import android.app.Application
 import android.content.Context
 import com.example.playlistmaker.constants.Constants
-import com.example.playlistmaker.domain.repository.SettingsRepository
+import com.example.playlistmaker.settings.domain.api.SettingsRepository
 
 class SettingsRepositoryImpl(context: Context) : SettingsRepository {
 

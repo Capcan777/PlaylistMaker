@@ -17,13 +17,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.presentation.ui.player.PlayerActivity
+import androidx.core.view.isVisible
 import com.example.playlistmaker.R
 import com.example.playlistmaker.TrackConsumer
 import com.example.playlistmaker.constants.Constants
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.presentation.ui.player.PlayerActivity
 import com.google.gson.Gson
 
 
@@ -35,12 +36,6 @@ class SearchActivity : AppCompatActivity() {
     private val getTracksUseCase = Creator.provideTracksUseCase()
     private val provideSearchHistoryInteractor = Creator.provideSearchHistoryInteractor()
 
-    //    private val iTunesBaseUrl = "https://itunes.apple.com"
-//    private val retrofit = Retrofit.Builder()
-//        .baseUrl(iTunesBaseUrl)
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .build()
-//    private val iTunesService = retrofit.create(ItunesApiService::class.java)
     private var tracks = ArrayList<Track>()
     private lateinit var trackListAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
@@ -52,9 +47,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var back: ImageView
     private lateinit var historyLayout: LinearLayout
     private lateinit var clearHistoryButton: Button
-    private lateinit var sharedPreferences: SharedPreferences
-
-    //    private lateinit var searchHistory: SearchHistory
     private lateinit var progressBar: FrameLayout
     private val handler = Handler(Looper.getMainLooper())
     private val runnable = Runnable { searchTracks() }
@@ -74,10 +66,6 @@ class SearchActivity : AppCompatActivity() {
         historyLayout = binding.history
         clearHistoryButton = binding.clearHistoryButton
         progressBar = binding.progressBar
-
-        // Настройка SharedPreferences
-        sharedPreferences = getSharedPreferences(Constants.PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
-//        searchHistory = SearchHistory(sharedPreferences)
 
         // Настройка адаптеров
         trackListAdapter = TrackAdapter(tracks) { track ->
@@ -181,23 +169,18 @@ class SearchActivity : AppCompatActivity() {
     // Поиск треков через iTunes API
     private fun searchTracks() {
         if (inputEditText.text.isNotEmpty()) {
-            binding.recyclerView.visibility = View.GONE
-            historyLayout.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
+            binding.recyclerView.isVisible = false
+            historyLayout.isVisible = false
+            progressBar.isVisible = true
 
             getTracksUseCase.execute(inputEditText.text.toString(), object : TrackConsumer {
                 override fun onSuccess(response: ArrayList<Track>) {
                     runOnUiThread {
 
-//                        progressBar.visibility = View.GONE
-
-                        binding.recyclerView.visibility = View.VISIBLE
+                        binding.recyclerView.isVisible = true
                         tracks.addAll(response)
                         showFoundTracks(response)
-//                        trackListAdapter.notifyDataSetChanged()
-//                        placeholderMessageNotFound.visibility = View.GONE
-//                        placeholderMessageNotInternet.visibility = View.GONE
-//                        historyLayout.visibility = View.GONE
+
                     }
                 }
 
@@ -212,42 +195,7 @@ class SearchActivity : AppCompatActivity() {
                         showMessage(placeholderMessageNotInternet)
                     }
                 }
-
             })
-
-//
-//
-//            iTunesService.search(inputEditText.text.toString())
-//                .enqueue(object : Callback<TrackSearchResponse> {
-//                    override fun onResponse(
-//                        call: Call<TrackSearchResponse>,
-//                        response: Response<TrackSearchResponse>
-//                    ) {
-//                        progressBar.visibility = View.GONE
-//                        if (response.isSuccessful) {
-//                            tracks.clear()
-//                            val results = response.body()?.results
-//                            if (!results.isNullOrEmpty()) {
-//                                binding.recyclerView.visibility = View.VISIBLE
-//                                tracks.addAll(results)
-//                                trackListAdapter.notifyDataSetChanged()
-//                                placeholderMessageNotFound.visibility = View.GONE
-//                                placeholderMessageNotInternet.visibility = View.GONE
-//                                historyLayout.visibility = View.GONE
-//
-//                            } else {
-//                                showMessage(placeholderMessageNotFound)
-//                            }
-//                        } else {
-//                            showMessage(placeholderMessageNotInternet)
-//                        }
-//                    }
-//
-//                    override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-//                        progressBar.visibility = View.GONE
-//                        showMessage(placeholderMessageNotInternet)
-//                    }
-//                })
         }
     }
 
@@ -263,15 +211,15 @@ class SearchActivity : AppCompatActivity() {
         when (linearLayout) {
             placeholderMessageNotInternet -> {
                 tracks.clear()
-                placeholderMessageNotInternet.visibility = View.VISIBLE
-                placeholderMessageNotFound.visibility = View.GONE
+                placeholderMessageNotInternet.isVisible = true
+                placeholderMessageNotFound.isVisible = false
                 trackListAdapter.notifyDataSetChanged()
             }
 
             placeholderMessageNotFound -> {
                 tracks.clear()
-                placeholderMessageNotFound.visibility = View.VISIBLE
-                placeholderMessageNotInternet.visibility = View.GONE
+                placeholderMessageNotFound.isVisible = true
+                placeholderMessageNotInternet.isVisible = false
                 historyLayout.visibility = View.GONE
                 trackListAdapter.notifyDataSetChanged()
             }
@@ -279,12 +227,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showFoundTracks(trackList: ArrayList<Track>) {
-        progressBar.visibility = View.GONE
-        binding.recyclerView.visibility = View.VISIBLE
-        placeholderMessageNotFound.visibility = View.GONE
-        placeholderMessageNotInternet.visibility = View.GONE
-        historyLayout.visibility = View.GONE
-        progressBar.visibility = View.GONE
+        progressBar.isVisible = false
+        binding.recyclerView.isVisible = true
+        placeholderMessageNotFound.isVisible = false
+        placeholderMessageNotInternet.isVisible = false
+        historyLayout.isVisible = false
+        progressBar.isVisible = false
         trackListAdapter.trackArrayList = trackList
         trackListAdapter.notifyDataSetChanged()
 
@@ -293,10 +241,10 @@ class SearchActivity : AppCompatActivity() {
     // Отображение истории поиска
     private fun showHistory() {
         if (historyAdapter.itemCount > 0) {
-            historyLayout.visibility = View.VISIBLE
+            historyLayout.isVisible = true
             getHistory()
         } else {
-            historyLayout.visibility = View.GONE
+            historyLayout.isVisible = false
         }
     }
 
@@ -316,18 +264,6 @@ class SearchActivity : AppCompatActivity() {
     private fun onTrackSelected(track: Track) {
         val currentHistory = provideSearchHistoryInteractor.readTracksFromHistory()
         provideSearchHistoryInteractor.addTrackToHistory(track, currentHistory)
-
-//        currentHistory.removeAll {
-//            it.trackId == track.trackId
-//        }
-//        currentHistory.add(0, track)
-//        // Установка ограничения списка треков в истории
-//        if (currentHistory.size > 10) {
-//            currentHistory.removeAt(10)
-//        }
-//        currentHistory
-//        searchHistory.saveTrackToHistory(currentHistory)
-
         historyAdapter.updateTrackList(currentHistory)
         val playerIntent = Intent(this, PlayerActivity::class.java)
         playerIntent.putExtra(Constants.TRACK_INTENT, Gson().toJson(track))

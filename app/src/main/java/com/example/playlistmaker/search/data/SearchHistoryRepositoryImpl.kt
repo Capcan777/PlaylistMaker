@@ -1,10 +1,10 @@
-package com.example.playlistmaker.data.repository_impl
+package com.example.playlistmaker.search.data
 
 import android.app.Application
 import android.content.Context
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.domain.repository.SearchHistoryRepository
+import com.example.playlistmaker.search.domain.SearchHistoryRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -19,7 +19,7 @@ class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
             it.trackId == track.trackId
         }
         historyList.add(0, track)
-        // Установка ограничения списка треков в истории
+
         if (historyList.size > 10) {
             historyList.removeAt(10)
         }
@@ -46,7 +46,7 @@ class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
         return if (!searchHistoryString.isNullOrEmpty()) {
             gson.fromJson<ArrayList<Track>>(searchHistoryString, itemType)
         } else {
-            arrayListOf<Track>() // Возвращает пустой список, если истории нет
+            arrayListOf<Track>()
         }
     }
 }

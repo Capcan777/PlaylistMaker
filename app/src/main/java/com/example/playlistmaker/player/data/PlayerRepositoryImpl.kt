@@ -1,9 +1,9 @@
-package com.example.playlistmaker.data.repository_impl
+package com.example.playlistmaker.player.data
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.domain.PlayerListenerState
-import com.example.playlistmaker.domain.repository.PlayerRepository
+import com.example.playlistmaker.player.api.PlayerRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -51,7 +51,7 @@ class PlayerRepositoryImpl() : PlayerRepository {
         }
     }
 
-    override fun musicTimerFormat(time: Int): String {
+    override fun musicTimerFormater(time: Int): String {
         if (playerState == Constants.STATE_PLAYING) {
             return dateFormat.format(mediaPlayer.currentPosition)
         } else {

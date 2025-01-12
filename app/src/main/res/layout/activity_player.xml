@@ -104,7 +104,7 @@
             app:layout_constraintEnd_toStartOf="@+id/rightBorder"
             app:layout_constraintTop_toBottomOf="@+id/ib_play"
             app:layout_constraintBottom_toTopOf="@+id/ib_play"
-            app:srcCompat="@drawable/ic_button_like"
+            app:srcCompat="@drawable/ic_infavorite_bt_on"
             tools:ignore="ContentDescription" />
 
         <TextView
