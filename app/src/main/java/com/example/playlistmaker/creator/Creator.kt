@@ -1,6 +1,7 @@
 package com.example.playlistmaker.creator
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
@@ -19,6 +20,8 @@ import com.example.playlistmaker.domain.use_cases_impl.GetTrackUseCase
 import com.example.playlistmaker.domain.use_cases_impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.use_cases_impl.SearchHistoryInteractorImpl
 import com.example.playlistmaker.domain.use_cases_impl.SettingsInteractorImpl
+import com.example.playlistmaker.presentation.ui.TracksSearchController
+import com.example.playlistmaker.presentation.ui.search.TrackAdapter
 
 @SuppressLint("StaticFieldLeak")
 object Creator {
@@ -66,5 +69,9 @@ object Creator {
 
     fun provideSettingsInteractor(): SettingsInteractor {
         return SettingsInteractorImpl(getSettingsRepository())
+    }
+
+    fun provideTrackSearchController(activity: Activity, adapter: TrackAdapter): TracksSearchController {
+        return TracksSearchController(activity, adapter)
     }
 }

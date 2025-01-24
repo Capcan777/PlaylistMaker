@@ -7,13 +7,16 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.model.Track
 
 class TrackAdapter(
-    var trackArrayList: ArrayList<Track>,
-    private val onTrackClicked: (Track) -> Unit
+    private val clickListener: TrackClickListener
+//    var trackArrayList: ArrayList<Track>,
+//    private val onTrackClicked: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
+
+    var tracks = ArrayList<Track>()
 
     // Метод для обновления списка треков
     fun updateTrackList(trackArrayList: ArrayList<Track>) {
-        this.trackArrayList = trackArrayList
+        this.tracks = trackArrayList
         notifyDataSetChanged()  // Уведомляем адаптер о необходимости обновить отображение данных
     }
 
@@ -24,16 +27,19 @@ class TrackAdapter(
     }
 
     override fun getItemCount(): Int {
-        return trackArrayList.size
+        return tracks.size
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        val track = trackArrayList[position]
+        val track = tracks[position]
         holder.bind(track)
 
         holder.itemView.setOnClickListener {
-            onTrackClicked(track)
+            clickListener.onTrackClick(track)
 
         }
+    }
+    fun interface TrackClickListener {
+        fun onTrackClick(track: Track)
     }
 }
