@@ -1,27 +1,29 @@
 package com.example.playlistmaker.creator
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
-import com.example.playlistmaker.data.repository_impl.PlayerRepositoryImpl
-import com.example.playlistmaker.data.repository_impl.SearchHistoryRepositoryImpl
-import com.example.playlistmaker.data.repository_impl.SettingsRepositoryImpl
+import com.example.playlistmaker.data.player.impl.PlayerRepositoryImpl
+import com.example.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl
+import com.example.playlistmaker.data.settings.repository_impl.SettingsRepositoryImpl
 import com.example.playlistmaker.data.repository_impl.TracksRepositoryImpl
-import com.example.playlistmaker.domain.repository.PlayerRepository
-import com.example.playlistmaker.domain.repository.SearchHistoryRepository
-import com.example.playlistmaker.domain.repository.SettingsRepository
+import com.example.playlistmaker.data.sharing.ExternalNavigator
+import com.example.playlistmaker.data.sharing.repository_impl.SharingRepositoryImpl
+import com.example.playlistmaker.domain.player.PlayerRepository
+import com.example.playlistmaker.domain.search.SearchHistoryRepository
+import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.example.playlistmaker.domain.repository.TracksRepository
-import com.example.playlistmaker.domain.use_cases.PlayerInteractor
-import com.example.playlistmaker.domain.use_cases.SearchHistoryInteractor
-import com.example.playlistmaker.domain.use_cases.SettingsInteractor
-import com.example.playlistmaker.domain.use_cases_impl.GetTrackUseCase
-import com.example.playlistmaker.domain.use_cases_impl.PlayerInteractorImpl
-import com.example.playlistmaker.domain.use_cases_impl.SearchHistoryInteractorImpl
-import com.example.playlistmaker.domain.use_cases_impl.SettingsInteractorImpl
-import com.example.playlistmaker.presentation.ui.TracksSearchController
-import com.example.playlistmaker.presentation.ui.search.TrackAdapter
+import com.example.playlistmaker.domain.player.PlayerInteractor
+import com.example.playlistmaker.domain.search.SearchHistoryInteractor
+import com.example.playlistmaker.domain.settings.SettingsInteractor
+import com.example.playlistmaker.domain.search.impl.GetTrackUseCase
+import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
+import com.example.playlistmaker.domain.search.impl.SearchHistoryInteractorImpl
+import com.example.playlistmaker.domain.settings.impl.SettingsInteractorImpl
+import com.example.playlistmaker.domain.sharing.SharingInteractor
+import com.example.playlistmaker.domain.sharing.SharingRepository
+import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
 @SuppressLint("StaticFieldLeak")
 object Creator {
@@ -70,8 +72,14 @@ object Creator {
     fun provideSettingsInteractor(): SettingsInteractor {
         return SettingsInteractorImpl(getSettingsRepository())
     }
+    fun provideSharingInteractor(): SharingInteractor {
+        return SharingInteractorImpl(getExternalNavigator(), getSharringRepository())
+    }
+    private fun getSharringRepository(): SharingRepository {
+        return SharingRepositoryImpl(context as Context)
+    }
 
-    fun provideTrackSearchController(activity: Activity, adapter: TrackAdapter): TracksSearchController {
-        return TracksSearchController(activity, adapter)
+    private fun getExternalNavigator(): ExternalNavigator {
+        return ExternalNavigator(context as Context)
     }
 }
