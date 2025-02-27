@@ -54,7 +54,6 @@ class TracksSearchViewModel() : ViewModel() {
             override fun onSuccess(response: ArrayList<Track>) {
                 if (response.isNotEmpty()) {
                     screenStateLiveData.postValue(SearchScreenState.Tracks(response))
-                    updateHistory()
                 } else {
                     screenStateLiveData.postValue(SearchScreenState.EmptyResult)
                 }

@@ -52,9 +52,6 @@ class SearchActivity : AppCompatActivity() {
 
     private val viewModel: TracksSearchViewModel by viewModels()
 
-//    private val handler = Handler(Looper.getMainLooper())
-//    private val runnable = Runnable { viewModel.searchTracks(inputEditText.text.toString()) }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,9 +150,8 @@ class SearchActivity : AppCompatActivity() {
         }
 
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && inputEditText.text.isNotEmpty()) {
+            if (hasFocus && inputEditText.text.isEmpty()) {
                 viewModel.updateHistory()
-                placeholderMessageNotFound.visibility = View.GONE
             }
 
         }
@@ -173,7 +169,6 @@ class SearchActivity : AppCompatActivity() {
                 if (s.isNullOrEmpty()) {
                     trackListAdapter.updateTrackList(arrayListOf())
                     viewModel.updateHistory()
-//                    trackListAdapter.notifyDataSetChanged()
                 }
             }
 
@@ -196,14 +191,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EDIT_TEXT_STATE, inputEditTextState)
@@ -216,13 +203,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    // Скрытие клавиатуры
     private fun hideKeyboard(view: View) {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    // Функция нажатия кнопки выбора трека
     private fun onTrackSelected(track: Track) {
         viewModel.addTrackToHistory(track)
         if (clickDebounce()) {
