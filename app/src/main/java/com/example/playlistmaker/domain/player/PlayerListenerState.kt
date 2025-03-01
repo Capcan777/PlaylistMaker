@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain
+package com.example.playlistmaker.domain.player
 
 interface PlayerListenerState {
     fun playerOnStart()

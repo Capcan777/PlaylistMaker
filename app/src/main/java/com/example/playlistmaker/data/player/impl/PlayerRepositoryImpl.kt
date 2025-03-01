@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.player.impl
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.constants.Constants
-import com.example.playlistmaker.domain.PlayerListenerState
+import com.example.playlistmaker.domain.player.PlayerListenerState
 import com.example.playlistmaker.domain.player.PlayerRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -11,7 +11,7 @@ class PlayerRepositoryImpl() : PlayerRepository {
 
     private var mediaPlayer = MediaPlayer()
     private var playerState = Constants.STATE_DEFAULT
-    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+//    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
 
     override fun preparePlayer(url: String, playerListenerState: PlayerListenerState) {
@@ -51,16 +51,20 @@ class PlayerRepositoryImpl() : PlayerRepository {
         }
     }
 
-    override fun musicTimerFormat(time: Int): String {
+    override fun musicTimerFormat(time: Long): String {
         if (playerState == Constants.STATE_PLAYING) {
-            return dateFormat.format(mediaPlayer.currentPosition)
+            return getFormatTrackTime(time).format(mediaPlayer.currentPosition)
         } else {
-            return dateFormat.format(0)
+            return getFormatTrackTime(time).format(0)
         }
 
     }
 
     override fun releaseMediaPlayer() {
         mediaPlayer.release()
+    }
+
+    override fun getFormatTrackTime(milliseconds: Long): String {
+        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(milliseconds)
     }
 }

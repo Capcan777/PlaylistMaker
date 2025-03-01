@@ -18,7 +18,6 @@ class TracksSearchViewModel() : ViewModel() {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
-
     private val getTrackUseCase = Creator.provideTracksUseCase()
     private val searchHistoryInteractor = Creator.provideSearchHistoryInteractor()
     private var latestSearchText: String? = null
@@ -26,8 +25,11 @@ class TracksSearchViewModel() : ViewModel() {
     private val handler = Handler(Looper.getMainLooper())
     private val screenStateLiveData =
         MutableLiveData<SearchScreenState>().apply { value = SearchScreenState.Nothing }
-
     val screenState: LiveData<SearchScreenState> = screenStateLiveData
+
+    private val _searchResults = MutableLiveData<ArrayList<Track>>()
+    val searchResults: LiveData<ArrayList<Track>> = _searchResults
+
 
     override fun onCleared() {
         super.onCleared()
@@ -49,11 +51,13 @@ class TracksSearchViewModel() : ViewModel() {
     private fun searchTracks(newSearchText: String) {
         if (newSearchText.isEmpty()) return
         screenStateLiveData.value = SearchScreenState.Loading
+        _searchResults.value = arrayListOf()
 
         getTrackUseCase.execute(newSearchText, object : TrackConsumer {
             override fun onSuccess(response: ArrayList<Track>) {
                 if (response.isNotEmpty()) {
                     screenStateLiveData.postValue(SearchScreenState.Tracks(response))
+                    _searchResults.postValue(response)
                 } else {
                     screenStateLiveData.postValue(SearchScreenState.EmptyResult)
                 }
@@ -87,6 +91,5 @@ class TracksSearchViewModel() : ViewModel() {
     fun addTrackToHistory(track: Track) {
         val currentHistory = searchHistoryInteractor.readTracksFromHistory()
         searchHistoryInteractor.addTrackToHistory(track, currentHistory)
-        updateHistory()
     }
 }

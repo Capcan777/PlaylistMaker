@@ -3,7 +3,7 @@ package com.example.playlistmaker.domain.model
 data class Track(
     val trackName: String,
     val artistName: String,
-    val trackTimeMillis: Int,
+    val trackTimeMillis: Long,
     val artworkUrl100: String,
     val trackId: Int,
     var collectionName: String,

@@ -27,6 +27,7 @@ import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.search.state.SearchScreenState
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 class SearchActivity : AppCompatActivity() {
@@ -51,6 +52,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var progressBar: FrameLayout
 
     private val viewModel: TracksSearchViewModel by viewModels()
+
+    private var searchResults: ArrayList<Track>? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,6 +135,14 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         })
+        viewModel.searchResults.observe(this) { results ->
+            if (results != null && results.isNotEmpty()) {
+                trackListAdapter.updateTrackList(results)
+                binding.recyclerView.visibility = View.VISIBLE
+            } else {
+                binding.recyclerView.visibility = View.GONE
+            }
+        }
 
         back.setOnClickListener {
             finish()
@@ -141,12 +152,12 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.setText(getString(R.string.empty_string))
             hideKeyboard(inputEditText)
             trackListAdapter.updateTrackList(arrayListOf())
-            historyLayout.visibility = View.VISIBLE
+            viewModel.updateHistory()
         }
         clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
             historyLayout.visibility = View.GONE
-            historyAdapter.notifyDataSetChanged()
+            historyAdapter.updateTrackList(arrayListOf())
         }
 
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
@@ -194,12 +205,28 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EDIT_TEXT_STATE, inputEditTextState)
+        searchResults?.let {
+            outState.putString(SEARCH_RESULTS_STATE, Gson().toJson(it))
+        }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         inputEditTextState = savedInstanceState.getString(EDIT_TEXT_STATE, inputEditTextState)
         inputEditText.setText(inputEditTextState)
+//        val searchRsultJson = savedInstanceState.getString(SEARCH_RESULTS_STATE, null)
+//        if (searchRsultJson != null) {
+//            val type = object : TypeToken<ArrayList<Track>>() {}.type
+//            searchResults = Gson().fromJson(searchRsultJson, type)
+//            searchResults?.let {
+//                trackListAdapter.updateTrackList(it)
+//                binding.recyclerView.visibility = View.VISIBLE
+//                placeholderMessageNotFound.visibility = View.GONE
+//                placeholderMessageNotInternet.visibility = View.GONE
+//                historyLayout.visibility = View.GONE
+//            }
+//
+//            }
     }
 
 
@@ -231,6 +258,7 @@ class SearchActivity : AppCompatActivity() {
         const val EDIT_TEXT_STATE = "EDIT_TEXT_STATE"
         const val DEFAULT_EDIT_STATE = ""
         const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val SEARCH_RESULTS_STATE = "SEARCH_RESULTS_STATE"
     }
 }
 

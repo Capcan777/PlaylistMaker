@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.player.impl
 
-import com.example.playlistmaker.domain.PlayerListenerState
+import com.example.playlistmaker.domain.player.PlayerListenerState
 import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.domain.player.PlayerInteractor
 
@@ -21,11 +21,15 @@ class PlayerInteractorImpl(val playerRepository: PlayerRepository) : PlayerInter
         playerRepository.playBackControl(playerListenerState)
     }
 
-    override fun musicTimerFormat(time: Int): String {
+    override fun musicTimerFormat(time: Long): String {
         return playerRepository.musicTimerFormat(time)
     }
 
     override fun releaseMediaPlayer() {
         playerRepository.releaseMediaPlayer()
+    }
+
+    override fun getFormatTrackTime(milliseconds: Long): String {
+        return playerRepository.getFormatTrackTime(milliseconds)
     }
 }
