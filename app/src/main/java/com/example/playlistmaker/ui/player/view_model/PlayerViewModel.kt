@@ -1,107 +1,101 @@
 package com.example.playlistmaker.ui.player.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.R
-import com.example.playlistmaker.constants.Constants
-import com.example.playlistmaker.domain.player.PlayerListenerState
+import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.player.PlayerInteractor
+import com.example.playlistmaker.domain.search.SearchHistoryInteractor
+import com.example.playlistmaker.ui.player.state.PlaybackState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val track: Track, private val playerInteractor: PlayerInteractor) :
-    ViewModel(), PlayerListenerState {
+class PlayerViewModel() : ViewModel() {
 
-    private val _playButtonRes = MutableLiveData<Int>()
-    val playButtonRes: LiveData<Int> = _playButtonRes
+    val playerInteractor: PlayerInteractor = Creator.providePlayerInteractor()
+    val historyInteractor: SearchHistoryInteractor = Creator.provideSearchHistoryInteractor()
 
-    private val _musicTimer = MutableLiveData<String>()
-    val musicTimer: LiveData<String> = _musicTimer
+    private var timerJob: Job? = null
+    private var isPlaying = false
 
-    private val _trackDuration = MutableLiveData<String>()
-    val trackDuration: LiveData<String> = _trackDuration
+    val trackOnPlayer = historyInteractor.readTracksFromHistory()[0]
+
+    private val trackInfoLiveData = MutableLiveData<Track>()
+    fun getTrackInfoLiveData(): LiveData<Track> = trackInfoLiveData
+
+    private val playbackTimeLiveData = MutableLiveData<String>()
+    fun getPlaybackTimeLiveData(): LiveData<String> = playbackTimeLiveData
+
+    private var playerStateLiveData = MutableLiveData(PlaybackState.DEFAULT_STATE)
+    fun getPlayerStateLiveData(): LiveData<PlaybackState> = playerStateLiveData
 
     init {
-        _trackDuration.value = formatDuration(track.trackTimeMillis)
+        trackInfoLiveData.postValue(trackOnPlayer)
+        preparePlayer()
     }
 
+    private fun preparePlayer() {
+        isPlaying = false
+        playerStateLiveData.postValue(PlaybackState.PREPARED_STATE)
+        playerInteractor.preparePlayer(
+            trackOnPlayer.previewUrl,
+            {
+                playerStateLiveData.postValue(PlaybackState.PREPARED_STATE)
+            },
+            {
+                playerStateLiveData.postValue(PlaybackState.PREPARED_STATE)
+                playbackTimeLiveData.postValue(DEFAULT_TIME)
+            })
+    }
 
-    private var handler: Handler? = null
+    private fun startPlayer() {
+        isPlaying = true
+        playerStateLiveData.postValue(PlaybackState.PLAYING_STATE)
+        playerInteractor.startPlayer()
+        postCurrentTime()
+    }
+
+    private fun pausePlayer() {
+        isPlaying = false
+        playerInteractor.pausePlayer()
+        playerStateLiveData.postValue(PlaybackState.PAUSED_STATE)
+    }
+
+    fun playbackControl() {
+        when (playerStateLiveData.value) {
+            PlaybackState.PLAYING_STATE -> pausePlayer()
+            PlaybackState.PAUSED_STATE, PlaybackState.PREPARED_STATE -> startPlayer()
+            PlaybackState.DEFAULT_STATE -> {
+                isPlaying = false
+            }
+
+            null -> {}
+        }
+    }
+
+    fun onActivityPause() {
+        if (playerStateLiveData.value == PlaybackState.PLAYING_STATE) pausePlayer()
+    }
+
+    private fun postCurrentTime() {
+        timerJob = viewModelScope.launch {
+            while (isPlaying) {
+                playbackTimeLiveData.postValue(
+                    if (playerStateLiveData.value == PlaybackState.PREPARED_STATE)
+                        DEFAULT_TIME
+                    else playerInteractor.getCurrentTime()
+                )
+                delay(TIMER_DELAY)
+            }
+        }
+    }
 
     companion object {
-        fun provideFactory(track: Track, playerInteractor: PlayerInteractor) =
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(PlayerViewModel::class.java)) {
-                        @Suppress("UNCHECKED_CAST")
-                        return PlayerViewModel(track, playerInteractor) as T
-                    }
-                    throw IllegalArgumentException("Unknown ViewModel class")
-                }
-            }
-    }
-
-    init {
-        preparePlayer(track.previewUrl)
-    }
-
-    fun preparePlayer(url: String) {
-        playerInteractor.preparePlayer(url, this)
-    }
-
-    fun playPause() {
-        playerInteractor.playBackControl(this)
-    }
-
-    fun pausePlayer() {
-        playerInteractor.pausePlayer(this)
-    }
-
-    fun formatDuration(milliseconds: Long): String {
-        return playerInteractor.getFormatTrackTime(milliseconds)
-    }
-
-    fun getTrackInfo(): Track = track
-
-    override fun playerOnStart() {
-        _playButtonRes.postValue(R.drawable.ic_pause_button)
-        startTimer()
-    }
-
-    override fun playerOnStop() {
-        _playButtonRes.postValue(R.drawable.ic_play_button)
-        stopTimer()
-    }
-
-    override fun playerOnPause() {
-        _playButtonRes.postValue(R.drawable.ic_play_button)
-        stopTimer()
-    }
-
-
-    private fun startTimer() {
-        handler = Handler(Looper.getMainLooper())
-        handler?.postDelayed(object : Runnable {
-            override fun run() {
-                val timerText = playerInteractor.musicTimerFormat(0)
-                if (timerText != null) {
-                    _musicTimer.postValue(timerText)
-                    handler?.postDelayed(this, Constants.TIME_UPDATE_DELAY)
-                }
-            }
-        }, Constants.TIME_UPDATE_DELAY)
-    }
-
-    private fun stopTimer() {
-        handler?.removeCallbacksAndMessages(null)
-        handler = null
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        playerInteractor.releaseMediaPlayer()
+        private const val TIMER_DELAY = 300L
+        private const val DEFAULT_TIME = "00:00"
     }
 }
+

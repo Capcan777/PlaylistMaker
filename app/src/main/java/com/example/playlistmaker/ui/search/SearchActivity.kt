@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -20,14 +19,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.playlistmaker.R
-import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.search.state.SearchScreenState
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 
 class SearchActivity : AppCompatActivity() {
@@ -164,7 +161,6 @@ class SearchActivity : AppCompatActivity() {
             if (hasFocus && inputEditText.text.isEmpty()) {
                 viewModel.updateHistory()
             }
-
         }
 
         inputEditText.addTextChangedListener(object : TextWatcher {
@@ -214,21 +210,7 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         inputEditTextState = savedInstanceState.getString(EDIT_TEXT_STATE, inputEditTextState)
         inputEditText.setText(inputEditTextState)
-//        val searchRsultJson = savedInstanceState.getString(SEARCH_RESULTS_STATE, null)
-//        if (searchRsultJson != null) {
-//            val type = object : TypeToken<ArrayList<Track>>() {}.type
-//            searchResults = Gson().fromJson(searchRsultJson, type)
-//            searchResults?.let {
-//                trackListAdapter.updateTrackList(it)
-//                binding.recyclerView.visibility = View.VISIBLE
-//                placeholderMessageNotFound.visibility = View.GONE
-//                placeholderMessageNotInternet.visibility = View.GONE
-//                historyLayout.visibility = View.GONE
-//            }
-//
-//            }
     }
-
 
     private fun hideKeyboard(view: View) {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -239,7 +221,7 @@ class SearchActivity : AppCompatActivity() {
         viewModel.addTrackToHistory(track)
         if (clickDebounce()) {
             val playerIntent = Intent(this, PlayerActivity::class.java)
-            playerIntent.putExtra(Constants.TRACK_INTENT, Gson().toJson(track))
+            playerIntent.putExtra(TRACK_INTENT, Gson().toJson(track))
             startActivity(playerIntent)
         }
     }
@@ -259,6 +241,7 @@ class SearchActivity : AppCompatActivity() {
         const val DEFAULT_EDIT_STATE = ""
         const val CLICK_DEBOUNCE_DELAY = 1000L
         const val SEARCH_RESULTS_STATE = "SEARCH_RESULTS_STATE"
+        const val TRACK_INTENT = "track_intent"
     }
 }
 

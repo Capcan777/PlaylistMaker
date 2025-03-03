@@ -2,7 +2,6 @@ package com.example.playlistmaker.data.settings.repository_impl
 
 import android.app.Application
 import android.content.Context
-import com.example.playlistmaker.constants.Constants
 import com.example.playlistmaker.domain.settings.SettingsRepository
 
 class SettingsRepositoryImpl(context: Context) : SettingsRepository {

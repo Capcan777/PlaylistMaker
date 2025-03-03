@@ -1,77 +1,84 @@
 package com.example.playlistmaker.ui.player
 
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.constants.Constants
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.ui.player.state.PlaybackState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
-import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityPlayerBinding
-
-    private val viewModel: PlayerViewModel by viewModels {
-        PlayerViewModel.provideFactory(
-            Gson().fromJson(
-                intent.getStringExtra(Constants.TRACK_INTENT),
-                Track::class.java
-            ), Creator.providePlayerInteractor()
-        )
-    }
+    private val viewModel: PlayerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        val inflater = LayoutInflater.from(this)
+        binding = ActivityPlayerBinding.inflate(inflater)
         setContentView(binding.root)
 
-        val track = viewModel.getTrackInfo()
-
-        binding.apply {
-            fallBack.setOnClickListener { finish() }
-            ibPlay.setOnClickListener { viewModel.playPause() }
-            tvTrackName.text = track.trackName
-            tvArtistName.text = track.artistName
-            timingTrack.text = viewModel.musicTimer.value ?: "00:00"
-            countOfTrack.text =
-                if (track.trackTimeMillis > 0) viewModel.trackDuration.value else "10:00"
-            Log.d("PlayerViewModel", "Track timeMillis: ${viewModel.trackDuration.value}")
-            dataTrack.text = track.releaseDate.slice(0..3)
-            styleTrack.text = track.primaryGenreName
-            countryTrack.text = track.country
-
-            Glide.with(applicationContext)
-                .load(track.getCoverArtwork())
-                .centerCrop()
-                .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.radiusCorner_8)))
-                .placeholder(R.drawable.poster_placeholder)
-                .into(ivPoster)
-
-            if (track.collectionName.isNotEmpty()) {
-                albumTrack.text = track.collectionName
-            } else {
-                tvAlbumGroup.isVisible = false
-            }
+        binding.fallBack.setOnClickListener {
+            finish()
         }
 
-        viewModel.playButtonRes.observe(this) { resId ->
-            binding.ibPlay.setImageResource(resId)
+        viewModel.getTrackInfoLiveData().observe(this) {
+            setTrackInfo(it)
         }
-        viewModel.musicTimer.observe(this) { timer ->
-            binding.timingTrack.text = timer
+
+        binding.ibPlay.setOnClickListener {
+            viewModel.playbackControl()
+        }
+
+        viewModel.getPlayerStateLiveData().observe(this) {
+            binding.ibPlay.setImageResource(
+                when (it) {
+                    PlaybackState.PLAYING_STATE -> R.drawable.ic_pause_button
+                    PlaybackState.PAUSED_STATE -> R.drawable.ic_play_button
+                    PlaybackState.PREPARED_STATE -> R.drawable.ic_play_button
+                    PlaybackState.DEFAULT_STATE -> R.drawable.ic_play_button
+                }
+            )
+        }
+
+        viewModel.getPlaybackTimeLiveData().observe(this) {
+            renderTimer(it)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.pausePlayer()
+        viewModel.onActivityPause()
+    }
+
+    private fun renderTimer(currentTime: String) {
+        binding.tvTrackTime.text = currentTime
+    }
+
+    private fun setTrackInfo(trackOnPlayer: Track) {
+        Glide.with(this)
+            .load(trackOnPlayer.getCoverArtwork())
+            .placeholder(
+                R.drawable.poster_placeholder
+            ).fitCenter()
+            .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.radiusCorner_8)))
+            .into(binding.ivPoster)
+        with(binding) {
+            tvTrackName.text = trackOnPlayer.trackName
+            tvArtistName.text = trackOnPlayer.artistName
+            countOfTrack.text =
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackOnPlayer.trackTimeMillis)
+            tvTrackTime.text = getString(R.string.timing_track)
+            albumTrack.text = trackOnPlayer.collectionName
+            dataTrack.text = trackOnPlayer.releaseDate.slice(0..3)
+            styleTrack.text = trackOnPlayer.primaryGenreName
+            countryTrack.text = trackOnPlayer.country
+        }
     }
 }
