@@ -71,7 +71,6 @@ class PlayerViewModel(
             PlaybackState.DEFAULT_STATE -> {
                 isPlaying = false
             }
-
             null -> {}
         }
     }

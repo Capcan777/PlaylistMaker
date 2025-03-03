@@ -50,8 +50,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: Button
     private lateinit var progressBar: FrameLayout
 
-//    private val viewModel: TracksSearchViewModel by viewModels()
-
     private var searchResults: ArrayList<Track>? = null
 
 
@@ -227,7 +225,6 @@ class SearchActivity : AppCompatActivity() {
             startActivity(playerIntent)
         }
     }
-
 
     private fun clickDebounce(): Boolean {
         val current: Boolean = isClickAllowed

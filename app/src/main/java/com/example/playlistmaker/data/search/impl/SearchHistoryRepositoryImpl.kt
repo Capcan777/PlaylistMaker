@@ -10,10 +10,6 @@ class SearchHistoryRepositoryImpl(
     private val sharedPreferences: SharedPreferences,
     private val gson: Gson
 ) : SearchHistoryRepository {
-//
-//    private val sharedPreferences =
-//        context.getSharedPreferences(PREF_KEY_HISTORY, Application.MODE_PRIVATE)
-//    private val gson = Gson()
 
     override fun addTrackToHistory(track: Track, historyList: ArrayList<Track>): ArrayList<Track> {
         historyList.removeAll {

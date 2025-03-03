@@ -7,9 +7,7 @@ import java.util.Locale
 
 class PlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : PlayerRepository {
 
-    //    private var mediaPlayer = MediaPlayer()
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
-
 
     override fun preparePlayer(
         trackUrl: String,

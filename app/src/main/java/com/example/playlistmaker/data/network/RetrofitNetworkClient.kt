@@ -8,13 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitNetworkClient(private val iTunesService: ItunesApiService) : NetworkClient {
 
-//    private val iTunesBaseUrl = "https://itunes.apple.com"
-//    private val retrofit = Retrofit.Builder()
-//        .baseUrl(iTunesBaseUrl)
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .build()
-//    private val iTunesService = retrofit.create(ItunesApiService::class.java)
-
     override fun doRequest(dto: Any): Response {
         if (dto is TrackSearchRequest) {
             val resp = iTunesService.searchTracks(dto.expression).execute()
