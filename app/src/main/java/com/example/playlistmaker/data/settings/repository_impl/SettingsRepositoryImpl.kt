@@ -2,16 +2,16 @@ package com.example.playlistmaker.data.settings.repository_impl
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.playlistmaker.domain.settings.SettingsRepository
 
-class SettingsRepositoryImpl(context: Context) : SettingsRepository {
+class SettingsRepositoryImpl(private val sharedPreferences: SharedPreferences) :
+    SettingsRepository {
 
     companion object {
         const val THEME_PREF_KEY = "theme_pref_key"
     }
 
-    private val sharedPreferences =
-        context.getSharedPreferences(THEME_PREF_KEY, Application.MODE_PRIVATE)
 
     override fun saveDarkThemeState(themeState: Boolean) {
         sharedPreferences.edit()

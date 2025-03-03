@@ -3,12 +3,13 @@ package com.example.playlistmaker.ui.settings.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.settings.SettingsInteractor
+import com.example.playlistmaker.domain.sharing.SharingInteractor
 
-class SettingsViewModel() : ViewModel() {
-
-    private val sharingInteractor = Creator.provideSharingInteractor()
-    private val settingsInteractor = Creator.provideSettingsInteractor()
+class SettingsViewModel(
+    private val sharingInteractor: SharingInteractor,
+    private val settingsInteractor: SettingsInteractor
+) : ViewModel() {
 
     private val _isDarkTheme = MutableLiveData<Boolean>()
     val isDarkTheme: LiveData<Boolean> = _isDarkTheme

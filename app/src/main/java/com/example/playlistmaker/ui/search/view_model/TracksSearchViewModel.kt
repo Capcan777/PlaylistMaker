@@ -7,19 +7,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.TrackConsumer
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.search.SearchHistoryInteractor
+import com.example.playlistmaker.domain.search.impl.GetTrackUseCase
 import com.example.playlistmaker.ui.search.state.SearchScreenState
 
-class TracksSearchViewModel() : ViewModel() {
+class TracksSearchViewModel(
+    private val getTrackUseCase: GetTrackUseCase,
+    private val searchHistoryInteractor: SearchHistoryInteractor
+) : ViewModel() {
 
     companion object {
         private val SEARCH_REQUEST_TOKEN = Any()
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
-    private val getTrackUseCase = Creator.provideTracksUseCase()
-    private val searchHistoryInteractor = Creator.provideSearchHistoryInteractor()
     private var latestSearchText: String? = null
 
     private val handler = Handler(Looper.getMainLooper())
