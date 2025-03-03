@@ -5,9 +5,9 @@ import com.example.playlistmaker.domain.player.PlayerRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerRepositoryImpl() : PlayerRepository {
+class PlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : PlayerRepository {
 
-    private var mediaPlayer = MediaPlayer()
+    //    private var mediaPlayer = MediaPlayer()
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
 

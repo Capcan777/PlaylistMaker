@@ -25,61 +25,61 @@ import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.SharingRepository
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
 
-@SuppressLint("StaticFieldLeak")
-object Creator {
-
-
-    private var context: Context? = null
-
-    fun initialize(context: Context) {
-        if (Creator.context == null) {
-            Creator.context = context.applicationContext
-        }
-    }
-
-    private fun getTracksRepository(): TracksRepository {
-        return TracksRepositoryImpl(provideNetworkClient())
-    }
-
-    fun provideTracksUseCase(): GetTrackUseCase {
-        return GetTrackUseCase(getTracksRepository())
-    }
-
-    private fun getSearchHistoryRepository(): SearchHistoryRepository {
-        return SearchHistoryRepositoryImpl(context as Context)
-    }
-
-    fun provideSearchHistoryInteractor(): SearchHistoryInteractor {
-        return SearchHistoryInteractorImpl(getSearchHistoryRepository())
-    }
-
-    private fun provideNetworkClient(): NetworkClient {
-        return RetrofitNetworkClient()
-    }
-
-    private fun getPlayerRepository(): PlayerRepository {
-        return PlayerRepositoryImpl()
-    }
-
-    fun providePlayerInteractor(): PlayerInteractor {
-        return PlayerInteractorImpl(getPlayerRepository())
-    }
-
-    private fun getSettingsRepository(): SettingsRepository {
-        return SettingsRepositoryImpl(context as Context)
-    }
-
-    fun provideSettingsInteractor(): SettingsInteractor {
-        return SettingsInteractorImpl(getSettingsRepository())
-    }
-    fun provideSharingInteractor(): SharingInteractor {
-        return SharingInteractorImpl(getExternalNavigator(), getSharringRepository())
-    }
-    private fun getSharringRepository(): SharingRepository {
-        return SharingRepositoryImpl(context as Context)
-    }
-
-    private fun getExternalNavigator(): ExternalNavigator {
-        return ExternalNavigator(context as Context)
-    }
-}
+//@SuppressLint("StaticFieldLeak")
+//object Creator {
+//
+//
+//    private var context: Context? = null
+//
+//    fun initialize(context: Context) {
+//        if (Creator.context == null) {
+//            Creator.context = context.applicationContext
+//        }
+//    }
+//
+//    private fun getTracksRepository(): TracksRepository {
+//        return TracksRepositoryImpl(provideNetworkClient())
+//    }
+//
+//    fun provideTracksUseCase(): GetTrackUseCase {
+//        return GetTrackUseCase(getTracksRepository())
+//    }
+//
+//    private fun getSearchHistoryRepository(): SearchHistoryRepository {
+//        return SearchHistoryRepositoryImpl(context as Context)
+//    }
+//
+//    fun provideSearchHistoryInteractor(): SearchHistoryInteractor {
+//        return SearchHistoryInteractorImpl(getSearchHistoryRepository())
+//    }
+//
+////    private fun provideNetworkClient(): NetworkClient {
+////        return RetrofitNetworkClient()
+////    }
+//
+//    private fun getPlayerRepository(): PlayerRepository {
+//        return PlayerRepositoryImpl()
+//    }
+//
+//    fun providePlayerInteractor(): PlayerInteractor {
+//        return PlayerInteractorImpl(getPlayerRepository())
+//    }
+//
+//    private fun getSettingsRepository(): SettingsRepository {
+//        return SettingsRepositoryImpl(context as Context)
+//    }
+//
+//    fun provideSettingsInteractor(): SettingsInteractor {
+//        return SettingsInteractorImpl(getSettingsRepository())
+//    }
+//    fun provideSharingInteractor(): SharingInteractor {
+//        return SharingInteractorImpl(getExternalNavigator(), getSharringRepository())
+//    }
+//    private fun getSharringRepository(): SharingRepository {
+//        return SharingRepositoryImpl(context as Context)
+//    }
+//
+//    private fun getExternalNavigator(): ExternalNavigator {
+//        return ExternalNavigator(context as Context)
+//    }
+//}

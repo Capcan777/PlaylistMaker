@@ -3,7 +3,7 @@ package com.example.playlistmaker.domain.player.impl
 import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.domain.player.PlayerInteractor
 
-class PlayerInteractorImpl(val playerRepository: PlayerRepository) : PlayerInteractor {
+class PlayerInteractorImpl(private val playerRepository: PlayerRepository) : PlayerInteractor {
 
     override fun preparePlayer(
         trackUrl: String,

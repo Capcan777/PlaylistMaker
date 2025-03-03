@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
@@ -13,10 +12,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerViewModel() : ViewModel() {
+class PlayerViewModel(
+    private val playerInteractor: PlayerInteractor,
+    private val historyInteractor: SearchHistoryInteractor
+) : ViewModel() {
 
-    val playerInteractor: PlayerInteractor = Creator.providePlayerInteractor()
-    val historyInteractor: SearchHistoryInteractor = Creator.provideSearchHistoryInteractor()
 
     private var timerJob: Job? = null
     private var isPlaying = false

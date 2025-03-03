@@ -15,7 +15,6 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.playlistmaker.R
@@ -25,9 +24,12 @@ import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.search.state.SearchScreenState
 import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
+
+    private val viewModel by viewModel<TracksSearchViewModel>()
 
     private var inputEditTextState: String? = DEFAULT_EDIT_STATE
 
@@ -48,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearHistoryButton: Button
     private lateinit var progressBar: FrameLayout
 
-    private val viewModel: TracksSearchViewModel by viewModels()
+//    private val viewModel: TracksSearchViewModel by viewModels()
 
     private var searchResults: ArrayList<Track>? = null
 
