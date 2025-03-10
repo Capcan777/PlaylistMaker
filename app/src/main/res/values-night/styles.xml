@@ -92,4 +92,13 @@
 
     </style>
 
+    <style name="TextOfMediateca" parent="nameTrack">
+        <item name="android:textSize">19sp</item>
+
+    </style>
+
+    <style name="TextEmptyPlaylist" parent="TextOfMediateca">
+        <item name="android:fontWeight">500</item>
+    </style>
+
 </resources>

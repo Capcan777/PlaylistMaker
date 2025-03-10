@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.mediatec.PlaylistsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/newPlaylistButton"
+            style="@style/ButtonRefresh"
+            android:layout_width="148dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/size_24dp"
+            android:background="@drawable/oval_shape"
+            android:fontFamily="@font/ys_display_medium"
+            android:letterSpacing="0"
+            android:text="@string/new_playlist"
+            android:textAllCaps="false" />
+
+        <LinearLayout
+            android:id="@+id/emptyPlaylistMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/placeholderEmptyPlaylist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="46dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_search_error" />
+
+            <TextView
+                style="@style/TextEmptyPlaylist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/size_16dp"
+                android:text="@string/text_empty_playlist" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
