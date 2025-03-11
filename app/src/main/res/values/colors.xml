@@ -14,5 +14,7 @@
     <color name="tabTextColor">#1A1B22</color>
     <color name="tabBackground">#FFFFFFFF</color>
     <color name="indicatorColor">@color/dark_grey</color>
+    <color name="backgroundColor">@color/white</color>
+    <color name="mainMenuBackground">@color/dark_blue</color>
 
 </resources>

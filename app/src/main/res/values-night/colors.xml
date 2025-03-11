@@ -9,6 +9,8 @@
     <color name="tabTextColor">#FFFFFFFF</color>
     <color name="tabBackground">#1A1B22</color>
     <color name="indicatorColor">@color/white</color>
+    <color name="backgroundColor">@color/dark_grey</color>
+    <color name="mainMenuBackground">@color/dark_grey</color>
 
 
 </resources>

@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     android:orientation="vertical"
     tools:context=".ui.mediatec.MediatecActivity">
 
@@ -38,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/size_16dp"
         android:layout_marginEnd="@dimen/size_16dp"
+        android:background="@color/backgroundColor"
         app:tabTextAppearance="@style/TabStyle"
         app:tabTextColor="@color/tabTextColor"
         app:tabIndicatorColor="@color/tabTextColor" />
