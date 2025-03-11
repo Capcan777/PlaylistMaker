@@ -6,6 +6,11 @@
     <color name="switcher_color">@color/dark_blue</color>
     <color name="switcher_color_track_tint">@color/blue_light</color>
     <color name="ic_color_player">#40FFFFFF</color>
+    <color name="tabTextColor">#FFFFFFFF</color>
+    <color name="tabBackground">#1A1B22</color>
+    <color name="indicatorColor">@color/white</color>
+    <color name="backgroundColor">@color/dark_grey</color>
+    <color name="mainMenuBackground">@color/dark_grey</color>
 
 
 </resources>
