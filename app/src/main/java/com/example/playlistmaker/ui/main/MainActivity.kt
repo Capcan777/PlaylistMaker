@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.mediatec.MediatecActivity
+import com.example.playlistmaker.ui.mediatec.MediatecFragment
 import com.example.playlistmaker.ui.search.SearchActivity
 import com.example.playlistmaker.ui.settings.SettingsActivity
 
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(searchingIntent)
         }
         mediateca.setOnClickListener {
-            val mediatecaIntent = Intent(this, MediatecActivity::class.java)
+            val mediatecaIntent = Intent(this, MediatecFragment::class.java)
             startActivity(mediatecaIntent)
         }
     }

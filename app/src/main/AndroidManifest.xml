@@ -24,7 +24,7 @@
             android:exported="false"
             android:theme="@style/Theme.PlaylistMaker.Settings" />
         <activity
-            android:name=".ui.mediatec.MediatecActivity"
+            android:name=".ui.mediatec.MediatecFragment"
             android:exported="false"
             android:theme="@style/Theme.PlaylistMaker.Settings" />
         <activity
