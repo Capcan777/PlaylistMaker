@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.ui.mediatec.view_model.PlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -15,7 +16,8 @@ class PlaylistsFragment : Fragment() {
         fun newInstance() = PlaylistsFragment()
     }
 
-    private lateinit var binding: FragmentPlaylistsBinding
+    private var _binding: FragmentPlaylistsBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistViewModel>()
 
 
@@ -23,7 +25,7 @@ class PlaylistsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
