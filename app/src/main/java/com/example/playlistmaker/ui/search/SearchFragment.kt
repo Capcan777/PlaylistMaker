@@ -1,13 +1,15 @@
 package com.example.playlistmaker.ui.search
 
-import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -15,10 +17,10 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.player.PlayerActivity
@@ -27,7 +29,10 @@ import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
+
+    private var _binding: FragmentSearchBinding? = null
+    val binding get() = _binding!!
 
     private val viewModel by viewModel<TracksSearchViewModel>()
 
@@ -35,7 +40,6 @@ class SearchActivity : AppCompatActivity() {
 
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var binding: ActivitySearchBinding
 
     private lateinit var trackListAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
@@ -45,25 +49,29 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
     private lateinit var clearButton: ImageView
     private lateinit var refreshButton: Button
-    private lateinit var back: ImageView
     private lateinit var historyLayout: LinearLayout
     private lateinit var clearHistoryButton: Button
     private lateinit var progressBar: FrameLayout
 
     private var searchResults: ArrayList<Track>? = null
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         placeholderMessageNotInternet = binding.placeHolderMessageNotInternet
         placeholderMessageNotFound = binding.placeHolderNotFound
         inputEditText = binding.textSearch
         clearButton = binding.clearIcon
         refreshButton = binding.updateButton
-        back = binding.back
         historyLayout = binding.history
         clearHistoryButton = binding.clearHistoryButton
         progressBar = binding.progressBar
@@ -78,7 +86,7 @@ class SearchActivity : AppCompatActivity() {
         binding.recyclerView.adapter = trackListAdapter
         binding.recyclerViewHistory.adapter = historyAdapter
 
-        viewModel.screenState.observe(this, Observer { state ->
+        viewModel.screenState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 is SearchScreenState.Loading -> {
                     progressBar.visibility = View.VISIBLE
@@ -132,7 +140,7 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         })
-        viewModel.searchResults.observe(this) { results ->
+        viewModel.searchResults.observe(viewLifecycleOwner) { results ->
             if (results != null && results.isNotEmpty()) {
                 trackListAdapter.updateTrackList(results)
                 binding.recyclerView.visibility = View.VISIBLE
@@ -141,9 +149,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        back.setOnClickListener {
-            finish()
-        }
 
         clearButton.setOnClickListener {
             inputEditText.setText(getString(R.string.empty_string))
@@ -198,29 +203,29 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(EDIT_TEXT_STATE, inputEditTextState)
-        searchResults?.let {
-            outState.putString(SEARCH_RESULTS_STATE, Gson().toJson(it))
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        inputEditTextState = savedInstanceState.getString(EDIT_TEXT_STATE, inputEditTextState)
-        inputEditText.setText(inputEditTextState)
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putString(EDIT_TEXT_STATE, inputEditTextState)
+//        searchResults?.let {
+//            outState.putString(SEARCH_RESULTS_STATE, Gson().toJson(it))
+//        }
+//    }
+//
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//        inputEditTextState = savedInstanceState.getString(EDIT_TEXT_STATE, inputEditTextState)
+//        inputEditText.setText(inputEditTextState)
+//    }
 
     private fun hideKeyboard(view: View) {
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun onTrackSelected(track: Track) {
         viewModel.addTrackToHistory(track)
         if (clickDebounce()) {
-            val playerIntent = Intent(this, PlayerActivity::class.java)
+            val playerIntent = Intent(requireContext(), PlayerActivity::class.java)
             playerIntent.putExtra(TRACK_INTENT, Gson().toJson(track))
             startActivity(playerIntent)
         }
