@@ -3,8 +3,10 @@ package com.example.playlistmaker.ui.root
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityRootBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class RootActivity : AppCompatActivity() {
@@ -21,6 +23,11 @@ class RootActivity : AppCompatActivity() {
         //нужно сделать навигацию
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
+
+
+        val bottomNavMenu = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavMenu.setupWithNavController(navController)
+
 
 
     }
