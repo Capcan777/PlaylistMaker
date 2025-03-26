@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.mediatec
+package com.example.playlistmaker.ui.mediatec.view_model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

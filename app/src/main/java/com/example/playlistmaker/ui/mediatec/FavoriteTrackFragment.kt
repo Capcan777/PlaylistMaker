@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentFavoriteTrackBinding
+import com.example.playlistmaker.ui.mediatec.view_model.FavoriteViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -15,14 +16,15 @@ class FavoriteTrackFragment : Fragment() {
         fun newInstance() = FavoriteTrackFragment()
     }
 
-    private lateinit var binding: FragmentFavoriteTrackBinding
+    private var _binding: FragmentFavoriteTrackBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<FavoriteViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFavoriteTrackBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoriteTrackBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -32,6 +34,11 @@ class FavoriteTrackFragment : Fragment() {
         viewModel.getFavorites()?.observe(viewLifecycleOwner) {
             showContent(it)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showContent(content: Any?) {
