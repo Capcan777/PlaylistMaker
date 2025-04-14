@@ -11,6 +11,7 @@
     <color name="indicatorColor">@color/white</color>
     <color name="backgroundColor">@color/dark_grey</color>
     <color name="mainMenuBackground">@color/dark_grey</color>
+    <color name="bottom_navigation_text_color">@color/white</color>
 
 
 </resources>

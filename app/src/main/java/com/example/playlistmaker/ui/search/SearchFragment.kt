@@ -133,7 +133,7 @@ class SearchFragment : Fragment() {
                 is SearchScreenState.Tracks -> {
                     progressBar.visibility = View.GONE
                     binding.recyclerView.visibility = View.VISIBLE
-                    trackListAdapter.updateTrackList(state.trackSearch)
+                    state.trackSearch?.let { trackListAdapter.updateTrackList(it) }
                     placeholderMessageNotFound.visibility = View.GONE
                     placeholderMessageNotInternet.visibility = View.GONE
                     historyLayout.visibility = View.GONE
@@ -203,19 +203,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putString(EDIT_TEXT_STATE, inputEditTextState)
-//        searchResults?.let {
-//            outState.putString(SEARCH_RESULTS_STATE, Gson().toJson(it))
-//        }
-//    }
-//
-//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//        inputEditTextState = savedInstanceState.getString(EDIT_TEXT_STATE, inputEditTextState)
-//        inputEditText.setText(inputEditTextState)
-//    }
 
     private fun hideKeyboard(view: View) {
         val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager

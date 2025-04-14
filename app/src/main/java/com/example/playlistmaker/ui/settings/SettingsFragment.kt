@@ -32,13 +32,13 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.isDarkTheme.observe(viewLifecycleOwner, Observer { isDark ->
+        viewModel.isDarkTheme.observe(viewLifecycleOwner) { isDark ->
             binding.themeSwitcher.isChecked = isDark
-        })
+        }
 
         binding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             viewModel.onThemeSwitched(isChecked)
-            (requireContext() as App).switchTheme(isChecked)
+            (requireActivity().application as? App)?.switchTheme(isChecked)
         }
 
 
