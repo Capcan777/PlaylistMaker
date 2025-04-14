@@ -22,7 +22,6 @@ class TracksSearchViewModel(
 ) : ViewModel() {
 
     companion object {
-        //        private val SEARCH_REQUEST_TOKEN = Any()
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
@@ -30,7 +29,6 @@ class TracksSearchViewModel(
 
     private var searchJob: Job? = null
 
-    //    private val handler = Handler(Looper.getMainLooper())
     private val screenStateLiveData =
         MutableLiveData<SearchScreenState>().apply { value = SearchScreenState.Nothing }
     val screenState: LiveData<SearchScreenState> = screenStateLiveData
@@ -38,11 +36,6 @@ class TracksSearchViewModel(
     private val _searchResults = MutableLiveData<ArrayList<Track>?>()
     val searchResults: LiveData<ArrayList<Track>?> = _searchResults
 
-
-//    override fun onCleared() {
-//        super.onCleared()
-//        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-//    }
 
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
@@ -54,10 +47,7 @@ class TracksSearchViewModel(
             delay(SEARCH_DEBOUNCE_DELAY)
             searchTracks(changedText)
         }
-//        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-//        val searchRunnable = Runnable { searchTracks(changedText) }
-//        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-//        handler.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
+
     }
 
 
@@ -74,33 +64,6 @@ class TracksSearchViewModel(
         }
     }
 
-//        getTrackUseCase.execute(newSearchText) {
-//            if (newSearchText.isNotEmpty()) {
-//                screenStateLiveData.postValue(SearchScreenState.Loading)
-//                viewModelScope.launch {
-//
-//                }
-
-
-//            override fun onSuccess(response: ArrayList<Track>) {
-//                if (response.isNotEmpty()) {
-//                    screenStateLiveData.postValue(SearchScreenState.Tracks(response))
-//                    _searchResults.postValue(response)
-//                } else {
-//                    screenStateLiveData.postValue(SearchScreenState.EmptyResult)
-//                }
-//            }
-//
-//            override fun onNoResult() {
-//                screenStateLiveData.postValue(SearchScreenState.EmptyResult)
-//            }
-//
-//            override fun onNetworkError() {
-//                screenStateLiveData.postValue(SearchScreenState.NetworkError)
-//            }
-//        })
-//
-//    }
 
     fun updateHistory() {
         val historyList = searchHistoryInteractor.readTracksFromHistory()
@@ -122,13 +85,13 @@ class TracksSearchViewModel(
     }
 
     private fun processResult(response: List<Track>?, message: String?) {
-        if (response.isNullOrEmpty()) {
-            screenStateLiveData.postValue(SearchScreenState.Tracks(response as ArrayList<Track>))
-            _searchResults.postValue(response)
+        if (!response.isNullOrEmpty()) {
+            screenStateLiveData.postValue(SearchScreenState.Tracks(ArrayList(response)))
+            _searchResults.postValue(ArrayList(response))
         } else {
             screenStateLiveData.postValue(SearchScreenState.EmptyResult)
+            _searchResults.postValue(arrayListOf())
         }
-
     }
 
 }
