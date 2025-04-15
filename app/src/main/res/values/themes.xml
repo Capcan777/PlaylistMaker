@@ -4,6 +4,8 @@
         <!-- Customize your light theme here. -->
         <item name="android:statusBarColor">@color/dark_blue</item>
         <item name="android:textColor">@color/dark_grey</item>
+        <item name="bottomNavigationStyle">@style/BottomNavStyleLight</item>
+
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 

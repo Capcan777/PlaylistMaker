@@ -6,11 +6,15 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.TrackConsumer
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.impl.GetTrackUseCase
 import com.example.playlistmaker.ui.search.state.SearchScreenState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class TracksSearchViewModel(
     private val getTrackUseCase: GetTrackUseCase,
@@ -18,35 +22,32 @@ class TracksSearchViewModel(
 ) : ViewModel() {
 
     companion object {
-        private val SEARCH_REQUEST_TOKEN = Any()
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
     private var latestSearchText: String? = null
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var searchJob: Job? = null
+
     private val screenStateLiveData =
         MutableLiveData<SearchScreenState>().apply { value = SearchScreenState.Nothing }
     val screenState: LiveData<SearchScreenState> = screenStateLiveData
 
-    private val _searchResults = MutableLiveData<ArrayList<Track>>()
-    val searchResults: LiveData<ArrayList<Track>> = _searchResults
+    private val _searchResults = MutableLiveData<ArrayList<Track>?>()
+    val searchResults: LiveData<ArrayList<Track>?> = _searchResults
 
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
 
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
             return
         }
         this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { searchTracks(changedText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchTracks(changedText)
+        }
+
     }
 
 
@@ -55,26 +56,14 @@ class TracksSearchViewModel(
         screenStateLiveData.value = SearchScreenState.Loading
         _searchResults.value = arrayListOf()
 
-        getTrackUseCase.execute(newSearchText, object : TrackConsumer {
-            override fun onSuccess(response: ArrayList<Track>) {
-                if (response.isNotEmpty()) {
-                    screenStateLiveData.postValue(SearchScreenState.Tracks(response))
-                    _searchResults.postValue(response)
-                } else {
-                    screenStateLiveData.postValue(SearchScreenState.EmptyResult)
+        viewModelScope.launch {
+            getTrackUseCase.execute(newSearchText)
+                .collect { pair ->
+                    processResult(pair.first, pair.second)
                 }
-            }
-
-            override fun onNoResult() {
-                screenStateLiveData.postValue(SearchScreenState.EmptyResult)
-            }
-
-            override fun onNetworkError() {
-                screenStateLiveData.postValue(SearchScreenState.NetworkError)
-            }
-        })
-
+        }
     }
+
 
     fun updateHistory() {
         val historyList = searchHistoryInteractor.readTracksFromHistory()
@@ -94,4 +83,15 @@ class TracksSearchViewModel(
         val currentHistory = searchHistoryInteractor.readTracksFromHistory()
         searchHistoryInteractor.addTrackToHistory(track, currentHistory)
     }
+
+    private fun processResult(response: List<Track>?, message: String?) {
+        if (!response.isNullOrEmpty()) {
+            screenStateLiveData.postValue(SearchScreenState.Tracks(ArrayList(response)))
+            _searchResults.postValue(ArrayList(response))
+        } else {
+            screenStateLiveData.postValue(SearchScreenState.EmptyResult)
+            _searchResults.postValue(arrayListOf())
+        }
+    }
+
 }

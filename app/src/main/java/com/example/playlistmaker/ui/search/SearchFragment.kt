@@ -3,8 +3,6 @@ package com.example.playlistmaker.ui.search
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -19,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.model.Track
@@ -26,6 +25,8 @@ import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.search.state.SearchScreenState
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -39,7 +40,6 @@ class SearchFragment : Fragment() {
     private var inputEditTextState: String? = DEFAULT_EDIT_STATE
 
     private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var trackListAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
@@ -52,8 +52,6 @@ class SearchFragment : Fragment() {
     private lateinit var historyLayout: LinearLayout
     private lateinit var clearHistoryButton: Button
     private lateinit var progressBar: FrameLayout
-
-    private var searchResults: ArrayList<Track>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -133,7 +131,7 @@ class SearchFragment : Fragment() {
                 is SearchScreenState.Tracks -> {
                     progressBar.visibility = View.GONE
                     binding.recyclerView.visibility = View.VISIBLE
-                    trackListAdapter.updateTrackList(state.trackSearch)
+                    state.trackSearch?.let { trackListAdapter.updateTrackList(it) }
                     placeholderMessageNotFound.visibility = View.GONE
                     placeholderMessageNotInternet.visibility = View.GONE
                     historyLayout.visibility = View.GONE
@@ -203,22 +201,10 @@ class SearchFragment : Fragment() {
         }
     }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putString(EDIT_TEXT_STATE, inputEditTextState)
-//        searchResults?.let {
-//            outState.putString(SEARCH_RESULTS_STATE, Gson().toJson(it))
-//        }
-//    }
-//
-//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//        inputEditTextState = savedInstanceState.getString(EDIT_TEXT_STATE, inputEditTextState)
-//        inputEditText.setText(inputEditTextState)
-//    }
 
     private fun hideKeyboard(view: View) {
-        val inputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+        val inputMethodManager =
+            requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
@@ -235,16 +221,17 @@ class SearchFragment : Fragment() {
         val current: Boolean = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
 
     companion object {
-        const val EDIT_TEXT_STATE = "EDIT_TEXT_STATE"
         const val DEFAULT_EDIT_STATE = ""
         const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val SEARCH_RESULTS_STATE = "SEARCH_RESULTS_STATE"
         const val TRACK_INTENT = "track_intent"
     }
 }

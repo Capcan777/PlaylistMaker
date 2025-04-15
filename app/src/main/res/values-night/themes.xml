@@ -5,6 +5,7 @@
         <!--        <item name="android:background">@color/dark_grey</item>-->
         <item name="colorControlActivated">@color/switcher_color</item>
         <item name="android:statusBarColor">@color/dark_grey</item>
+        <item name="bottomNavigationStyle">@style/BottomNavStyleDark</item>
 
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
