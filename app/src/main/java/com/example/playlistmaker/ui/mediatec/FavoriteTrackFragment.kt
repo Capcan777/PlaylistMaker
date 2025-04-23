@@ -32,7 +32,7 @@ class FavoriteTrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getFavorites()?.observe(viewLifecycleOwner) {
-            showContent(it)
+            render(it)
         }
     }
 
@@ -41,10 +41,23 @@ class FavoriteTrackFragment : Fragment() {
         _binding = null
     }
 
-    private fun showContent(content: Any?) {
-        TODO()
+    private fun render(state: FavoriteState) {
+        when(state) {
+            is FavoriteState.Content -> showContent()
+            is FavoriteState.Empty -> showEmpty()
+        }
+    }
+
+    private fun showContent() {
+        binding.messageEmptyMediatec.visibility = View.GONE
+        binding.rvFavorites.visibility = View.VISIBLE
+
+    }
+
+    private fun showEmpty() {
+        binding.messageEmptyMediatec.visibility = View.VISIBLE
+        binding.rvFavorites.visibility = View.GONE
     }
 
 
 }
-

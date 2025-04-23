@@ -8,7 +8,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.model.Track
-import com.example.playlistmaker.ui.player.state.PlaybackState
+import com.example.playlistmaker.ui.player.state.PlayerScreenState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -28,8 +28,14 @@ class PlayerActivity : AppCompatActivity() {
             finish()
         }
 
-        viewModel.getTrackInfoLiveData().observe(this) {
-            setTrackInfo(it)
+        viewModel.getTrackInfoLiveData().observe(this) { track ->
+            track?.let {
+                setTrackInfo(it)
+            }
+        }
+
+        binding.favorite.setOnClickListener {
+            viewModel.onFavoriteClicked()
         }
 
         binding.ibPlay.setOnClickListener {
@@ -39,10 +45,10 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.getPlayerStateLiveData().observe(this) {
             binding.ibPlay.setImageResource(
                 when (it) {
-                    PlaybackState.PLAYING_STATE -> R.drawable.ic_pause_button
-                    PlaybackState.PAUSED_STATE -> R.drawable.ic_play_button
-                    PlaybackState.PREPARED_STATE -> R.drawable.ic_play_button
-                    PlaybackState.DEFAULT_STATE -> R.drawable.ic_play_button
+                    PlayerScreenState.PLAYING_STATE -> R.drawable.ic_pause_button
+                    PlayerScreenState.PAUSED_STATE -> R.drawable.ic_play_button
+                    PlayerScreenState.PREPARED_STATE -> R.drawable.ic_play_button
+                    PlayerScreenState.DEFAULT_STATE -> R.drawable.ic_play_button
                 }
             )
         }
@@ -79,6 +85,9 @@ class PlayerActivity : AppCompatActivity() {
             dataTrack.text = trackOnPlayer.releaseDate.slice(0..3)
             styleTrack.text = trackOnPlayer.primaryGenreName
             countryTrack.text = trackOnPlayer.country
+            favorite.setImageResource(
+                if (trackOnPlayer.isFavorite) R.drawable.ic_button_active_like
+                else R.drawable.ic_button_like)
         }
     }
 }
