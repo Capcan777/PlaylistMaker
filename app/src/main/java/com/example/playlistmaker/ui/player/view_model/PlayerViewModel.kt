@@ -20,14 +20,13 @@ class PlayerViewModel(
     private val favoriteInteractor: FavoriteInteractor
 ) : ViewModel() {
 
-
     private var timerJob: Job? = null
     private var isPlaying = false
     private var isFavorite = false
 
     val trackOnPlayer = historyInteractor.readTracksFromHistory()[0]
 
-    private val trackInfoLiveData = MutableLiveData<Track?>()
+    private var trackInfoLiveData = MutableLiveData<Track?>()
     fun getTrackInfoLiveData(): LiveData<Track?> = trackInfoLiveData
 
     private val playbackTimeLiveData = MutableLiveData<String>()
@@ -36,14 +35,10 @@ class PlayerViewModel(
     private var playerStateLiveData = MutableLiveData(PlayerScreenState.DEFAULT_STATE)
     fun getPlayerStateLiveData(): LiveData<PlayerScreenState> = playerStateLiveData
 
-//    private val favoriteState = MutableLiveData(isFavorite)
-//    fun getFavoriteTrackLiveData(): LiveData<Boolean> = favoriteState
-
 
     init {
         trackInfoLiveData.postValue(trackOnPlayer)
         preparePlayer()
-        loadTrackState()
     }
 
     private fun preparePlayer() {
@@ -80,7 +75,6 @@ class PlayerViewModel(
             PlayerScreenState.DEFAULT_STATE -> {
                 isPlaying = false
             }
-
             null -> {}
         }
     }
@@ -102,39 +96,36 @@ class PlayerViewModel(
         }
     }
 
-    private fun loadTrackState() { /// не доконца реализовал
-        viewModelScope.launch {
-            val track = trackInfoLiveData.value
-            if (track != null) {
-                track.isFavorite = favoriteInteractor.inFavorite(track.trackId)
-                trackInfoLiveData.postValue(track)
+//    private fun loadTrackState() {
+//        viewModelScope.launch {
+//            val track = trackInfoLiveData.value
+//            if (track != null) {
+//                track.isFavorite = favoriteInteractor.inFavorite(track.trackId)
+//                trackInfoLiveData.postValue(track)
+//            }
+//        }
+//    }
+
+    fun onFavoriteClicked() {
+        val track = trackInfoLiveData.value
+        if (track != null) {
+            if (track.isFavorite) {
+                trackInfoLiveData.postValue(track.apply { isFavorite = false })
+                viewModelScope.launch { favoriteInteractor.removeTrackFromFavorite(track) }
+
+
+            } else {
+                trackInfoLiveData.postValue(track.apply { isFavorite = true })
+                viewModelScope.launch { favoriteInteractor.addTrackToFavorite(track) }
             }
         }
+
     }
 
-
-    fun onFavoriteClicked() {       // реализовать
-        viewModelScope.launch {
-            val track = trackInfoLiveData.value
-            if (track != null) {
-                if (track.isFavorite) {
-                    favoriteInteractor.removeTrackFromFavorite(track)
-                    trackInfoLiveData.postValue(track.apply { isFavorite = false })
-                } else {
-                    favoriteInteractor.addTrackToFavorite(track)
-                    trackInfoLiveData.postValue(track.apply { isFavorite = true })
-                }
-                loadTrackState()
-            }
-
-        }
-    }
-
-
-    companion object {
-        private const val TIMER_DELAY = 300L
-        private const val DEFAULT_TIME = "00:00"
-    }
+companion object {
+    private const val TIMER_DELAY = 300L
+    private const val DEFAULT_TIME = "00:00"
+}
 }
 
 

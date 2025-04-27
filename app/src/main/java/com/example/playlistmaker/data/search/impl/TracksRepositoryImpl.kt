@@ -1,5 +1,6 @@
 package com.example.playlistmaker.data.search.impl
 
+import android.annotation.SuppressLint
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.db.AppDataBase
 import com.example.playlistmaker.data.dto.TrackSearchRequest
@@ -13,6 +14,7 @@ import java.util.Locale
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient, private val dataBase: AppDataBase) : TracksRepository {
 
+    @SuppressLint("SuspiciousIndentation")
     override suspend fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>> =
         flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
@@ -23,6 +25,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
             }
 
         if (response.resultCode == 200) {
+            val listTracksIdInFavorites = dataBase.trackDao().getTracksIdList()
             val result = ((response as TrackSearchResponse).results.map {
                 Track(
                     it.trackName,
@@ -40,12 +43,13 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
                     it.primaryGenreName,
                     it.country,
                     it.previewUrl,
-                    isFavorite = false
+                    isFavorite = if (it.trackId in listTracksIdInFavorites) true else false
                 )
             }) as ArrayList<Track>
             emit(Pair(result, null))
         } else {
             emit(Pair(null, null))
         }
+
     }
 }

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.mediatec
+package com.example.playlistmaker.ui.mediatec.state
 
 import com.example.playlistmaker.domain.model.Track
 

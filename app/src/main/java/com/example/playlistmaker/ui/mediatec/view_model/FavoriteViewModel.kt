@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.favorite.FavoriteInteractor
-import com.example.playlistmaker.ui.mediatec.FavoriteState
+import com.example.playlistmaker.ui.mediatec.state.FavoriteState
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(private val favoriteInteractor: FavoriteInteractor) : ViewModel() {

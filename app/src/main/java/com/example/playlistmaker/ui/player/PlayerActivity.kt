@@ -31,6 +31,9 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.getTrackInfoLiveData().observe(this) { track ->
             track?.let {
                 setTrackInfo(it)
+                binding.favorite.setImageResource(
+                    if (track.isFavorite) R.drawable.ic_button_active_like
+                    else R.drawable.ic_button_like)
             }
         }
 
@@ -63,6 +66,17 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.onActivityPause()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getTrackInfoLiveData().value?.let { track ->
+            setTrackInfo(track)
+            binding.favorite.setImageResource(
+                if (track.isFavorite) R.drawable.ic_button_active_like
+                else R.drawable.ic_button_like
+            )
+        }
+    }
+
     private fun renderTimer(currentTime: String) {
         binding.tvTrackTime.text = currentTime
     }
@@ -85,9 +99,9 @@ class PlayerActivity : AppCompatActivity() {
             dataTrack.text = trackOnPlayer.releaseDate.slice(0..3)
             styleTrack.text = trackOnPlayer.primaryGenreName
             countryTrack.text = trackOnPlayer.country
-            favorite.setImageResource(
-                if (trackOnPlayer.isFavorite) R.drawable.ic_button_active_like
-                else R.drawable.ic_button_like)
+//            favorite.setImageResource(
+//                if (trackOnPlayer.isFavorite) R.drawable.ic_button_active_like
+//                else R.drawable.ic_button_like)
         }
     }
 }

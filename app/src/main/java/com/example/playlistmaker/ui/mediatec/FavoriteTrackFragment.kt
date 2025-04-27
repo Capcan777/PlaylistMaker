@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentFavoriteTrackBinding
+import com.example.playlistmaker.ui.mediatec.state.FavoriteState
 import com.example.playlistmaker.ui.mediatec.view_model.FavoriteViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
