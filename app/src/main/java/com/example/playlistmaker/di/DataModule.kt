@@ -2,11 +2,13 @@ package com.example.playlistmaker.di
 
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.example.playlistmaker.data.NetworkClient
+import com.example.playlistmaker.data.db.AppDataBase
 import com.example.playlistmaker.data.network.ItunesApiService
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl.Companion.PREF_KEY_HISTORY
-import com.example.playlistmaker.data.settings.repository_impl.SettingsRepositoryImpl.Companion.THEME_PREF_KEY
+import com.example.playlistmaker.data.settings.impl.SettingsRepositoryImpl.Companion.THEME_PREF_KEY
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -40,5 +42,8 @@ val dataModule = module {
         MediaPlayer()
     }
 
+    single {
+        Room.databaseBuilder(androidContext(), AppDataBase::class.java, "database.db").build()
+    }
 
 }

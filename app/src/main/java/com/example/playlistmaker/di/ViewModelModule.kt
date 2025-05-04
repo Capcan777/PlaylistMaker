@@ -13,7 +13,7 @@ val viewModelModule = module {
         TracksSearchViewModel(get(), get())
     }
     viewModel {
-        PlayerViewModel(get(), get())
+        PlayerViewModel(get(), get(), get())
     }
 
     viewModel {
@@ -21,7 +21,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavoriteViewModel()
+        FavoriteViewModel(get())
     }
 
     viewModel {

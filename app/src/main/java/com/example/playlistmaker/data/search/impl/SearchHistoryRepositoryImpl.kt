@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data.search.impl
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.data.db.AppDataBase
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.search.SearchHistoryRepository
 import com.google.gson.Gson
@@ -8,7 +9,7 @@ import com.google.gson.reflect.TypeToken
 
 class SearchHistoryRepositoryImpl(
     private val sharedPreferences: SharedPreferences,
-    private val gson: Gson
+    private val gson: Gson,
 ) : SearchHistoryRepository {
 
     override fun addTrackToHistory(track: Track, historyList: ArrayList<Track>): ArrayList<Track> {
@@ -41,7 +42,7 @@ class SearchHistoryRepositoryImpl(
         val searchHistoryString = sharedPreferences.getString(PREF_KEY_HISTORY, null)
         val itemType = object : TypeToken<ArrayList<Track>>() {}.type
         return if (!searchHistoryString.isNullOrEmpty()) {
-            gson.fromJson<ArrayList<Track>>(searchHistoryString, itemType)
+            gson.fromJson(searchHistoryString, itemType)
         } else {
             arrayListOf<Track>()
         }
@@ -50,4 +51,5 @@ class SearchHistoryRepositoryImpl(
     companion object {
         const val PREF_KEY_HISTORY = "search_history"
     }
+
 }

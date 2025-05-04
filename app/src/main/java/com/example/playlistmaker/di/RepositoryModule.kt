@@ -1,12 +1,15 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.converters.TrackDbConvertor
+import com.example.playlistmaker.data.mediatec.FavoriteTracksRepositoryImpl
 import com.example.playlistmaker.data.player.impl.PlayerRepositoryImpl
-import com.example.playlistmaker.data.repository_impl.TracksRepositoryImpl
+import com.example.playlistmaker.data.search.impl.TracksRepositoryImpl
 import com.example.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl
-import com.example.playlistmaker.data.settings.repository_impl.SettingsRepositoryImpl
+import com.example.playlistmaker.data.settings.impl.SettingsRepositoryImpl
 import com.example.playlistmaker.data.sharing.ExternalNavigator
 import com.example.playlistmaker.data.sharing.repository_impl.SharingRepositoryImpl
 import com.example.playlistmaker.domain.player.PlayerRepository
+import com.example.playlistmaker.domain.repository.FavoriteTracksRepository
 import com.example.playlistmaker.domain.repository.TracksRepository
 import com.example.playlistmaker.domain.search.SearchHistoryRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
@@ -19,7 +22,7 @@ val repositoryModule = module {
         SearchHistoryRepositoryImpl(get(), get())
     }
     single<TracksRepository> {
-        TracksRepositoryImpl(get())
+        TracksRepositoryImpl(get(), get())
     }
     single<SettingsRepository> {
         SettingsRepositoryImpl(get())
@@ -32,5 +35,10 @@ val repositoryModule = module {
     }
     factory<PlayerRepository> {
         PlayerRepositoryImpl(get())
+    }
+    factory { TrackDbConvertor() }
+
+    single<FavoriteTracksRepository> {
+        FavoriteTracksRepositoryImpl(get(), get())
     }
 }
