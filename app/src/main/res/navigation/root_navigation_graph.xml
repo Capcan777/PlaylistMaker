@@ -33,7 +33,11 @@
         android:id="@+id/favoriteTrackFragment"
         android:name="com.example.playlistmaker.ui.mediatec.FavoriteTrackFragment"
         android:label="fragment_favorite_track"
-        tools:layout="@layout/fragment_favorite_track" />
+        tools:layout="@layout/fragment_favorite_track" >
+        <action
+            android:id="@+id/action_favoriteTrackFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
+    </fragment>
     <fragment
         android:id="@+id/playlistsFragment"
         android:name="com.example.playlistmaker.ui.mediatec.PlaylistsFragment"
