@@ -10,12 +10,12 @@ data class TrackEntity(
     val artworkUrl100: String,
     val trackName: String,
     val artistName: String,
-    var collectionName: String,
+    val collectionName: String,
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
     val trackTimeMillis: Long,
     val previewUrl: String,
-    var isFavorite: Boolean = false,
+    val isFavorite: Boolean,
     val lastAdded: Long = System.currentTimeMillis()
 )

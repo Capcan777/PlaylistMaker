@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data.search.impl
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.db.AppDataBase
 import com.example.playlistmaker.data.dto.TrackSearchRequest
@@ -25,7 +26,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
             }
 
         if (response.resultCode == 200) {
-            val listTracksIdInFavorites = dataBase.trackDao().getTracksIdList()
+            val listTracksIdInFavorites = dataBase.trackDao().getTracksIdList().toIntArray()
             val result = ((response as TrackSearchResponse).results.map {
                 Track(
                     it.trackName,
@@ -43,8 +44,9 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
                     it.primaryGenreName,
                     it.country,
                     it.previewUrl,
-                    isFavorite = if (it.trackId in listTracksIdInFavorites) true else false
+                    isFavorite = if(it.trackId in listTracksIdInFavorites) true else false
                 )
+
             }) as ArrayList<Track>
             emit(Pair(result, null))
         } else {

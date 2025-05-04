@@ -18,7 +18,7 @@ class FavoriteViewModel(private val favoriteInteractor: FavoriteInteractor) : Vi
         loadFavoriteTracks()
     }
 
-    private fun loadFavoriteTracks() {
+     fun loadFavoriteTracks() {
         viewModelScope.launch {
             favoriteInteractor.getTracksFromFavorite().collect { list ->
                 if (list.isNotEmpty()) {
