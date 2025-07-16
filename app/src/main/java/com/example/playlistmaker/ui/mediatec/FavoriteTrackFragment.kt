@@ -2,20 +2,16 @@ package com.example.playlistmaker.ui.mediatec
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.playlistmaker.databinding.FragmentFavoriteTrackBinding
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.ui.mediatec.state.FavoriteState
 import com.example.playlistmaker.ui.mediatec.view_model.FavoriteViewModel
 import com.example.playlistmaker.ui.player.PlayerActivity
-import com.example.playlistmaker.ui.search.SearchFragment.Companion.CLICK_DEBOUNCE_DELAY
-import com.example.playlistmaker.ui.search.SearchFragment.Companion.TRACK_INTENT
 import com.example.playlistmaker.ui.search.TrackAdapter
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
@@ -84,6 +80,7 @@ class FavoriteTrackFragment : Fragment() {
                 showContent()
                 favoriteAdapter.updateTrackList(ArrayList(state.favoriteList))
             }
+
             is FavoriteState.Empty -> showEmpty()
         }
     }

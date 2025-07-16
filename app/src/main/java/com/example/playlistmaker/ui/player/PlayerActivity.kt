@@ -1,17 +1,20 @@
 package com.example.playlistmaker.ui.player
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.ui.mediatec.NewPlaylistFragment
 import com.example.playlistmaker.ui.player.state.PlayerScreenState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,6 +32,33 @@ class PlayerActivity : AppCompatActivity() {
         val inflater = LayoutInflater.from(this)
         binding = ActivityPlayerBinding.inflate(inflater)
         setContentView(binding.root)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+
+                    else -> {
+                        binding.overlay.isVisible = true
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = slideOffset + 1f
+            }
+
+        })
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_bottom_sheet)
+
 
         // Получаем трек из Intent
         val trackJson = intent.getStringExtra(TRACK_INTENT)
@@ -55,10 +85,21 @@ class PlayerActivity : AppCompatActivity() {
         binding.favorite.setOnClickListener {
             viewModel.onFavoriteClicked()
         }
+        binding.ibAddToPlaylist.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
 
         binding.ibPlay.setOnClickListener {
             viewModel.playbackControl()
         }
+
+        binding.newPlaylistButton.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container_bottom_sheet, NewPlaylistFragment()) // или replace
+                .addToBackStack("add_new_playlist")
+                .commit()
+        }
+
 
         viewModel.getPlayerStateLiveData().observe(this) {
             binding.ibPlay.setImageResource(
@@ -85,9 +126,9 @@ class PlayerActivity : AppCompatActivity() {
         super.onResume()
         if (currentTrackId != -1) {
             lifecycleScope.launch {
-                    val isFavorite = viewModel.checkIsFavorite(currentTrackId)
-                    updateFavoriteButton(isFavorite)
-                    viewModel.updateTrackFavoriteStatus(currentTrackId, isFavorite)
+                val isFavorite = viewModel.checkIsFavorite(currentTrackId)
+                updateFavoriteButton(isFavorite)
+                viewModel.updateTrackFavoriteStatus(currentTrackId, isFavorite)
             }
         } else {
             viewModel.loadTrackState()

@@ -4,6 +4,8 @@ import com.example.playlistmaker.domain.favorite.FavoriteInteractor
 import com.example.playlistmaker.domain.favorite.impl.FavoriteInteractorImpl
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
+import com.example.playlistmaker.domain.playlist.PlaylistInteractor
+import com.example.playlistmaker.domain.playlist.impl.PlaylistInteractorImpl
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.impl.GetTrackUseCase
 import com.example.playlistmaker.domain.search.impl.SearchHistoryInteractorImpl
@@ -33,5 +35,7 @@ val interactorModule = module {
         GetTrackUseCase(get())
     }
     single<FavoriteInteractor> { FavoriteInteractorImpl(get()) }
+
+    single<PlaylistInteractor> { PlaylistInteractorImpl(get()) }
 
 }
