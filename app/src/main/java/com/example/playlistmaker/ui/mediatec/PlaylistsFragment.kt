@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.ui.mediatec.view_model.PlaylistViewModel
@@ -39,12 +40,11 @@ class PlaylistsFragment : Fragment() {
         binding.newPlaylistButton.visibility = View.VISIBLE
         binding.emptyPlaylistMessage.visibility = View.VISIBLE
 
-        val navHostFragment = activity?.supportFragmentManager?.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.navController
+//        val navHostFragment = activity?.supportFragmentManager?.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+//        val navController = navHostFragment.navController
 
         binding.newPlaylistButton.setOnClickListener {
-            navController.navigate(R.id.action_playlistsFragment_to_newPlaylistFragment)
-        }
+            findNavController().navigate(R.id.action_mediatecFragment_to_newPlaylistFragment)        }
     }
     override fun onDestroyView() {
         super.onDestroyView()

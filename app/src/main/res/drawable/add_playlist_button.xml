@@ -6,7 +6,7 @@
             <solid android:color="@color/dark_blue" />
         </shape>
     </item>
-    <item android:state_enabled="false">
+    <item android:state_enabled="true">
         <shape>
             <corners android:radius="8dp"/>
             <solid android:color="#AEAFB4" />

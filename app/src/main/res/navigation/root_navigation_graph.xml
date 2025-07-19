@@ -19,7 +19,11 @@
         android:id="@+id/mediatecFragment"
         android:name="com.example.playlistmaker.ui.mediatec.MediatecFragment"
         android:label="fragment_mediatec"
-        tools:layout="@layout/fragment_mediatec" />
+        tools:layout="@layout/fragment_mediatec" >
+        <action
+            android:id="@+id/action_mediatecFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.ui.search.SearchFragment"
@@ -42,11 +46,7 @@
         android:id="@+id/playlistsFragment"
         android:name="com.example.playlistmaker.ui.mediatec.PlaylistsFragment"
         android:label="fragment_playlists"
-        tools:layout="@layout/fragment_playlists" >
-        <action
-            android:id="@+id/action_playlistsFragment_to_newPlaylistFragment"
-            app:destination="@id/newPlaylistFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_playlists" />
     <fragment
         android:id="@+id/newPlaylistFragment"
         android:name="com.example.playlistmaker.ui.mediatec.NewPlaylistFragment"
