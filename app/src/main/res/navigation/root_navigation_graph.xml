@@ -42,5 +42,14 @@
         android:id="@+id/playlistsFragment"
         android:name="com.example.playlistmaker.ui.mediatec.PlaylistsFragment"
         android:label="fragment_playlists"
-        tools:layout="@layout/fragment_playlists" />
+        tools:layout="@layout/fragment_playlists" >
+        <action
+            android:id="@+id/action_playlistsFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newPlaylistFragment"
+        android:name="com.example.playlistmaker.ui.mediatec.NewPlaylistFragment"
+        android:label="fragment_new_playlist"
+        tools:layout="@layout/fragment_new_playlist" />
 </navigation>

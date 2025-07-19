@@ -47,6 +47,9 @@ android {
 dependencies {
 
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.fragment.ktx)
 
     val room_version = "2.7.0"
     implementation("androidx.room:room-runtime:$room_version") // библиотека Room

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    tools:context=".ui.mediatec.NewPlaylistFragment">
+
+    <ImageButton
+        android:id="@+id/fall_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundColor"
+        android:src="@drawable/icon_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/TextBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Новый плейлист"
+        app:layout_constraintBottom_toBottomOf="@+id/fall_back"
+        app:layout_constraintStart_toEndOf="@+id/fall_back"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/picture_place"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/size_24dp"
+        android:padding="120dp"
+        android:layout_marginTop="26dp"
+        app:layout_constraintDimensionRatio="h,1:1"
+        android:src="@drawable/placeholder_add_picture"
+        android:background="@drawable/picture_place"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fall_back" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_field_title"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/size_16dp"
+        android:layout_marginTop="32dp"
+        android:hint="Название*"
+        app:boxStrokeColor="@color/blue_light"
+        app:boxStrokeWidth="1dp"
+        app:cursorColor="@color/dark_blue"
+        app:hintTextColor="@color/dark_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/picture_place">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/title_edittext"
+            style="@style/TextPlaylistAdd"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:inputType="text"
+            android:maxLength="30"
+            android:singleLine="true"
+            android:textFontWeight="400" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_field_description"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/size_16dp"
+        android:layout_marginTop="17dp"
+        android:hint="@string/discription"
+        app:boxStrokeColor="@color/blue_light"
+        app:boxStrokeWidth="1dp"
+        app:cursorColor="@color/dark_blue"
+        app:hintTextColor="@color/dark_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_field_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description_edittext"
+            style="@style/TextPlaylistAdd"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:inputType="text"
+            android:maxLength="30"
+            android:singleLine="true"
+            android:textFontWeight="400" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/create_playlist_button"
+        style="@style/TextPlaylistAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/size_16dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/add_playlist_button"
+        android:text="Создать"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
