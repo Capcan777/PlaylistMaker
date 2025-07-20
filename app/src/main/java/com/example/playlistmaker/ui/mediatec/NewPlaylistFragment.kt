@@ -66,11 +66,7 @@ class NewPlaylistFragment : Fragment() {
             }
         binding.titleEdittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (s.isNullOrEmpty()) {
-                    binding.createPlaylistButton.setBackgroundColor(requireContext().getColor(R.color.grey))
-                } else {
-                    binding.createPlaylistButton.setBackgroundColor(requireContext().getColor(R.color.dark_blue))
-                }
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
