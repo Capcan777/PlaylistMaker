@@ -40,8 +40,6 @@ class PlaylistsFragment : Fragment() {
         binding.newPlaylistButton.visibility = View.VISIBLE
         binding.emptyPlaylistMessage.visibility = View.VISIBLE
 
-//        val navHostFragment = activity?.supportFragmentManager?.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
-//        val navController = navHostFragment.navController
 
         binding.newPlaylistButton.setOnClickListener {
             findNavController().navigate(R.id.action_mediatecFragment_to_newPlaylistFragment)        }
