@@ -74,7 +74,11 @@ class NewPlaylistFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                if (s.isNullOrEmpty()) {
+                    binding.createPlaylistButton.setBackgroundColor(requireContext().getColor(R.color.grey))
+                } else {
+                    binding.createPlaylistButton.setBackgroundColor(requireContext().getColor(R.color.dark_blue))
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
