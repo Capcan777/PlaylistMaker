@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.mediatec
+package com.example.playlistmaker.ui.mediatec.view_model
 
 import android.app.Application
 import android.graphics.Bitmap
