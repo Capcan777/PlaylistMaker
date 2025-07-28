@@ -14,7 +14,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.navigateUp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.ui.mediatec.view_model.NewPlaylistViewModel
@@ -49,6 +48,15 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Наблюдаем за статусами и ошибками
+        viewModel.statusLiveData.observe(viewLifecycleOwner) { status ->
+            Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
+            Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
+        }
+
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Завершить создание плейлиста?")
             .setMessage("Все несохраненные данные будут потеряны")
@@ -72,13 +80,8 @@ class NewPlaylistFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()) {
-                    binding.createPlaylistButton.setBackgroundColor(requireContext().getColor(R.color.grey))
-                    binding.createPlaylistButton.isEnabled = false
-                } else {
-                    binding.createPlaylistButton.setBackgroundColor(requireContext().getColor(R.color.dark_blue))
-                    binding.createPlaylistButton.isEnabled = true
-                }
+                updateCreateButtonState(s.isNullOrEmpty())
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -104,9 +107,32 @@ class NewPlaylistFragment : Fragment() {
             })
         binding.createPlaylistButton.setOnClickListener {
             showSuccesToast()
+            createPlaylist()
             findNavController().navigateUp()
         }
 
+    }
+
+    private fun updateCreateButtonState(isDisabled: Boolean) {
+        binding.createPlaylistButton.isEnabled = !isDisabled
+        binding.createPlaylistButton.setBackgroundColor(
+            if (isDisabled) requireContext().getColor(R.color.grey) else requireContext().getColor(
+                R.color.dark_blue
+            )
+        )
+    }
+
+    private fun createPlaylist() {
+        val title = binding.titleEdittext.text.toString()
+        if (title.isBlank()) {
+            Toast.makeText(
+                requireContext(),
+                "Название плейлиста не может быть пустым",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+        viewModel.createPlaylist()
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import android.app.Application
 import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
 import com.example.playlistmaker.ui.mediatec.view_model.FavoriteViewModel
 import com.example.playlistmaker.ui.mediatec.view_model.NewPlaylistViewModel
@@ -29,7 +30,7 @@ val viewModelModule = module {
         PlaylistViewModel()
     }
 
-    viewModel {
-        NewPlaylistViewModel(get())
+    viewModel { (application: Application) ->
+        NewPlaylistViewModel(get(), application)
     }
 }
