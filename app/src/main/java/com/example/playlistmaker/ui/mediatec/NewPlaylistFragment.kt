@@ -69,6 +69,7 @@ class NewPlaylistFragment : Fragment() {
                 if (uri != null) {
                     binding.picturePlace.setImageURI(uri)
                     viewModel.savePictureToStorage(uri)
+                    picUrl = uri
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
@@ -104,7 +105,7 @@ class NewPlaylistFragment : Fragment() {
                 }
             })
         binding.createPlaylistButton.setOnClickListener {
-            createPlaylist()
+            createPlaylist(picUrl)
             findNavController().navigateUp()
         }
 

@@ -41,7 +41,7 @@ class NewPlaylistViewModel(private val interactor: PlaylistInteractor, applicati
         _playlistLiveData.value = playlist
     }
 
-    fun createPlaylist() {
+    fun createPlaylist(title: String, desc: String, im: Uri?) {
         viewModelScope.launch {
             val playlist = Playlist(
                 id = 0,
