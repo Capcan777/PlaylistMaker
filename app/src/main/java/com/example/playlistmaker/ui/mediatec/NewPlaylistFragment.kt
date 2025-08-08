@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.mediatec
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,17 +23,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlaylistFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = NewPlaylistFragment()
-    }
+//    companion object {
+//        fun newInstance() = NewPlaylistFragment()
+//    }
 
     private var _binding: FragmentNewPlaylistBinding? = null
     private val binding get() = _binding!!
     private val viewModel: NewPlaylistViewModel by viewModel()
-
-
-    private lateinit var tvTitle: EditText
-    private lateinit var tvDescription: EditText
+    var picUrl: Uri? = null
 
     lateinit var confirmDialog: MaterialAlertDialogBuilder
 
@@ -48,14 +46,14 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Наблюдаем за статусами и ошибками
-        viewModel.statusLiveData.observe(viewLifecycleOwner) { status ->
-            Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
-        }
-
-        viewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
-            Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
-        }
+//        // Наблюдаем за статусами и ошибками
+//        viewModel.statusLiveData.observe(viewLifecycleOwner) { status ->
+//            Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
+//        }
+//
+//        viewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
+//            Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
+//        }
 
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Завершить создание плейлиста?")
@@ -106,7 +104,6 @@ class NewPlaylistFragment : Fragment() {
                 }
             })
         binding.createPlaylistButton.setOnClickListener {
-            showSuccesToast()
             createPlaylist()
             findNavController().navigateUp()
         }
@@ -122,22 +119,17 @@ class NewPlaylistFragment : Fragment() {
         )
     }
 
-    private fun createPlaylist() {
-        val title = binding.titleEdittext.text.toString()
-        if (title.isBlank()) {
-            Toast.makeText(
-                requireContext(),
-                "Название плейлиста не может быть пустым",
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
-        viewModel.createPlaylist()
+    private fun createPlaylist(picUrl: Uri?) {
+        viewModel.createPlaylist(
+            binding.textFieldTitle.text.toString(),
+            binding.descriptionEdittext.text.toString(),
+            picUrl,
+        )
+        Toast.makeText(requireContext(), "Плейлист ${binding.titleEdittext.text.toString()} успешно создан",
+            Toast.LENGTH_SHORT
+        ).show()
+
     }
 
-
-    private fun showSuccesToast() {
-        Toast.makeText(requireContext(), "Плейлист успешно создан", Toast.LENGTH_SHORT).show()
-    }
 
 }

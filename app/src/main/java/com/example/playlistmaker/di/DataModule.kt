@@ -48,8 +48,7 @@ val dataModule = module {
     }
 
     single {
-        Room.databaseBuilder(androidContext(), PlaylistDataBase::class.java, "playlist_database.db")
-            .build()
+        Room.databaseBuilder(androidContext(), PlaylistDataBase::class.java, "playlist_database.db").build()
     }
 
 }

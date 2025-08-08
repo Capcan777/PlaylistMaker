@@ -30,7 +30,7 @@ val viewModelModule = module {
         PlaylistViewModel()
     }
 
-    viewModel { (application: Application) ->
-        NewPlaylistViewModel(get(), application)
+    viewModel {
+        NewPlaylistViewModel(get(), get())
     }
 }

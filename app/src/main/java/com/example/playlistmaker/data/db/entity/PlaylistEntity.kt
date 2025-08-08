@@ -3,6 +3,7 @@ package com.example.playlistmaker.data.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.Gson
 
 @Entity(tableName = "playlist_table")
 data class PlaylistEntity(
@@ -11,8 +12,6 @@ data class PlaylistEntity(
     val title: String,
     val description: String,
     val pathUrl: String?,
-    @ColumnInfo(name = "list_tracks_id")
     val trackIds: String?,
-    @ColumnInfo(name = "number_of_tracks")
     val numberOfTracks: Int,
 )
