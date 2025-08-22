@@ -11,7 +11,7 @@ class PlaylistDbConvertor {
             title = playlist.title,
             description = playlist.description,
             pathUrl = playlist.pathUrl,
-            trackIds = playlist.trackIds,
+//            trackIds = playlist.trackIds,
             numberOfTracks = playlist.numberOfTracks
         )
     }
@@ -23,7 +23,7 @@ class PlaylistDbConvertor {
             title = playlistEntity.title,
             description = playlistEntity.description,
             pathUrl = playlistEntity.pathUrl,
-            trackIds = playlistEntity.trackIds,
+//            trackIds = playlistEntity.trackIds,
             numberOfTracks = playlistEntity.numberOfTracks
         )
     }

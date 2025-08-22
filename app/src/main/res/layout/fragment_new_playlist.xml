@@ -21,7 +21,7 @@
         style="@style/TextBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Новый плейлист"
+        android:text="@string/new_playlist"
         app:layout_constraintBottom_toBottomOf="@+id/fall_back"
         app:layout_constraintStart_toEndOf="@+id/fall_back"
         app:layout_constraintTop_toTopOf="parent" />
@@ -97,7 +97,6 @@
             android:maxLength="30"
             android:singleLine="true"
             android:textFontWeight="400" />
-
 
     </com.google.android.material.textfield.TextInputLayout>
 

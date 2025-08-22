@@ -2,8 +2,11 @@ package com.example.playlistmaker.data.mediatec
 
 import com.example.playlistmaker.converters.PlaylistDbConvertor
 import com.example.playlistmaker.data.db.PlaylistDataBase
+import com.example.playlistmaker.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.repository.PlaylistRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class PlaylistRepositoryImpl(
     private val dataBase: PlaylistDataBase,
@@ -12,7 +15,6 @@ class PlaylistRepositoryImpl(
     override suspend fun createPlaylist(playlist: Playlist) {
         require(playlist.title.isNotBlank())
         val playlistEntity = playlistDbConvertor.map(playlist)
-        require(playlistEntity.id > 0)
         dataBase.playlistDao().createPlaylist(playlistEntity)
     }
 
@@ -25,5 +27,14 @@ class PlaylistRepositoryImpl(
     override suspend fun updatePlaylist(playlist: Playlist) {
         val playlistEntity = playlistDbConvertor.map(playlist)
         dataBase.playlistDao().updatePlaylist(playlistEntity)
+    }
+
+    override fun getPlaylists(): Flow<List<Playlist>> = flow {
+       val playlists = dataBase.playlistDao().getPlaylists()
+        emit(convertFromPlaylistEntity(playlists))
+    }
+
+    private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
+        return playlists.map { playlist-> playlistDbConvertor.map(playlist)}
     }
 }

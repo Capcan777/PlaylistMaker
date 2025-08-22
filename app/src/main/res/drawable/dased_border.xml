@@ -7,4 +7,6 @@
         android:color="#AEAFB4"
         android:dashWidth="40dp"
         android:dashGap="35dp" />
+
+
 </shape>

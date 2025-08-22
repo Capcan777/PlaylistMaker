@@ -122,7 +122,7 @@ class NewPlaylistFragment : Fragment() {
 
     private fun createPlaylist(picUrl: Uri?) {
         viewModel.createPlaylist(
-            binding.textFieldTitle.text.toString(),
+            binding.titleEdittext.text.toString(),
             binding.descriptionEdittext.text.toString(),
             picUrl,
         )
