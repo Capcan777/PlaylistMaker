@@ -30,8 +30,6 @@ class PlayerViewModel(
     private var timerJob: Job? = null
     private var isPlaying = false
 
-    val trackOnPlayer = historyInteractor.readTracksFromHistory()[0]
-
     private var trackInfoLiveData = MutableLiveData<Track?>()
     fun getTrackInfoLiveData(): LiveData<Track?> = trackInfoLiveData
 

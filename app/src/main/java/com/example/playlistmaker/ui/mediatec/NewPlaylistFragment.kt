@@ -25,10 +25,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlaylistFragment : Fragment() {
 
-//    companion object {
-//        fun newInstance() = NewPlaylistFragment()
-//    }
-
     private var _binding: FragmentNewPlaylistBinding? = null
     private val binding get() = _binding!!
     private val viewModel: NewPlaylistViewModel by viewModel()
@@ -47,15 +43,6 @@ class NewPlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        // Наблюдаем за статусами и ошибками
-//        viewModel.statusLiveData.observe(viewLifecycleOwner) { status ->
-//            Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
-//        }
-//
-//        viewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
-//            Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
-//        }
 
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Завершить создание плейлиста?")
@@ -77,21 +64,15 @@ class NewPlaylistFragment : Fragment() {
                 }
             }
 
-        binding.titleEdittext.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.titleEdittext.text!!.isEmpty()) {
-            }
-        }
         binding.titleEdittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateCreateButtonState(s.isNullOrEmpty())
-
             }
 
             override fun afterTextChanged(s: Editable?) {
-
             }
 
         })
@@ -108,7 +89,6 @@ class NewPlaylistFragment : Fragment() {
         }
         binding.picturePlace.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-
         }
 
         binding.fallBack.setOnClickListener {
@@ -126,7 +106,6 @@ class NewPlaylistFragment : Fragment() {
             createPlaylist(picUrl)
             findNavController().navigateUp()
         }
-
     }
 
     private fun showKeyboard(view: View) {
@@ -155,7 +134,6 @@ class NewPlaylistFragment : Fragment() {
         Toast.makeText(requireContext(), "Плейлист ${binding.titleEdittext.text.toString()} успешно создан",
             Toast.LENGTH_SHORT
         ).show()
-
     }
 
     override fun onDestroy() {

@@ -65,7 +65,8 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
                 is PlayerPlaylistState.Error -> {
-                    Toast.makeText(this, "Ошибка загрузки плейлистов", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.error_loading_playlists), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -74,20 +75,29 @@ class PlayerActivity : AppCompatActivity() {
             when (status) {
                 AddToPlaylistStatus.ADDED -> {
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                    val title = lastSelectedPlaylistTitle ?: "плейлист"
-                    Toast.makeText(this, "Добавлено в плейлист ${title}", Toast.LENGTH_SHORT).show()
+                    val title = lastSelectedPlaylistTitle ?: getString(R.string.playlist)
+                    Toast.makeText(this,
+                        getString(R.string.added_into_playlist, title), Toast.LENGTH_SHORT).show()
                     val pid = lastSelectedPlaylistId
                     val tid = currentTrackId
                     if (pid != null && tid != -1) {
                         adapter.incrementTracksCountFor(pid, tid)
                     }
                 }
+
                 AddToPlaylistStatus.ALREADY_IN_PLAYLIST -> {
-                    val title = lastSelectedPlaylistTitle ?: "плейлист"
-                    Toast.makeText(this, "Трек уже добавлен в плейлист ${title}", Toast.LENGTH_SHORT).show()
+                    val title = lastSelectedPlaylistTitle ?: getString(R.string.playlist)
+                    Toast.makeText(
+                        this,
+                        getString(R.string.track_already_add_into_playlist, title),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+
                 AddToPlaylistStatus.ERROR ->
-                    Toast.makeText(this, "Ошибка добавления в плейлист", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.error_to_add_in_playlist), Toast.LENGTH_SHORT).show()
+
                 null -> {}
             }
         }
@@ -156,14 +166,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.newPlaylistButton.setOnClickListener {
-//            binding.bottomSheet.isVisible = false
-//            binding.overlay.isVisible = false
-//            binding.scrollView.isVisible = false
-//            supportFragmentManager.beginTransaction()
-//                .add(R.id.playerFragmentContainerView, NewPlaylistFragment())
-//                .commit()
             val intent = Intent(this, RootActivity::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 putExtra("open_fragment", "new_playlist")
             }
             startActivity(intent)
@@ -237,9 +240,9 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun clickOnPlaylist(playlist: Playlist) {
-       lastSelectedPlaylistId = playlist.id
-       lastSelectedPlaylistTitle = playlist.title
-       lifecycleScope.launch { viewModel.addToPlaylist(playlist) }
+        lastSelectedPlaylistId = playlist.id
+        lastSelectedPlaylistTitle = playlist.title
+        lifecycleScope.launch { viewModel.addToPlaylist(playlist) }
     }
 
 
