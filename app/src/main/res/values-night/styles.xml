@@ -123,5 +123,13 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <style name="TextPlaylistMedia">
+        <item name="fontFamily">@font/yandex_sans_display_regular</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
 
 </resources>

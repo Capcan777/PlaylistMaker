@@ -6,12 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.favorite.FavoriteInteractor
+import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.playlist.PlaylistInteractor
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.ui.mediatec.state.PlaylistState
 import com.example.playlistmaker.ui.player.state.PlayerPlaylistState
+import com.example.playlistmaker.ui.player.state.AddToPlaylistStatus
 import com.example.playlistmaker.ui.player.state.PlayerScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -41,6 +43,9 @@ class PlayerViewModel(
 
     private var _playerPlaylistState = MutableLiveData<PlayerPlaylistState>()
     val playerPlaylistState: LiveData<PlayerPlaylistState> = _playerPlaylistState
+
+    private val _addToPlaylistStatus = MutableLiveData<AddToPlaylistStatus>()
+    val addToPlaylistStatus: LiveData<AddToPlaylistStatus> = _addToPlaylistStatus
 
     init {
         loadPlaylists()
@@ -168,6 +173,23 @@ fun updateTrackFavoriteStatus(trackId: Int, isFavorite: Boolean) {
                         _playerPlaylistState.postValue(PlayerPlaylistState.Content(playlists))
                     }
                 }
+        }
+    }
+
+    fun addToPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            val track = trackInfoLiveData.value ?: return@launch
+            if (playlist.trackIds.contains(track.trackId)) {
+                _addToPlaylistStatus.postValue(AddToPlaylistStatus.ALREADY_IN_PLAYLIST)
+                return@launch
+            }
+            try {
+                playlistInteractor.addTrackToPlaylist(track, playlist)
+                _addToPlaylistStatus.postValue(AddToPlaylistStatus.ADDED)
+                loadPlaylists()
+            } catch (e: Exception) {
+                _addToPlaylistStatus.postValue(AddToPlaylistStatus.ERROR)
+            }
         }
     }
 

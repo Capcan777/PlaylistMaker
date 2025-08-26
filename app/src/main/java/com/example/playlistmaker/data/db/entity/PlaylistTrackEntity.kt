@@ -18,5 +18,6 @@ data class PlaylistTrackEntity(
     val trackTimeMillis: Long,
     val previewUrl: String,
     val isFavorite: Boolean,
-    val lastAdded: Long = System.currentTimeMillis()
+    val lastAdded: Long = System.currentTimeMillis(),
+    val playlistId: String,
 )

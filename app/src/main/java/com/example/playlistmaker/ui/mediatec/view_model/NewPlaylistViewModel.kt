@@ -26,7 +26,7 @@ class NewPlaylistViewModel(private val interactor: PlaylistInteractor, applicati
                 id = 0,
                 title = playlistTitle,
                 description = playlistDescription,
-                pathUrl = imagePath.toString(),
+                pathUrl = playlistImage ?: imagePath?.toString(),
                 numberOfTracks = 0
             )
             interactor.createPlaylist(playlist)
@@ -44,19 +44,15 @@ class NewPlaylistViewModel(private val interactor: PlaylistInteractor, applicati
             filePath.mkdirs()
         }
         val file = File(filePath, "pic_${System.currentTimeMillis()}.jpg")
-        return try {
-            getApplication<Application>().contentResolver.openInputStream(uri)?.use { inputStream ->
-                FileOutputStream(file).use { outputStream ->
-                    BitmapFactory.decodeStream(inputStream)?.compress(
-                        Bitmap.CompressFormat.JPEG,
-                        30,
-                        outputStream
-                    )
-                }
-            }
-            file.path
-        } catch (e: IOException) {
-            null
-        }
+        val inputStream = getApplication<Application>().contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(file)
+        BitmapFactory.decodeStream(inputStream)
+            .compress(
+                Bitmap.CompressFormat.JPEG,
+                30,
+                outputStream)
+        playlistImage = file.path
+        return file.path
+
     }
 }

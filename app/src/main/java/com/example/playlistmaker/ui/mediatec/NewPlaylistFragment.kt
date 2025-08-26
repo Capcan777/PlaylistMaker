@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.mediatec
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -19,6 +20,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.ui.mediatec.view_model.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.view.inputmethod.InputMethodManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlaylistFragment : Fragment() {
@@ -74,6 +76,11 @@ class NewPlaylistFragment : Fragment() {
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
+
+        binding.titleEdittext.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.titleEdittext.text!!.isEmpty()) {
+            }
+        }
         binding.titleEdittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -88,6 +95,17 @@ class NewPlaylistFragment : Fragment() {
             }
 
         })
+
+        binding.titleEdittext.setOnClickListener {
+            binding.titleEdittext.requestFocus()
+            showKeyboard(binding.titleEdittext)
+        }
+
+        binding.titleEdittext.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                showKeyboard(binding.titleEdittext)
+            }
+        }
         binding.picturePlace.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 
@@ -111,6 +129,14 @@ class NewPlaylistFragment : Fragment() {
 
     }
 
+    private fun showKeyboard(view: View) {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        view.post {
+            view.requestFocus()
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
     private fun updateCreateButtonState(isDisabled: Boolean) {
         binding.createPlaylistButton.isEnabled = !isDisabled
         binding.createPlaylistButton.setBackgroundColor(
@@ -130,6 +156,11 @@ class NewPlaylistFragment : Fragment() {
             Toast.LENGTH_SHORT
         ).show()
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 

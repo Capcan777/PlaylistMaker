@@ -16,6 +16,18 @@ class PlayerPlaylistAdapter() : RecyclerView.Adapter<PlayerPlaylistViewHolder>()
         notifyDataSetChanged()
     }
 
+    fun incrementTracksCountFor(playlistId: Int, trackId: Int) {
+        val index = playlists.indexOfFirst { it.id == playlistId }
+        if (index != -1) {
+            val updated = playlists[index].copy(
+                numberOfTracks = playlists[index].numberOfTracks + 1,
+                trackIds = playlists[index].trackIds + trackId
+            )
+            playlists[index] = updated
+            notifyItemChanged(index)
+        }
+    }
+
     var onPlaylistClickListener: OnPlaylistClickListener? = null
 
     override fun onCreateViewHolder(

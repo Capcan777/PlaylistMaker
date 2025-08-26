@@ -9,19 +9,21 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.BottomSheetItemBinding
 import com.example.playlistmaker.domain.model.Playlist
+import java.io.File
 
-class PlayerPlaylistViewHolder(private val binding: BottomSheetItemBinding): RecyclerView.ViewHolder(binding.root) {
+class PlayerPlaylistViewHolder(private val binding: BottomSheetItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     fun bind(playlist: Playlist) = with(binding) {
-       tvPlaylistTitle.text = playlist.title
+        tvPlaylistTitle.text = playlist.title
         tvTracksNumber.text = playlist.numberOfTracks.toString()
-        if (playlist.pathUrl != "") {
-            Glide.with(itemView.context)
-                .load(playlist.pathUrl)
-                .placeholder(R.drawable.poster_placeholder)
-                .transform(CenterCrop(), RoundedCorners(dpToPx(8.0F, itemView.context)))
-                .into(ivPlaylistImage)
-        }
+        val source = playlist.pathUrl?.let { path -> if (path.startsWith("/")) File(path) else path }
+        Glide.with(itemView)
+            .load(source)
+            .placeholder(R.drawable.poster_placeholder)
+            .error(R.drawable.poster_placeholder)
+            .transform(CenterCrop(), RoundedCorners(dpToPx(8.0F, itemView.context)))
+            .into(ivPlaylistImage)
     }
 
     private fun dpToPx(dp: Float, context: Context): Int {

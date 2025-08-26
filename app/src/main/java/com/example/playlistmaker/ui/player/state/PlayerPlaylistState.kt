@@ -7,3 +7,9 @@ sealed interface PlayerPlaylistState {
     data class Error(val message: String): PlayerPlaylistState
     object Empty: PlayerPlaylistState
 }
+
+enum class AddToPlaylistStatus {
+    ADDED,
+    ALREADY_IN_PLAYLIST,
+    ERROR
+}
