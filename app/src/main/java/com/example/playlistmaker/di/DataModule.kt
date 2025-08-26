@@ -5,6 +5,8 @@ import android.media.MediaPlayer
 import androidx.room.Room
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.db.AppDataBase
+import com.example.playlistmaker.data.db.PlaylistDataBase
+import com.example.playlistmaker.data.db.PlaylistTrackDataBase
 import com.example.playlistmaker.data.network.ItunesApiService
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl.Companion.PREF_KEY_HISTORY
@@ -44,6 +46,13 @@ val dataModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), AppDataBase::class.java, "database.db").build()
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), PlaylistDataBase::class.java, "playlist_database.db").build()
+    }
+    single {
+        Room.databaseBuilder(androidContext(), PlaylistTrackDataBase::class.java, "playlist_track_database.db").build()
     }
 
 }
