@@ -162,6 +162,19 @@
         <item name="cornerSize">8dp</item>
     </style>
 
+    <style name="PlaylistTitle">
+        <item name="fontFamily">@font/yandex_sans_display_bold</item>
+        <item name="android:textSize">@dimen/size_24dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:fontWeight">700</item>
+        <item name="android:textColor">@color/dark_grey</item>
+    </style>
+
+    <style name="PlaylistBaseText" parent="TextPlaylistMedia">
+        <item name="android:textSize">18sp</item>
+
+    </style>
+
 
 
 </resources>

@@ -41,13 +41,12 @@ class RootActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { controller, destination, _ ->
             when (destination.id) {
-                R.id.playlistsFragment, R.id.playerActivity, R.id.newPlaylistFragment -> {
+                R.id.playlistsFragment, R.id.playerActivity, R.id.newPlaylistFragment, R.id.playlistFragment -> {
                     bottomNavMenu.isVisible = false
                 }
 
                 else -> {
                     bottomNavMenu.isVisible = true
-
                 }
             }
         }

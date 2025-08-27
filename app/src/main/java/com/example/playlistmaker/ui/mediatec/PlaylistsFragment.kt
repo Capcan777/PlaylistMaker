@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.ui.mediatec.state.PlaylistState
 import com.example.playlistmaker.ui.mediatec.view_model.PlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,7 +21,8 @@ class PlaylistsFragment : Fragment() {
 
     companion object {
         fun newInstance() = PlaylistsFragment()
-    }
+        }
+
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
@@ -35,6 +38,9 @@ class PlaylistsFragment : Fragment() {
 
         binding.rvPlaylist.layoutManager = GridLayoutManager(requireContext(),2)
         adapter = PlaylistAdapter()
+        adapter.onPlaylistClickListener = PlaylistAdapter.OnPlaylistClickListener { playlist ->
+            onPlaylistClick(playlist)
+        }
         binding.rvPlaylist.adapter = adapter
 
         return binding.root
@@ -80,5 +86,11 @@ class PlaylistsFragment : Fragment() {
         emptyPlaylistMessage.isVisible = false
         placeholderEmptyPlaylist.isVisible = false
     }
+
+    private fun onPlaylistClick(playlist: Playlist) {
+        val bundle = bundleOf("playlist_key" to playlist)
+        findNavController().navigate(R.id.action_mediatecFragment_to_playlistFragment, bundle)
+    }
+
 
 }
