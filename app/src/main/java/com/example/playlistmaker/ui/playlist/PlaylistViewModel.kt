@@ -42,7 +42,6 @@ class PlaylistViewModel(val playlistInteractor: PlaylistInteractor) : ViewModel(
         viewModelScope.launch {
             try {
                 playlistInteractor.deleteTrackFromPlaylist(track, playlist)
-                // После удаления обновляем список треков плейлиста
                 loadTimeTracks(playlist?.id.toString())
             } catch (e: Exception) {
                 Log.e("PlaylistViewModel", "Ошибка при удалении трека из плейлиста", e)
