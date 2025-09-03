@@ -19,5 +19,5 @@ data class PlaylistTrackEntity(
     val previewUrl: String,
     val isFavorite: Boolean,
     val lastAdded: Long = System.currentTimeMillis(),
-    val playlistId: String,
+    var playlistId: String = "",
 )

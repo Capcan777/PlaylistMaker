@@ -6,12 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.model.Track
+import com.google.android.material.dialog.MaterialDialogs
 
 class TrackAdapter(
     private val clickListener: TrackClickListener
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
-   private var tracks = arrayListOf<Track>()
+    private var tracks = arrayListOf<Track>()
+
+    var onTrackHoldListener: TrackHoldListener? = null
 
     fun updateTrackList(trackList: ArrayList<Track>) {
         this.tracks = trackList
@@ -35,8 +38,19 @@ class TrackAdapter(
         holder.itemView.setOnClickListener {
             clickListener.onTrackClick(track)
         }
+        holder.itemView.setOnLongClickListener {
+            onTrackHoldListener?.onLongItemClick(track)
+            true
+        }
+
     }
+
     fun interface TrackClickListener {
         fun onTrackClick(track: Track)
+
+    }
+
+    fun interface TrackHoldListener {
+        fun onLongItemClick(track: Track)
     }
 }

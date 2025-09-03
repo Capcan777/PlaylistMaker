@@ -13,7 +13,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.ui.mediatec.state.PlaylistState
-import com.example.playlistmaker.ui.mediatec.view_model.PlaylistViewModel
+import com.example.playlistmaker.ui.mediatec.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -26,8 +26,8 @@ class PlaylistsFragment : Fragment() {
 
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistViewModel>()
-    private lateinit var adapter: PlaylistAdapter
+    private val viewModel by viewModel<PlaylistsViewModel>()
+    private val adapter = PlaylistsAdapter()
 
 
     override fun onCreateView(
@@ -35,20 +35,17 @@ class PlaylistsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
-
-        binding.rvPlaylist.layoutManager = GridLayoutManager(requireContext(),2)
-        adapter = PlaylistAdapter()
-        adapter.onPlaylistClickListener = PlaylistAdapter.OnPlaylistClickListener { playlist ->
-            onPlaylistClick(playlist)
-        }
-        binding.rvPlaylist.adapter = adapter
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.rvPlaylistItem.layoutManager = GridLayoutManager(requireContext(),2)
+        binding.rvPlaylistItem.adapter = adapter
+        adapter.onPlaylistClickListener = PlaylistsAdapter.OnPlaylistClickListener { playlist ->
+            onPlaylistClick(playlist)
+        }
 
         viewModel.statePlaylistScreen.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -60,14 +57,13 @@ class PlaylistsFragment : Fragment() {
                 PlaylistState.Empty -> {
                     adapter.setPlaylistList(emptyList())
                     binding.emptyPlaylistMessage.isVisible = true
-                    binding.rvPlaylist.isVisible = false
+                    binding.rvPlaylistItem.isVisible = false
                 }
 
                 is PlaylistState.Error -> {}
             }
-            viewModel.loadPlaylist()
         }
-
+        viewModel.loadPlaylist()
 
         binding.newPlaylistButton.setOnClickListener {
             findNavController().navigate(R.id.action_mediatecFragment_to_newPlaylistFragment)
@@ -81,7 +77,7 @@ class PlaylistsFragment : Fragment() {
 
 
     private fun showContent() = with(binding) {
-        rvPlaylist.isVisible = true
+        rvPlaylistItem.isVisible = true
         newPlaylistButton.isVisible = true
         emptyPlaylistMessage.isVisible = false
         placeholderEmptyPlaylist.isVisible = false

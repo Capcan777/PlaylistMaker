@@ -3,24 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.playlist.PlaylistFragment">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#E4E6E9"
-        tools:context=".ui.playlist.PlaylistFragment">
+        android:background="#E4E6E9">
 
         <ImageView
             android:id="@+id/iv_playlistImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="360dp"
+            android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:srcCompat="@drawable/placeholder_playlist"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            tools:srcCompat="@drawable/placeholder_playlist" />
 
         <ImageButton
             android:id="@+id/fall_back"
@@ -112,11 +114,12 @@
             app:layout_constraintStart_toEndOf="@+id/iv_share"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-        <View android:id="@+id/overlay"
+        <View
+            android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#99000000"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -124,25 +127,27 @@
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@drawable/oval_bottom_sheet"
-        app:behavior_hideable="true"
+        android:orientation="vertical"
+        app:behavior_fitToContents="false"
+        app:behavior_hideable="false"
         app:behavior_peekHeight="266dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
             android:layout_width="50dp"
             android:layout_height="@dimen/size_4dp"
-            android:background="@drawable/bottom_sheet_shape"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/size_8dp"/>
+            android:layout_marginTop="@dimen/size_8dp"
+            android:background="@drawable/bottom_sheet_shape" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/track_items_view"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:visibility="visible"
+            tools:listitem="@layout/track_items_view" />
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

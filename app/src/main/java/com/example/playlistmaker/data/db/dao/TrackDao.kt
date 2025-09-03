@@ -21,4 +21,7 @@ interface TrackDao {
     @Query("SELECT trackId FROM track_table WHERE isFavorite = 1")
     suspend fun getTracksIdList(): List<Int>
 
+    @Query("SELECT * FROM track_table WHERE trackId IN (:trackIds)")
+    suspend fun getTracksByIds(trackIds: List<Int>): List<TrackEntity>
+
 }

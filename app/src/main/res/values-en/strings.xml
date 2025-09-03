@@ -37,4 +37,5 @@
     <string name="music_style">Genre</string>
     <string name="artist_country">Country</string>
     <string name="message_empty_favorite_tracks">Your library is empty</string>
+    <string name="do_you_want_delete_track">Do you want to delete track?</string>
 </resources>

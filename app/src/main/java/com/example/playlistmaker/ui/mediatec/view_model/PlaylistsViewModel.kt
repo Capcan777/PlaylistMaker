@@ -9,7 +9,7 @@ import com.example.playlistmaker.ui.mediatec.state.PlaylistState
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class PlaylistViewModel(val playlistInteractor: PlaylistInteractor) : ViewModel() {
+class PlaylistsViewModel(val playlistInteractor: PlaylistInteractor) : ViewModel() {
 
 
     private val _statePlaylistScreen = MutableLiveData<PlaylistState>()

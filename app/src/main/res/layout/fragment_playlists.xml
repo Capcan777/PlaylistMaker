@@ -51,19 +51,13 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_playlist"
+            android:id="@+id/rvPlaylistItem"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="12dp"
             android:layout_weight="1"
-            android:lineHeight="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/playlist_item"
-            app:layout_constraintVertical_bias="0" />
+            tools:listitem="@layout/playlist_item" />
 
     </LinearLayout>
 
