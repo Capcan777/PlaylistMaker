@@ -2,13 +2,11 @@ package com.example.playlistmaker.ui.playlist
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -62,6 +60,7 @@ class PlaylistFragment : Fragment() {
         }
 
         setupClickListeners()
+
         adapter = TrackAdapter { track ->
             onTrackSelected(track)
         }
@@ -88,7 +87,7 @@ class PlaylistFragment : Fragment() {
                     val totalDurationMinutes =
                         SimpleDateFormat("mm", Locale.getDefault()).format(totalDurationMillis)
                     binding.tvPlaylistTime.text = "$totalDurationMinutes мин"
-                    binding.tvPlaylistTracksNumbers.text = "${tracks.size} треков"
+                    binding.tvPlaylistTracksNumbers.text = tracks.size.getTrackString()
                     adapter.updateTrackList(ArrayList(tracks))
                 }
             }
@@ -110,7 +109,7 @@ class PlaylistFragment : Fragment() {
 
         binding.tvPlaylistTitle.text = playlist.title
         binding.tvPlaylistDescription.text = playlist.description
-        binding.tvPlaylistTracksNumbers.text = "${playlist.numberOfTracks} треков"
+        binding.tvPlaylistTracksNumbers.text = playlist.numberOfTracks.getTrackString()
 
         Glide.with(this)
             .load(source)
@@ -137,5 +136,13 @@ class PlaylistFragment : Fragment() {
         startActivity(playerIntent)
     }
 
+    private fun Int.getTrackString(): String {
+        return when {
+            this % 100 in 11..14 -> "$this треков"
+            this % 10 == 1 -> "$this трек"
+            this % 10 in 2..4 -> "$this трека"
+            else -> "$this треков"
+        }
+    }
 
 }
