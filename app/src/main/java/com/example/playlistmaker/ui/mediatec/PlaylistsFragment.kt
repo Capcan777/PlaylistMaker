@@ -75,6 +75,11 @@ class PlaylistsFragment : Fragment() {
         _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadPlaylist()
+    }
+
 
     private fun showContent() = with(binding) {
         rvPlaylistItem.isVisible = true

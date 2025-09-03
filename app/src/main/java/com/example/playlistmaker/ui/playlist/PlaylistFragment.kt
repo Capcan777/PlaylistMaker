@@ -87,6 +87,7 @@ class PlaylistFragment : Fragment() {
                     val totalDurationMinutes =
                         SimpleDateFormat("mm", Locale.getDefault()).format(totalDurationMillis)
                     binding.tvPlaylistTime.text = "$totalDurationMinutes мин"
+                    binding.tvPlaylistTracksNumbers.text = "${tracks.size} треков"
                     adapter.updateTrackList(ArrayList(tracks))
                 }
             }
