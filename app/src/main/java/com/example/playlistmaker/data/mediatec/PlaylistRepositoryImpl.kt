@@ -105,31 +105,32 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun deleteTrackFromPlaylist(track: Track, playlist: Playlist?) {
-        val trackEntity = playlistDbConvertor.map(track)
-        Log.d("PlaylistRepo", "Ковертировали в trackEntity: $trackEntity")
-        Log.d(
-            "PlaylistRepository",
-            "Удаляем трек: trackId=${trackEntity.trackId}, playlistId=${playlist?.id}"
-        )
-        if (!isTrackInAnyPlaylist(track.trackId)) {
-            playlistTrackDataBase.playlistTrackDao()
-                .deleteTrackFromPlaylist(track.trackId, playlist?.id.toString())
-        }
-        Log.d("PlaylistRepo", "Удалили трек")
-        val playlistEntity = playlistDbConvertor.map(playlist!!)
-        val updated = playlistEntity.copy(numberOfTracks = playlistEntity.numberOfTracks - 1)
+        val trackId = track.trackId
+        val playlistId = playlist?.id?.toString() ?: return
+
+        // 1) Удаляем связь трека с плейлистом
+        playlistTrackDataBase.playlistTrackDao().deleteTrackFromPlaylist(trackId, playlistId)
+
+        // 2) Обновляем счётчик треков в плейлисте
+        val playlistEntity = playlistDbConvertor.map(playlist)
+        val updated = playlistEntity.copy(numberOfTracks = (playlistEntity.numberOfTracks - 1).coerceAtLeast(0))
         dataBase.playlistDao().updatePlaylist(updated)
 
+        // 3) Проверяем, остался ли трек в других плейлистах
+        val usageCount = playlistTrackDataBase.playlistTrackDao().getTrackUsageCount(trackId)
+        if (usageCount == 0) {
+            // Здесь можно удалить запись о треке из общей таблицы треков, если она создаётся при добавлении в плейлист.
+            // В текущей архитектуре плейлист хранит полную копию трека в playlist_tracks_table, поэтому дополнительных действий не требуется.
+        }
     }
 
-    private suspend fun isTrackInAnyPlaylist(trackId: Int): Boolean {
+
+    override suspend fun isTrackInAnyPlaylist(trackId: Int): Boolean {
         val playlists = dataBase.playlistDao().getPlaylists()
         for (playlist in playlists) {
             val trackIds = playlistTrackDataBase.playlistTrackDao()
                 .getTrackIdsForPlaylist(playlist.id.toString())
-            if (trackIds.contains(trackId)) {
-                return true
-            }
+            if (trackIds.contains(trackId)) return true
         }
         return false
     }

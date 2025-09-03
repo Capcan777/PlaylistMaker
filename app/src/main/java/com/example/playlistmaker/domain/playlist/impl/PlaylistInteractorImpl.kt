@@ -46,4 +46,7 @@ class PlaylistInteractorImpl(private val repository: PlaylistRepository) : Playl
         repository.deleteTrackFromPlaylist(track, playlist)
     }
 
+    override suspend fun isTrackInAnyPlaylist(trackId: Int): Boolean {
+        return repository.isTrackInAnyPlaylist(trackId)
+    }
 }

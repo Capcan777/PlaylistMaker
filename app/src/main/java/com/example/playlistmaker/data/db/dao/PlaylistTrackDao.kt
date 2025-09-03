@@ -27,4 +27,7 @@ interface PlaylistTrackDao {
     @Update(entity = PlaylistTrackEntity::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateTracksOfPlaylist(playlistTrackEntity: PlaylistTrackEntity)
 
+    @Query("SELECT COUNT(*) FROM playlist_tracks_table WHERE trackId = :trackId")
+    suspend fun getTrackUsageCount(trackId: Int): Int
+
 }
