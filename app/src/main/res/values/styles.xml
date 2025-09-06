@@ -172,9 +172,12 @@
 
     <style name="PlaylistBaseText" parent="TextPlaylistMedia">
         <item name="android:textSize">18sp</item>
-
     </style>
 
+    <style name="PlaylistNumberTrackBottom" parent="TextPlaylistAdd">
+        <item name="android:textSize">@dimen/size_11sp</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
 
 
 </resources>

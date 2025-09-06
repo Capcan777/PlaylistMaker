@@ -32,6 +32,7 @@ class PlaylistRepositoryImpl(
     override suspend fun deletePlaylist(playlist: Playlist) {
         val playlistEntity = playlistDbConvertor.map(playlist)
         dataBase.playlistDao().deletePlaylistEntity(playlistEntity)
+        playlistTrackDataBase.playlistTrackDao().deleteAllTracksFromPlaylist(playlist.id.toString())
 
     }
 
@@ -108,10 +109,8 @@ class PlaylistRepositoryImpl(
         val trackId = track.trackId
         val playlistId = playlist?.id?.toString() ?: return
 
-        // 1) Удаляем связь трека с плейлистом
         playlistTrackDataBase.playlistTrackDao().deleteTrackFromPlaylist(trackId, playlistId)
 
-        // 2) Обновляем счётчик треков в плейлисте
         val playlistEntity = playlistDbConvertor.map(playlist)
         val updated = playlistEntity.copy(numberOfTracks = (playlistEntity.numberOfTracks - 1).coerceAtLeast(0))
         dataBase.playlistDao().updatePlaylist(updated)

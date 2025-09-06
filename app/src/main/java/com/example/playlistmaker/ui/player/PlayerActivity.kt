@@ -109,7 +109,7 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.setTrack(track)
         }
 
-        val bottomSheetContainer = binding.bottomSheet
+        val bottomSheetContainer = binding.bottomSheetTracks
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }

@@ -31,7 +31,7 @@ val repositoryModule = module {
         SettingsRepositoryImpl(get())
     }
     single<SharingRepository> {
-        SharingRepositoryImpl(androidContext())
+        SharingRepositoryImpl(androidContext(), get(), get(), get())
     }
     single<ExternalNavigator> {
         ExternalNavigator(androidContext())

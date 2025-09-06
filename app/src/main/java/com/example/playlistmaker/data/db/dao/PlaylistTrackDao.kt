@@ -24,6 +24,9 @@ interface PlaylistTrackDao {
     @Query("DELETE FROM playlist_tracks_table WHERE trackId = :trackId AND playlistId = :playlistId")
     suspend fun deleteTrackFromPlaylist(trackId: Int, playlistId: String)
 
+    @Query("DELETE FROM playlist_tracks_table WHERE playlistId = :playlistId")
+    suspend fun deleteAllTracksFromPlaylist(playlistId: String)
+
     @Update(entity = PlaylistTrackEntity::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateTracksOfPlaylist(playlistTrackEntity: PlaylistTrackEntity)
 

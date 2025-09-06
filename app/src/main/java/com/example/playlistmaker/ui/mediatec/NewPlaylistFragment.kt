@@ -9,7 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
@@ -20,14 +20,15 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.ui.mediatec.view_model.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import android.view.inputmethod.InputMethodManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
 
     private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+    protected val binding get() = _binding!!
+
     private val viewModel: NewPlaylistViewModel by viewModel()
+
     var picUrl: Uri? = null
 
     lateinit var confirmDialog: MaterialAlertDialogBuilder
@@ -116,7 +117,7 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
-    private fun updateCreateButtonState(isDisabled: Boolean) {
+    protected open fun updateCreateButtonState(isDisabled: Boolean) {
         binding.createPlaylistButton.isEnabled = !isDisabled
         binding.createPlaylistButton.setBackgroundColor(
             if (isDisabled) requireContext().getColor(R.color.grey) else requireContext().getColor(
@@ -125,7 +126,7 @@ class NewPlaylistFragment : Fragment() {
         )
     }
 
-    private fun createPlaylist(picUrl: Uri?) {
+    protected open fun createPlaylist(picUrl: Uri?) {
         viewModel.createPlaylist(
             binding.titleEdittext.text.toString(),
             binding.descriptionEdittext.text.toString(),
@@ -140,6 +141,5 @@ class NewPlaylistFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
 
 }

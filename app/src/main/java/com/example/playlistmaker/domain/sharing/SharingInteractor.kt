@@ -4,5 +4,5 @@ interface SharingInteractor {
     fun shareLink()
     fun openTerms()
     fun openSupport()
-
+    suspend fun sendPlaylist(playlistId: Int)
 }

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +20,7 @@ import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.search.SearchFragment.Companion.TRACK_INTENT
 import com.example.playlistmaker.ui.search.TrackAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ class PlaylistFragment : Fragment() {
     private val viewModel by viewModel<PlaylistViewModel>()
 
     private lateinit var adapter: TrackAdapter
+    private var currentPlaylist: Playlist? = null
 
 
     override fun onCreateView(
@@ -53,8 +55,30 @@ class PlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val bottomSheetBehaviorMenu = BottomSheetBehavior.from(binding.bottomSheetMenu).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehaviorMenu.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+
+                    else -> binding.overlay.isVisible = true
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = slideOffset + 1f
+            }
+        })
+
 
         val playlist = arguments?.getParcelable<Playlist>("playlist_key")
+        currentPlaylist = playlist
         if (playlist != null) {
             setupPlaylistData(playlist)
         }
@@ -67,7 +91,7 @@ class PlaylistFragment : Fragment() {
         adapter.onTrackHoldListener = TrackAdapter.TrackHoldListener { track ->
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.do_you_want_delete_track))
-                .setNegativeButton("Нет") { dialog, which ->
+                .setNegativeButton(getString(R.string.no)) { dialog, which ->
                     dialog.dismiss()
                 }
                 .setPositiveButton("Да") { dialog, which ->
@@ -94,11 +118,46 @@ class PlaylistFragment : Fragment() {
         }
 
         binding.ivShare.setOnClickListener {
-            if(playlist?.numberOfTracks == 0) {
-                //  В этом плейлисте нет списка треков, которым можно поделиться
-                Toast.makeText(requireContext(), "В этом плейлисте нет списка треков, которым можно поделиться",
-                    Toast.LENGTH_SHORT).show()
+            if (playlist == null || playlist.numberOfTracks == 0) {
+                binding.emptyPlaylistMessage.isVisible = true
+            } else {
+
+                viewModel.sharePlaylist(playlist)
             }
+        }
+
+        binding.ivMore.setOnClickListener {
+            bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.bottomSheetTracks.isVisible = true
+            showPlaylistInfoInBottomMenu(playlist!!)
+        }
+
+        binding.share.setOnClickListener {
+            viewModel.sharePlaylist(playlist)
+        }
+
+        binding.delete.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.do_you_wanna_delete_playlist, playlist?.title))
+                .setNegativeButton(getString(R.string.no)) { dialog, which ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton(getString(R.string.yes)) { dialog, which ->
+                    viewModel.deletePlaylist(playlist)
+                    findNavController().navigateUp()
+                }
+                .show()
+        }
+
+        binding.edit.setOnClickListener {
+            val bundle = Bundle().apply {
+                putParcelable("playlist_edit_key", playlist)
+            }
+            findNavController().navigate(
+                R.id.action_playlistFragment_to_playlistEditFragment,
+                bundle
+            )
+
         }
     }
 
@@ -118,6 +177,18 @@ class PlaylistFragment : Fragment() {
             .into(binding.ivPlaylistImage)
     }
 
+    private fun updatePlaylistData(playlist: Playlist) {
+        viewModel.getUpdatedPlaylist(playlist.id) { updatedPlaylist ->
+            if (updatedPlaylist != null) {
+                // Обновляем UI в главном потоке
+                requireActivity().runOnUiThread {
+                    currentPlaylist = updatedPlaylist
+                    setupPlaylistData(updatedPlaylist)
+                    showPlaylistInfoInBottomMenu(updatedPlaylist)
+                }
+            }
+        }
+    }
 
     private fun setupClickListeners() {
         binding.fallBack.setOnClickListener {
@@ -142,6 +213,27 @@ class PlaylistFragment : Fragment() {
             this % 10 == 1 -> "$this трек"
             this % 10 in 2..4 -> "$this трека"
             else -> "$this треков"
+        }
+    }
+
+    private fun showPlaylistInfoInBottomMenu(playlist: Playlist) {
+        val source = playlist.pathUrl?.let { path ->
+            if (path.startsWith("/")) File(path) else path
+        }
+        Glide.with(this)
+            .load(source)
+            .placeholder(R.drawable.placeholder_playlist)
+            .transform(CenterCrop())
+            .into(binding.playlistImageBottom)
+
+        binding.tvTitlePlaylist.text = playlist.title
+        binding.tvTracksNumberInPlaylist.text = playlist.numberOfTracks.getTrackString()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        currentPlaylist?.let { playlist ->
+            updatePlaylistData(playlist)
         }
     }
 

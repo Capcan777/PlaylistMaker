@@ -12,9 +12,11 @@ import com.example.playlistmaker.domain.playlist.PlaylistInteractor
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
-class NewPlaylistViewModel(private val interactor: PlaylistInteractor, application: Application) :
+open class NewPlaylistViewModel(
+    private val interactor: PlaylistInteractor,
+    application: Application
+) :
     AndroidViewModel(application) {
 
 

@@ -4,7 +4,10 @@ import com.example.playlistmaker.data.sharing.ExternalNavigator
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.SharingRepository
 
-class SharingInteractorImpl(private val externalNavigator: ExternalNavigator, private val sharingRepository: SharingRepository) : SharingInteractor {
+class SharingInteractorImpl(
+    private val externalNavigator: ExternalNavigator,
+    private val sharingRepository: SharingRepository
+) : SharingInteractor {
     override fun shareLink() {
         externalNavigator.shareLink(sharingRepository.getShareAppLink())
     }
@@ -15,5 +18,9 @@ class SharingInteractorImpl(private val externalNavigator: ExternalNavigator, pr
 
     override fun openSupport() {
         externalNavigator.openEmail(sharingRepository.getSupportEmailData())
+    }
+
+    override suspend fun sendPlaylist(playlistId: Int) {
+        externalNavigator.sendPlaylistInfo(sharingRepository.getPlaylistInfoForSend(playlistId))
     }
 }
