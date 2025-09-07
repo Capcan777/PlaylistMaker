@@ -1,22 +1,15 @@
 package com.example.playlistmaker.ui.playlist
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.data.db.entity.PlaylistTrackEntity
 import com.example.playlistmaker.domain.model.Playlist
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.playlist.PlaylistInteractor
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class PlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,
@@ -29,7 +22,22 @@ class PlaylistViewModel(
     private val _totalTime = MutableStateFlow("")
     val totalTime: StateFlow<String> = _totalTime
 
-    fun loadTimeTracks(playlistId: String) {
+    private val _currentPlaylist = MutableStateFlow<Playlist?>(null)
+    val currentPlaylist: StateFlow<Playlist?> = _currentPlaylist
+
+
+    fun loadPlaylist(playlistId: Int) {
+        viewModelScope.launch {
+            try {
+                val playlist = playlistInteractor.getPlaylistById(playlistId)
+                _currentPlaylist.value = playlist
+            } catch (e: Exception) {
+                Log.e("PlaylistViewModel", "Ошибка загрузки плейлиста", e)
+            }
+        }
+    }
+
+    fun loadTracksList(playlistId: String) {
         viewModelScope.launch {
             try {
                 playlistInteractor.getTracksOfPlaylist(playlistId)
@@ -42,11 +50,11 @@ class PlaylistViewModel(
         }
     }
 
-    fun deleteTrackFromPlaylist(track: Track, playlist: Playlist?) {
+    fun deleteTrackFromPlaylist(track: Track, playlistId: Int) {
         viewModelScope.launch {
             try {
-                playlistInteractor.deleteTrackFromPlaylist(track, playlist)
-                loadTimeTracks(playlist?.id.toString())
+                playlistInteractor.deleteTrackFromPlaylist(track, playlistId)
+                loadTracksList(playlistId.toString())
             } catch (e: Exception) {
                 Log.e("PlaylistViewModel", "Ошибка при удалении трека из плейлиста", e)
             }
@@ -76,15 +84,15 @@ class PlaylistViewModel(
         }
     }
 
-    fun getUpdatedPlaylist(playlistId: Int, callback: (Playlist?) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val updatedPlaylist = playlistInteractor.getPlaylistById(playlistId.toInt())
-                callback(updatedPlaylist)
-            } catch (e: Exception) {
-                Log.e("PlaylistViewModel", "Ошибка при получении обновленного плейлиста", e)
-                callback(null)
-            }
-        }
-    }
+//    fun getUpdatedPlaylist(playlistId: Int, callback: (Playlist?) -> Unit) {
+//        viewModelScope.launch {
+//            try {
+//                val updatedPlaylist = playlistInteractor.getPlaylistById(playlistId.toInt())
+//                callback(updatedPlaylist)
+//            } catch (e: Exception) {
+//                Log.e("PlaylistViewModel", "Ошибка при получении обновленного плейлиста", e)
+//                callback(null)
+//            }
+//        }
+//    }
 }

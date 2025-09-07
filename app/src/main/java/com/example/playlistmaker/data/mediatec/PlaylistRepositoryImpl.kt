@@ -72,7 +72,6 @@ class PlaylistRepositoryImpl(
             playlistId = playlistEntity.id.toString()
         )
         playlistTrackDataBase.playlistTrackDao().addTrackToPlaylist(playlistTrackEntity)
-        // Инкрементируем счётчик треков в плейлисте
         val updated = playlistEntity.copy(numberOfTracks = playlistEntity.numberOfTracks + 1)
         dataBase.playlistDao().updatePlaylist(updated)
     }
@@ -105,21 +104,20 @@ class PlaylistRepositoryImpl(
         emit(tracks)
     }
 
-    override suspend fun deleteTrackFromPlaylist(track: Track, playlist: Playlist?) {
+    override suspend fun deleteTrackFromPlaylist(track: Track, playlistId: Int) {
         val trackId = track.trackId
-        val playlistId = playlist?.id?.toString() ?: return
+        val playlistId = playlistId.toString()
 
         playlistTrackDataBase.playlistTrackDao().deleteTrackFromPlaylist(trackId, playlistId)
+        val playlistEntity = dataBase.playlistDao().getPlaylistById(playlistId.toInt())
 
-        val playlistEntity = playlistDbConvertor.map(playlist)
+//        val playlistEntity = playlistDbConvertor.map(playlist)
         val updated = playlistEntity.copy(numberOfTracks = (playlistEntity.numberOfTracks - 1).coerceAtLeast(0))
         dataBase.playlistDao().updatePlaylist(updated)
 
-        // 3) Проверяем, остался ли трек в других плейлистах
         val usageCount = playlistTrackDataBase.playlistTrackDao().getTrackUsageCount(trackId)
         if (usageCount == 0) {
             // Здесь можно удалить запись о треке из общей таблицы треков, если она создаётся при добавлении в плейлист.
-            // В текущей архитектуре плейлист хранит полную копию трека в playlist_tracks_table, поэтому дополнительных действий не требуется.
         }
     }
 

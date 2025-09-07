@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.mediatec
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,13 +18,27 @@ class PlaylistsViewHolder(private val binding: PlaylistItemBinding) :
 
     fun bind(playlist: Playlist) = with(binding) {
         tvTitle.text = playlist.title
-        tvNumberTracks.text = playlist.numberOfTracks.toString()
-        val source = playlist.pathUrl?.let { path -> if (path.startsWith("/")) File(path) else path }
+        val context = itemView.context
+        val tracksCount = playlist.numberOfTracks
+        try {
+            val tracksString = context.resources.getQuantityString(
+                R.plurals.numberOfTracks,
+                tracksCount,
+                tracksCount
+            )
+            tvNumberTracks.text = tracksString
+        } catch (e: Resources.NotFoundException) {
+            tvNumberTracks.text = "$tracksCount треков"
+        }
+
+
+        val source =
+            playlist.pathUrl?.let { path -> if (path.startsWith("/")) File(path) else path }
         Glide.with(itemView)
             .load(source)
             .placeholder(R.drawable.poster_placeholder)
             .error(R.drawable.poster_placeholder)
-            .transform(CenterCrop(), RoundedCorners(dpToPx(8.0F, itemView.context)))
+            .transform(CenterCrop(), RoundedCorners(dpToPx(8.0F, context)))
             .into(playlistImage)
     }
 

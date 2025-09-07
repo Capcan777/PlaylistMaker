@@ -56,4 +56,12 @@
     <string name="complete_editing">Завершить редактирование?</string>
     <string name="all_changes_will_be_lost">Все несохраненные изменения будут потеряны</string>
     <string name="cancel">Отмена</string>
+    <string name="enter_playlist_name">Введите название плейлиста</string>
+    <string name="playlist_created" translatable="false">Плейлист %1$s успешно создан</string>
+    <plurals name="numberOfTracks" translatable="false">
+        <item quantity="zero">%d треков</item>
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

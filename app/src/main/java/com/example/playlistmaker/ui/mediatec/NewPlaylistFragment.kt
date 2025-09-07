@@ -78,6 +78,8 @@ open class NewPlaylistFragment : Fragment() {
 
         })
 
+        updateCreateButtonState(binding.titleEdittext.text.isNullOrEmpty())
+
         binding.titleEdittext.setOnClickListener {
             binding.titleEdittext.requestFocus()
             showKeyboard(binding.titleEdittext)
@@ -93,24 +95,43 @@ open class NewPlaylistFragment : Fragment() {
         }
 
         binding.fallBack.setOnClickListener {
-            confirmDialog.show()
+            if (!binding.titleEdittext.text.isNullOrEmpty() || !binding.descriptionEdittext.text.isNullOrEmpty() || picUrl != null) {
+                confirmDialog.show()
+            } else {
+                findNavController().navigateUp()
+            }
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    confirmDialog.show()
+                    if (!binding.titleEdittext.text.isNullOrEmpty() || !binding.descriptionEdittext.text.isNullOrEmpty() || picUrl != null) {
+                        confirmDialog.show()
+                    } else {
+                        findNavController().navigateUp()
+                    }
                 }
             })
         binding.createPlaylistButton.setOnClickListener {
+            val title = binding.titleEdittext.text.toString().trim()
+            if (title.isEmpty()) {
+                updateCreateButtonState(true)
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.enter_playlist_name),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
             createPlaylist(picUrl)
             findNavController().navigateUp()
         }
     }
 
     private fun showKeyboard(view: View) {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         view.post {
             view.requestFocus()
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
@@ -127,12 +148,15 @@ open class NewPlaylistFragment : Fragment() {
     }
 
     protected open fun createPlaylist(picUrl: Uri?) {
+        val title = binding.titleEdittext.text.toString().trim()
+        if (title.isEmpty()) return
         viewModel.createPlaylist(
-            binding.titleEdittext.text.toString(),
+            title,
             binding.descriptionEdittext.text.toString(),
             picUrl,
         )
-        Toast.makeText(requireContext(), "Плейлист ${binding.titleEdittext.text.toString()} успешно создан",
+        Toast.makeText(
+            requireContext(), getString(R.string.playlist_created, title),
             Toast.LENGTH_SHORT
         ).show()
     }

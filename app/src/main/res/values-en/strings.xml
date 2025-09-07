@@ -51,4 +51,5 @@
     <string name="cancel">Cancel</string>
     <string name="delete_playlist">Delete playlist</string>
     <string name="edit_playlist">Edit information</string>
+    <string name="enter_playlist_name">Enter the name of the playlist</string>
 </resources>

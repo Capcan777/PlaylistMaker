@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -79,6 +80,7 @@ class PlaylistFragment : Fragment() {
 
         val playlist = arguments?.getParcelable<Playlist>("playlist_key")
         currentPlaylist = playlist
+        playlist?.let { viewModel.loadPlaylist(it.id) }
         if (playlist != null) {
             setupPlaylistData(playlist)
         }
@@ -95,14 +97,16 @@ class PlaylistFragment : Fragment() {
                     dialog.dismiss()
                 }
                 .setPositiveButton("Да") { dialog, which ->
-                    viewModel.deleteTrackFromPlaylist(track, playlist)
+                    viewModel.deleteTrackFromPlaylist(track, playlist!!.id)
                     adapter.notifyDataSetChanged()
+                    if (playlist.numberOfTracks == 0) binding.emptyPlaylistMessage.isVisible = true
+
                 }
                 .show()
         }
         binding.recyclerView.adapter = adapter
 
-        viewModel.loadTimeTracks(playlist?.id.toString())
+        viewModel.loadTracksList(playlist?.id.toString())
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -111,29 +115,43 @@ class PlaylistFragment : Fragment() {
                     val totalDurationMinutes =
                         SimpleDateFormat("mm", Locale.getDefault()).format(totalDurationMillis)
                     binding.tvPlaylistTime.text = "$totalDurationMinutes мин"
-                    binding.tvPlaylistTracksNumbers.text = tracks.size.getTrackString()
+                    binding.tvPlaylistTracksNumbers.text = getStringCountTracks(tracks.size)
+                    binding.emptyPlaylistMessage.isVisible = tracks.isEmpty()
                     adapter.updateTrackList(ArrayList(tracks))
                 }
             }
         }
 
-        binding.ivShare.setOnClickListener {
-            if (playlist == null || playlist.numberOfTracks == 0) {
-                binding.emptyPlaylistMessage.isVisible = true
-            } else {
-
-                viewModel.sharePlaylist(playlist)
-            }
-        }
+//        binding.ivShare.setOnClickListener {
+//
+//            if (playlist == null || playlist.numberOfTracks == 0) {
+//                binding.emptyPlaylistMessage.isVisible = true
+//            } else {
+//
+//                viewModel.sharePlaylist(playlist)
+//            }
+//        }
 
         binding.ivMore.setOnClickListener {
             bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_COLLAPSED
             binding.bottomSheetTracks.isVisible = true
             showPlaylistInfoInBottomMenu(playlist!!)
+            val pl = viewModel.currentPlaylist.value ?: playlist
+            showPlaylistInfoInBottomMenu(pl!!)
         }
 
         binding.share.setOnClickListener {
-            viewModel.sharePlaylist(playlist)
+            if (adapter.itemCount == 0) {
+                binding.emptyPlaylistMessage.isVisible = true
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.no_tracks_in_playlist),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            val pl = viewModel.currentPlaylist.value ?: playlist
+            viewModel.sharePlaylist(pl)
         }
 
         binding.delete.setOnClickListener {
@@ -168,7 +186,7 @@ class PlaylistFragment : Fragment() {
 
         binding.tvPlaylistTitle.text = playlist.title
         binding.tvPlaylistDescription.text = playlist.description
-        binding.tvPlaylistTracksNumbers.text = playlist.numberOfTracks.getTrackString()
+        binding.tvPlaylistTracksNumbers.text = getStringCountTracks(playlist.numberOfTracks)
 
         Glide.with(this)
             .load(source)
@@ -178,22 +196,24 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun updatePlaylistData(playlist: Playlist) {
-        viewModel.getUpdatedPlaylist(playlist.id) { updatedPlaylist ->
-            if (updatedPlaylist != null) {
-                // Обновляем UI в главном потоке
-                requireActivity().runOnUiThread {
-                    currentPlaylist = updatedPlaylist
-                    setupPlaylistData(updatedPlaylist)
-                    showPlaylistInfoInBottomMenu(updatedPlaylist)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.currentPlaylist.collect { updatedPlaylist ->
+                    val target = updatedPlaylist ?: playlist
+                    currentPlaylist = target
+                    setupPlaylistData(target)
+                    showPlaylistInfoInBottomMenu(target)
                 }
             }
         }
     }
 
+
     private fun setupClickListeners() {
         binding.fallBack.setOnClickListener {
             findNavController().navigateUp()
         }
+        binding.ivShare.setOnClickListener { handleShareClick() }
     }
 
     override fun onDestroyView() {
@@ -207,14 +227,6 @@ class PlaylistFragment : Fragment() {
         startActivity(playerIntent)
     }
 
-    private fun Int.getTrackString(): String {
-        return when {
-            this % 100 in 11..14 -> "$this треков"
-            this % 10 == 1 -> "$this трек"
-            this % 10 in 2..4 -> "$this трека"
-            else -> "$this треков"
-        }
-    }
 
     private fun showPlaylistInfoInBottomMenu(playlist: Playlist) {
         val source = playlist.pathUrl?.let { path ->
@@ -227,7 +239,7 @@ class PlaylistFragment : Fragment() {
             .into(binding.playlistImageBottom)
 
         binding.tvTitlePlaylist.text = playlist.title
-        binding.tvTracksNumberInPlaylist.text = playlist.numberOfTracks.getTrackString()
+        binding.tvTracksNumberInPlaylist.text = getStringCountTracks(adapter.itemCount)
     }
 
     override fun onResume() {
@@ -235,6 +247,26 @@ class PlaylistFragment : Fragment() {
         currentPlaylist?.let { playlist ->
             updatePlaylistData(playlist)
         }
+    }
+
+    private fun handleShareClick() {
+        currentPlaylist?.let { playlist ->
+            if (adapter.itemCount == 0) {
+                binding.emptyPlaylistMessage.isVisible = true
+            } else {
+                viewModel.sharePlaylist(playlist)
+            }
+        }
+    }
+
+    private fun getStringCountTracks(count: Int): String {
+        val countTracks = count
+        val stringTracks = requireContext().resources.getQuantityString(
+            R.plurals.numberOfTracks,
+            countTracks,
+            countTracks
+        )
+        return stringTracks
     }
 
 }

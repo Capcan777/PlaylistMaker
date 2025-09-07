@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.player
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,7 +17,19 @@ class PlayerPlaylistViewHolder(private val binding: BottomSheetItemBinding) :
 
     fun bind(playlist: Playlist) = with(binding) {
         tvPlaylistTitle.text = playlist.title
-        tvTracksNumber.text = playlist.numberOfTracks.toString()
+        val context = itemView.context
+        val tracksCount = playlist.numberOfTracks
+        try {
+            val tracksString = context.resources.getQuantityString(
+                R.plurals.numberOfTracks,
+                tracksCount,
+                tracksCount
+            )
+            tvTracksNumber.text = tracksString
+        } catch (e: Resources.NotFoundException) {
+            tvTracksNumber.text = "$tracksCount треков"
+        }
+
         val source = playlist.pathUrl?.let { path -> if (path.startsWith("/")) File(path) else path }
         Glide.with(itemView)
             .load(source)
