@@ -25,12 +25,6 @@ class RootActivity : AppCompatActivity() {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (intent.getStringExtra("open_fragment") == "new_playlist") {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.rootFragmentContainerView, NewPlaylistFragment())
-                .addToBackStack(null)
-                .commit()
-        }
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
