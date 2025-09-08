@@ -30,6 +30,10 @@ class RootActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
 
+        if (intent.getStringExtra("open_fragment") == "new_playlist") {
+            navController.navigate(R.id.newPlaylistFragment)
+        }
+
         val bottomNavMenu = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavMenu.setupWithNavController(navController)
 

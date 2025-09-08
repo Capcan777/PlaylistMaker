@@ -84,15 +84,4 @@ class PlaylistViewModel(
         }
     }
 
-//    fun getUpdatedPlaylist(playlistId: Int, callback: (Playlist?) -> Unit) {
-//        viewModelScope.launch {
-//            try {
-//                val updatedPlaylist = playlistInteractor.getPlaylistById(playlistId.toInt())
-//                callback(updatedPlaylist)
-//            } catch (e: Exception) {
-//                Log.e("PlaylistViewModel", "Ошибка при получении обновленного плейлиста", e)
-//                callback(null)
-//            }
-//        }
-//    }
 }

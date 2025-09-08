@@ -45,6 +45,10 @@ open class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val openedFromPlayer =
+            requireActivity().intent.getStringExtra("open_fragment") == "new_playlist"
+
+
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Завершить создание плейлиста?")
             .setMessage("Все несохраненные данные будут потеряны")
@@ -52,7 +56,7 @@ open class NewPlaylistFragment : Fragment() {
                 dialog.dismiss()
             }
             .setPositiveButton("Да") { dialog, which ->
-                findNavController().navigateUp()
+                if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
             }
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -98,7 +102,7 @@ open class NewPlaylistFragment : Fragment() {
             if (!binding.titleEdittext.text.isNullOrEmpty() || !binding.descriptionEdittext.text.isNullOrEmpty() || picUrl != null) {
                 confirmDialog.show()
             } else {
-                findNavController().navigateUp()
+                if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
             }
         }
 
@@ -109,7 +113,7 @@ open class NewPlaylistFragment : Fragment() {
                     if (!binding.titleEdittext.text.isNullOrEmpty() || !binding.descriptionEdittext.text.isNullOrEmpty() || picUrl != null) {
                         confirmDialog.show()
                     } else {
-                        findNavController().navigateUp()
+                        if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
                     }
                 }
             })
@@ -125,7 +129,7 @@ open class NewPlaylistFragment : Fragment() {
                 return@setOnClickListener
             }
             createPlaylist(picUrl)
-            findNavController().navigateUp()
+            if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
         }
     }
 
