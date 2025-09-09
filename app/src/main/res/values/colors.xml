@@ -19,5 +19,7 @@
     <color name="bottom_navigation_icon_color">@color/dark_blue</color>
     <color name="bottom_navigation_text_color">@color/dark_grey</color>
     <color name="bottom_navigation_background">@color/white</color>
+    <color name="playlist_background">#E4E6E9</color>
+    <color name="background_rectangle">#E6E8EB</color>
 
 </resources>

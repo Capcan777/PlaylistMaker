@@ -9,7 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
@@ -20,14 +20,15 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.example.playlistmaker.ui.mediatec.view_model.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import android.view.inputmethod.InputMethodManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
 
     private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+    protected val binding get() = _binding!!
+
     private val viewModel: NewPlaylistViewModel by viewModel()
+
     var picUrl: Uri? = null
 
     lateinit var confirmDialog: MaterialAlertDialogBuilder
@@ -44,6 +45,10 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val openedFromPlayer =
+            requireActivity().intent.getStringExtra("open_fragment") == "new_playlist"
+
+
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Завершить создание плейлиста?")
             .setMessage("Все несохраненные данные будут потеряны")
@@ -51,7 +56,7 @@ class NewPlaylistFragment : Fragment() {
                 dialog.dismiss()
             }
             .setPositiveButton("Да") { dialog, which ->
-                findNavController().navigateUp()
+                if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
             }
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -77,6 +82,8 @@ class NewPlaylistFragment : Fragment() {
 
         })
 
+        updateCreateButtonState(binding.titleEdittext.text.isNullOrEmpty())
+
         binding.titleEdittext.setOnClickListener {
             binding.titleEdittext.requestFocus()
             showKeyboard(binding.titleEdittext)
@@ -92,31 +99,50 @@ class NewPlaylistFragment : Fragment() {
         }
 
         binding.fallBack.setOnClickListener {
-            confirmDialog.show()
+            if (!binding.titleEdittext.text.isNullOrEmpty() || !binding.descriptionEdittext.text.isNullOrEmpty() || picUrl != null) {
+                confirmDialog.show()
+            } else {
+                if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
+            }
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    confirmDialog.show()
+                    if (!binding.titleEdittext.text.isNullOrEmpty() || !binding.descriptionEdittext.text.isNullOrEmpty() || picUrl != null) {
+                        confirmDialog.show()
+                    } else {
+                        if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
+                    }
                 }
             })
         binding.createPlaylistButton.setOnClickListener {
+            val title = binding.titleEdittext.text.toString().trim()
+            if (title.isEmpty()) {
+                updateCreateButtonState(true)
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.enter_playlist_name),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
             createPlaylist(picUrl)
-            findNavController().navigateUp()
+            if (openedFromPlayer) requireActivity().finish() else findNavController().navigateUp()
         }
     }
 
     private fun showKeyboard(view: View) {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         view.post {
             view.requestFocus()
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
-    private fun updateCreateButtonState(isDisabled: Boolean) {
+    protected open fun updateCreateButtonState(isDisabled: Boolean) {
         binding.createPlaylistButton.isEnabled = !isDisabled
         binding.createPlaylistButton.setBackgroundColor(
             if (isDisabled) requireContext().getColor(R.color.grey) else requireContext().getColor(
@@ -125,13 +151,16 @@ class NewPlaylistFragment : Fragment() {
         )
     }
 
-    private fun createPlaylist(picUrl: Uri?) {
+    protected open fun createPlaylist(picUrl: Uri?) {
+        val title = binding.titleEdittext.text.toString().trim()
+        if (title.isEmpty()) return
         viewModel.createPlaylist(
-            binding.titleEdittext.text.toString(),
+            title,
             binding.descriptionEdittext.text.toString(),
             picUrl,
         )
-        Toast.makeText(requireContext(), "Плейлист ${binding.titleEdittext.text.toString()} успешно создан",
+        Toast.makeText(
+            requireContext(), getString(R.string.playlist_created, title),
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -140,6 +169,5 @@ class NewPlaylistFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
 
 }

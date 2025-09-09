@@ -10,4 +10,13 @@ interface PlaylistInteractor {
     suspend fun updatePlaylist(playlist: Playlist)
     fun getPlaylists(): Flow<List<Playlist>>
     suspend fun addTrackToPlaylist(track: Track, playlist: Playlist)
+    suspend fun getPlaylistById(playlistId: Int): Playlist
+    fun getTracksOfPlaylist(playlistId: String): Flow<List<Track>>
+    fun getTracksByIds(trackIds: List<Int>): Flow<List<Track>>
+    suspend fun deleteTrackFromPlaylist(track: Track, playlistId: Int)
+    suspend fun isTrackInAnyPlaylist(trackId: Int): Boolean
+
+
+
+
 }

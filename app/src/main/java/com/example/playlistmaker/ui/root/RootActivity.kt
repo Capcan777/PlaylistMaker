@@ -25,29 +25,26 @@ class RootActivity : AppCompatActivity() {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (intent.getStringExtra("open_fragment") == "new_playlist") {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.rootFragmentContainerView, NewPlaylistFragment())
-                .addToBackStack(null)
-                .commit()
-        }
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
+
+        if (intent.getStringExtra("open_fragment") == "new_playlist") {
+            navController.navigate(R.id.newPlaylistFragment)
+        }
 
         val bottomNavMenu = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavMenu.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { controller, destination, _ ->
             when (destination.id) {
-                R.id.playlistsFragment, R.id.playerActivity, R.id.newPlaylistFragment -> {
+                R.id.playlistsFragment, R.id.playerActivity, R.id.newPlaylistFragment, R.id.playlistFragment -> {
                     bottomNavMenu.isVisible = false
                 }
 
                 else -> {
                     bottomNavMenu.isVisible = true
-
                 }
             }
         }

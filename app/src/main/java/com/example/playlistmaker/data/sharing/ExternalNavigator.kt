@@ -4,9 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.example.playlistmaker.data.sharing.model.EmailData
+import com.example.playlistmaker.data.sharing.model.TrackDataSharing
 
 class ExternalNavigator(private val context: Context) {
-    fun shareLink(textLink: String){
+    fun shareLink(textLink: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, textLink)
@@ -30,5 +31,15 @@ class ExternalNavigator(private val context: Context) {
         shareIntent.putExtra(Intent.EXTRA_TEXT, emailData.body)
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(shareIntent)
+    }
+
+    fun sendPlaylistInfo(trackDataSharing: TrackDataSharing) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, trackDataSharing.toString())
+        }
+        val chooser = Intent.createChooser(shareIntent, null)
+        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(chooser)
     }
 }

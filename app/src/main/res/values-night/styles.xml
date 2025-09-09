@@ -131,5 +131,15 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <style name="PlaylistBaseText" parent="TextPlaylistMedia">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/dark_grey</item>
+    </style>
+
+    <style name="PlaylistNumberTrackBottom" parent="TextPlaylistAdd">
+        <item name="android:textSize">@dimen/size_11sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
 
 </resources>

@@ -13,7 +13,6 @@ data class PlaylistEntity(
     val description: String,
     @ColumnInfo(name = "path_url")
     val pathUrl: String?,
-//    val trackIds: String?,
     @ColumnInfo(name = "tracks_number")
     val numberOfTracks: Int,
 )

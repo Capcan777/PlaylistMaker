@@ -58,6 +58,7 @@ class PlayerActivity : AppCompatActivity() {
             when (state) {
                 is PlayerPlaylistState.Content -> {
                     adapter.setPlaylists(state.playlists)
+                    binding.rvBottomSheet.isVisible = true
                 }
 
                 PlayerPlaylistState.Empty -> {
@@ -102,14 +103,13 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        // Получаем трек из Intent
         val trackJson = intent.getStringExtra(TRACK_INTENT)
         if (trackJson != null) {
             val track = Gson().fromJson(trackJson, Track::class.java)
             viewModel.setTrack(track)
         }
 
-        val bottomSheetContainer = binding.bottomSheet
+        val bottomSheetContainer = binding.bottomSheetTracks
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -188,6 +188,11 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.loadPlaylists()
+    }
+
     override fun onPause() {
         super.onPause()
         viewModel.onActivityPause()
@@ -195,6 +200,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        viewModel.loadTrackState()
         if (currentTrackId != -1) {
             lifecycleScope.launch {
                 val isFavorite = viewModel.checkIsFavorite(currentTrackId)
