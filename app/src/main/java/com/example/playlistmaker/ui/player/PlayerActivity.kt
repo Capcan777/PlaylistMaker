@@ -23,6 +23,7 @@ import com.example.playlistmaker.ui.player.state.PlayerScreenState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.root.RootActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.example.playlistmaker.ui.custom.PlaybackButtonView
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -161,8 +162,14 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.onFavoriteClicked()
         }
 
-        binding.ibPlay.setOnClickListener {
-            viewModel.playbackControl()
+        (binding.ibPlay as PlaybackButtonView).onToggleListener = object : PlaybackButtonView.OnToggleListener {
+            override fun onPlay() {
+                viewModel.playbackControl()
+            }
+
+            override fun onPause() {
+                viewModel.playbackControl()
+            }
         }
 
         binding.newPlaylistButton.setOnClickListener {
@@ -172,15 +179,11 @@ class PlayerActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        viewModel.getPlayerStateLiveData().observe(this) {
-            binding.ibPlay.setImageResource(
-                when (it) {
-                    PlayerScreenState.PLAYING_STATE -> R.drawable.ic_pause_button
-                    PlayerScreenState.PAUSED_STATE -> R.drawable.ic_play_button
-                    PlayerScreenState.PREPARED_STATE -> R.drawable.ic_play_button
-                    PlayerScreenState.DEFAULT_STATE -> R.drawable.ic_play_button
-                }
-            )
+        viewModel.getPlayerStateLiveData().observe(this) { state ->
+            (binding.ibPlay as PlaybackButtonView).isPlaying = when (state) {
+                PlayerScreenState.PLAYING_STATE -> true
+                PlayerScreenState.PAUSED_STATE, PlayerScreenState.PREPARED_STATE, PlayerScreenState.DEFAULT_STATE -> false
+            }
         }
 
         viewModel.getPlaybackTimeLiveData().observe(this) {

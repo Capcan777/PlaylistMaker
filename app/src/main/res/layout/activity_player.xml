@@ -93,16 +93,17 @@
                 app:srcCompat="@drawable/is_button_add"
                 tools:ignore="ContentDescription" />
 
-            <ImageButton
+            <com.example.playlistmaker.ui.custom.PlaybackButtonView
                 android:id="@+id/ib_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="@dimen/size_28dp"
                 android:backgroundTint="@android:color/transparent"
                 app:layout_constraintEnd_toStartOf="@+id/favorite"
                 app:layout_constraintStart_toEndOf="@+id/ib_add_to_playlist"
                 app:layout_constraintTop_toBottomOf="@+id/tv_artist_name"
-                app:srcCompat="@drawable/ic_play_button" />
+                app:iconPlay="@drawable/ic_play_button"
+                app:iconPause="@drawable/ic_pause_button" />
 
             <ImageButton
                 android:id="@+id/favorite"
