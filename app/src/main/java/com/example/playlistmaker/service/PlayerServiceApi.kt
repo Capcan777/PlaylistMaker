@@ -20,12 +20,12 @@ interface PlayerServiceApi {
     )
 }
 
-sealed class PlayerUiState {
-    object Default: PlayerUiState()
-    object Prepared: PlayerUiState()
-    object Playing: PlayerUiState()
-    object Paused: PlayerUiState()
-    data class Time(val formatted: String): PlayerUiState()
+sealed interface PlayerUiState {
+    object Default: PlayerUiState
+    object Prepared: PlayerUiState
+    object Playing: PlayerUiState
+    object Paused: PlayerUiState
+    data class Time(val formatted: String): PlayerUiState
 }
 
 

@@ -25,8 +25,8 @@ import java.util.Locale
 class PlayerService : Service(), PlayerServiceApi {
 
     private val binder = PlayerBinder()
-    private val notificationId = 2001
-    private val channelId = "player_channel"
+//    private val notificationId = 2001
+//    private val channelId = "player_channel"
 
     private val serviceScope = CoroutineScope(Dispatchers.Main)
     private var timerJob: Job? = null
@@ -127,7 +127,7 @@ class PlayerService : Service(), PlayerServiceApi {
         timerJob = serviceScope.launch {
             while (mediaPlayer.isPlaying) {
                 _playerState.value = PlayerUiState.Time(dateFormat.format(mediaPlayer.currentPosition))
-                delay(300L)
+                delay(TIME_DELAY)
             }
         }
     }
@@ -151,9 +151,9 @@ class PlayerService : Service(), PlayerServiceApi {
         val notification = buildNotification()
         if (notification != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(notificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+                startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
             } else {
-                startForeground(notificationId, notification)
+                startForeground(NOTIFICATION_ID, notification)
             }
         }
     }
@@ -165,7 +165,7 @@ class PlayerService : Service(), PlayerServiceApi {
     private fun stopForegroundInternal(remove: Boolean) {
         try {
             if (remove) stopForeground(STOP_FOREGROUND_REMOVE) else stopForeground(STOP_FOREGROUND_DETACH)
-            getSystemService(NotificationManager::class.java)?.cancel(notificationId)
+            getSystemService(NotificationManager::class.java)?.cancel(NOTIFICATION_ID)
         } catch (_: Exception) {}
     }
 
@@ -175,7 +175,7 @@ class PlayerService : Service(), PlayerServiceApi {
         if (!isCurrentlyPlaying) return null
 
         val text = "$artistName - $trackName" // формат "Исполнитель - Название трека"
-        return NotificationCompat.Builder(this, channelId)
+        return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_pause_button)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(text)
@@ -187,7 +187,7 @@ class PlayerService : Service(), PlayerServiceApi {
     private fun ensureChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId,
+                CHANNEL_ID,
                 getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_LOW
             )
@@ -199,6 +199,10 @@ class PlayerService : Service(), PlayerServiceApi {
         const val EXTRA_TRACK_NAME = "extra_track_name"
         const val EXTRA_ARTIST_NAME = "extra_artist_name"
         const val EXTRA_PREVIEW_URL = "extra_preview_url"
+        const val NOTIFICATION_ID = 2001
+        const val CHANNEL_ID = "player_channel"
+        const val TIME_DELAY = 300L
+
     }
 }
 
