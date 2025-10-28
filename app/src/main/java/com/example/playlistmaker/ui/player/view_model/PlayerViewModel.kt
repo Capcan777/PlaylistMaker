@@ -15,6 +15,8 @@ import com.example.playlistmaker.ui.mediatec.state.PlaylistState
 import com.example.playlistmaker.ui.player.state.PlayerPlaylistState
 import com.example.playlistmaker.ui.player.state.AddToPlaylistStatus
 import com.example.playlistmaker.ui.player.state.PlayerScreenState
+import com.example.playlistmaker.service.PlayerServiceApi
+import com.example.playlistmaker.service.PlayerUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -67,13 +69,13 @@ class PlayerViewModel(
     private fun startPlayer() {
         isPlaying = true
         playerStateLiveData.postValue(PlayerScreenState.PLAYING_STATE)
-        playerInteractor.startPlayer()
-        postCurrentTime()
+        // Управление воспроизведением перенесено в сервис
+        playerServiceApi?.play()
     }
 
     private fun pausePlayer() {
         isPlaying = false
-        playerInteractor.pausePlayer()
+        playerServiceApi?.pause()
         playerStateLiveData.postValue(PlayerScreenState.PAUSED_STATE)
     }
 
@@ -91,71 +93,109 @@ class PlayerViewModel(
 
     fun loadTrackState() {
         viewModelScope.launch {
-                val track = trackInfoLiveData.value
-                if (track != null) {
-                    val isFavorite = favoriteInteractor.inFavorite(track.trackId)
-                    track.isFavorite = isFavorite
+            val track = trackInfoLiveData.value
+            if (track != null) {
+                val isFavorite = favoriteInteractor.inFavorite(track.trackId)
+                track.isFavorite = isFavorite
+                trackInfoLiveData.postValue(track)
+            }
+        }
+    }
+
+
+    fun onActivityPause() {
+        // Не ставим на паузу при сворачивании, чтобы продолжалось воспроизведение
+    }
+
+    private fun postCurrentTime() { /* таймер теперь не нужен, время приходит из сервиса */ }
+
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            val track = trackInfoLiveData.value
+            if (track != null) {
+                if (track.isFavorite) {
+                    track.isFavorite = false
                     trackInfoLiveData.postValue(track)
-                }
-        }
-    }
-
-
-fun onActivityPause() {
-    if (playerStateLiveData.value == PlayerScreenState.PLAYING_STATE) pausePlayer()
-}
-
-private fun postCurrentTime() {
-    timerJob = viewModelScope.launch {
-        while (isPlaying) {
-            playbackTimeLiveData.postValue(
-                if (playerStateLiveData.value == PlayerScreenState.PREPARED_STATE)
-                    DEFAULT_TIME
-                else playerInteractor.getCurrentTime()
-            )
-            delay(TIMER_DELAY)
-        }
-    }
-}
-
-
-fun onFavoriteClicked() {
-    viewModelScope.launch {
-        val track = trackInfoLiveData.value
-        if (track != null) {
-            if (track.isFavorite) {
-                track.isFavorite = false
-                trackInfoLiveData.postValue(track)
-                viewModelScope.launch {
-                    favoriteInteractor.removeTrackFromFavorite(track)
-                }
-            } else {
-                track.isFavorite = true
-                trackInfoLiveData.postValue(track)
-                viewModelScope.launch {
-                    favoriteInteractor.addTrackToFavorite(track)
+                    viewModelScope.launch {
+                        favoriteInteractor.removeTrackFromFavorite(track)
+                    }
+                } else {
+                    track.isFavorite = true
+                    trackInfoLiveData.postValue(track)
+                    viewModelScope.launch {
+                        favoriteInteractor.addTrackToFavorite(track)
+                    }
                 }
             }
         }
     }
-}
 
-suspend fun checkIsFavorite(trackId: Int): Boolean {
-    return favoriteInteractor.inFavorite(trackId)
-}
-
-fun updateTrackFavoriteStatus(trackId: Int, isFavorite: Boolean) {
-    val track = trackInfoLiveData.value
-    if (track != null && track.trackId == trackId) {
-        track.isFavorite = isFavorite
-        trackInfoLiveData.postValue(track)
+    suspend fun checkIsFavorite(trackId: Int): Boolean {
+        return favoriteInteractor.inFavorite(trackId)
     }
-}
+
+    fun updateTrackFavoriteStatus(trackId: Int, isFavorite: Boolean) {
+        val track = trackInfoLiveData.value
+        if (track != null && track.trackId == trackId) {
+            track.isFavorite = isFavorite
+            trackInfoLiveData.postValue(track)
+        }
+    }
 
     fun setTrack(track: Track) {
         trackInfoLiveData.value = track
         preparePlayer(track)
         loadTrackState()
+    }
+
+    fun stopAndRelease() { /* управление ресурсами в сервисе */ }
+
+    // ===== Работа с сервисом плеера =====
+    private var playerServiceApi: PlayerServiceApi? = null
+
+    fun attachService(api: PlayerServiceApi) {
+        playerServiceApi = api
+        // Подпишемся на состояние плеера сервиса и транслируем в LiveData экрана
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            api.playerState.collect { state ->
+                when (state) {
+                    PlayerUiState.Default -> {
+                        playerStateLiveData.postValue(PlayerScreenState.DEFAULT_STATE)
+                        playbackTimeLiveData.postValue(DEFAULT_TIME)
+                    }
+                    PlayerUiState.Prepared -> {
+                        playerStateLiveData.postValue(PlayerScreenState.PREPARED_STATE)
+                        playbackTimeLiveData.postValue(DEFAULT_TIME)
+                    }
+                    PlayerUiState.Playing -> {
+                        playerStateLiveData.postValue(PlayerScreenState.PLAYING_STATE)
+                    }
+                    PlayerUiState.Paused -> {
+                        playerStateLiveData.postValue(PlayerScreenState.PAUSED_STATE)
+                    }
+                    is PlayerUiState.Time -> playbackTimeLiveData.postValue(state.formatted)
+                }
+            }
+        }
+    }
+
+    fun detachService() {
+        playerServiceApi = null
+        timerJob?.cancel()
+        timerJob = null
+    }
+
+    fun onAppBackground() {
+        val api = playerServiceApi ?: return
+        if (playerStateLiveData.value == PlayerScreenState.PLAYING_STATE) {
+            api.startForeground()
+        }
+    }
+
+    fun onAppForeground() {
+        playerServiceApi?.stopForeground()
     }
 
     fun loadPlaylists() {
@@ -192,10 +232,10 @@ fun updateTrackFavoriteStatus(trackId: Int, isFavorite: Boolean) {
     }
 
 
-companion object {
-    private const val TIMER_DELAY = 300L
-    private const val DEFAULT_TIME = "00:00"
-}
+    companion object {
+        private const val TIMER_DELAY = 300L
+        private const val DEFAULT_TIME = "00:00"
+    }
 }
 
 
