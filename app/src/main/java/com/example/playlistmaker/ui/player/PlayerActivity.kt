@@ -232,6 +232,17 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.getPlaybackTimeLiveData().observe(this) {
             renderTimer(it)
         }
+
+        // Запрашиваем разрешение на уведомления при открытии экрана
+        requestPostNotificationsPermission()
+    }
+
+    private fun requestPostNotificationsPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+            }
+        }
     }
 
     override fun onStart() {
@@ -260,19 +271,10 @@ class PlayerActivity : AppCompatActivity() {
         if (!isFinishing && !hasWindowFocus() && svc != null) {
             val currentState = svc.playerState.value
             if (currentState is PlayerUiState.Playing) {
-                ensurePostNotificationsPermission()
                 svc.startForeground()
             }
         }
         unregisterReceiver(connectionStatusBroadcastReceiver)
-    }
-
-    private fun ensurePostNotificationsPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
-            }
-        }
     }
 
     override fun onResume() {
