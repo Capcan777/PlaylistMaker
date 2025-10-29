@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.search
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +16,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +24,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
+import com.example.playlistmaker.ui.broadcast.ConnectionStatusBroadcastReceiver
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.ui.search.state.SearchScreenState
 import com.google.gson.Gson
@@ -40,6 +43,8 @@ class SearchFragment : Fragment() {
     private var inputEditTextState: String? = DEFAULT_EDIT_STATE
 
     private var isClickAllowed = true
+
+    private val connectionStatusBroadcastReceiver = ConnectionStatusBroadcastReceiver()
 
     private lateinit var trackListAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
@@ -227,6 +232,22 @@ class SearchFragment : Fragment() {
             }
         }
         return current
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            requireContext(),
+            connectionStatusBroadcastReceiver,
+            IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireContext().unregisterReceiver(connectionStatusBroadcastReceiver)
+
     }
 
     companion object {

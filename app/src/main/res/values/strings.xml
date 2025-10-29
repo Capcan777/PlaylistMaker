@@ -60,6 +60,9 @@
     <string name="playlist_created" translatable="false">Плейлист %1$s успешно создан</string>
     <string name="play" translatable="false">Воспроизвести</string>
     <string name="pause" translatable="false">Пауза</string>
+    <string name="no_internet_connection" translatable="false">Отсутствует подключение к интернету</string>
+    <string name="notification_title" translatable="false">Playlist Maker</string>
+    <string name="notification_channel_name" translatable="false">Воспроизведение аудио</string>
     <plurals name="numberOfTracks" translatable="false">
         <item quantity="zero">%d треков</item>
         <item quantity="one">%d трек</item>
