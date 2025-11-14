@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id ("kotlin-parcelize")
 
@@ -8,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.playlistmaker"
-    compileSdk = 35
+    compileSdk = 36
 
     lint {
         baseline = file("lint-baseline.xml")
@@ -49,6 +50,10 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "2.1.20"
     }
 }
 
@@ -58,6 +63,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.ui.viewbinding)
 
     val room_version = "2.7.0"
     implementation("androidx.room:room-runtime:$room_version") // библиотека Room
@@ -84,8 +91,20 @@ dependencies {
 
     //Di
     implementation("io.insert-koin:koin-android:3.3.0")
+    implementation("io.insert-koin:koin-androidx-compose:3.3.0")
 
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    implementation("androidx.compose.ui:ui:1.9.4")
+    implementation("androidx.compose.material3:material3:1.4.0")
+    implementation("androidx.compose.material:material-icons-extended:1.4.0")
+    implementation("androidx.activity:activity-compose:1.11.0")
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation("androidx.compose.runtime:runtime-livedata:1.9.4")
+
+    // Coil for image loading in Compose
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
 
 }
