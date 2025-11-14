@@ -40,7 +40,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient, private val
                     it.artworkUrl100,
                     it.trackId,
                     it.collectionName,
-                    it.releaseDate,
+                    it.releaseDate.orEmpty(),
                     it.primaryGenreName,
                     it.country,
                     it.previewUrl,

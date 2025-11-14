@@ -11,9 +11,12 @@ import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.impl.GetTrackUseCase
 import com.example.playlistmaker.ui.search.state.SearchScreenState
+import com.example.playlistmaker.ui.search.state.TrackUiModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class TracksSearchViewModel(
     private val getTrackUseCase: GetTrackUseCase,
@@ -35,6 +38,7 @@ class TracksSearchViewModel(
     private val _searchResults = MutableLiveData<ArrayList<Track>?>()
     val searchResults: LiveData<ArrayList<Track>?> = _searchResults
 
+    private val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
 
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
@@ -67,7 +71,8 @@ class TracksSearchViewModel(
     fun updateHistory() {
         val historyList = searchHistoryInteractor.readTracksFromHistory()
         if (historyList.isNotEmpty()) {
-            screenStateLiveData.value = SearchScreenState.History(historyList)
+            screenStateLiveData.value =
+                SearchScreenState.History(historyList.mapToUiModel())
         } else {
             screenStateLiveData.value = SearchScreenState.Nothing
         }
@@ -85,12 +90,23 @@ class TracksSearchViewModel(
 
     private fun processResult(response: List<Track>?, message: String?) {
         if (!response.isNullOrEmpty()) {
-            screenStateLiveData.postValue(SearchScreenState.Tracks(ArrayList(response)))
+            screenStateLiveData.postValue(
+                SearchScreenState.Tracks(response.mapToUiModel())
+            )
             _searchResults.postValue(ArrayList(response))
         } else {
             screenStateLiveData.postValue(SearchScreenState.EmptyResult)
             _searchResults.postValue(arrayListOf())
         }
     }
+
+    private fun List<Track>.mapToUiModel(): ArrayList<TrackUiModel> = ArrayList(
+        map { track ->
+            TrackUiModel(
+                track = track,
+                formattedTime = timeFormatter.format(track.trackTimeMillis)
+            )
+        }
+    )
 
 }
