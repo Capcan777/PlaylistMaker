@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.mediatec
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,75 +28,60 @@ import com.example.playlistmaker.R
 
 @Composable
 fun MediatecScreen(hostFragment: Fragment) {
-
-    // rememberSaveable для selectedTab - это правильно, чтобы сохранять выбранную вкладку
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val tabs = remember { MediatecTab.values().toList() }
+    var selectedTabIndex by rememberSaveable { mutableIntStateOf(MediatecTab.FAVORITES.ordinal) }
+    val selectedTab = tabs[selectedTabIndex]
+    val containerId by rememberSaveable { mutableIntStateOf(ViewCompat.generateViewId()) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Ваш код для заголовка и вкладок остается без изменений
         Text(
             text = stringResource(R.string.mediateca),
             modifier = Modifier.padding(start = 12.dp, top = 10.dp, bottom = 12.dp),
             style = MaterialTheme.typography.titleLarge
         )
+
         TabRow(
-            selectedTabIndex = selectedTab,
+            selectedTabIndex = selectedTabIndex,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            Tab(
-                selected = selectedTab == 0,
-                onClick = { selectedTab = 0 },
-                text = {
-                    Text(
-                        text = stringResource(R.string.favorite_tracks),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            )
-            Tab(
-                selected = selectedTab == 1,
-                onClick = { selectedTab = 1 },
-                text = {
-                    Text(
-                        text = stringResource(R.string.playlists),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            )
+            tabs.forEachIndexed { index, tab ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = {
+                        Text(
+                            text = stringResource(tab.titleRes),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                )
+            }
         }
 
-        // Единственный и надежный способ интеграции фрагментов
         AndroidView(
             factory = { context ->
-                // 1. View создается только один раз
                 FragmentContainerView(context).apply {
-                    // Генерируем новый ID, который НЕ сохраняется между процессами.
-                    // Это предотвращает конфликт при восстановлении состояния.
-                    id = ViewCompat.generateViewId()
+                    id = containerId
                 }
             },
             update = { container ->
-                // 2. Блок 'update' вызывается, когда View готово и при каждой смене 'selectedTab'.
-                // Это гарантирует, что FragmentManager и View синхронизированы.
-                val fm = hostFragment.childFragmentManager
-                val tag = if (selectedTab == 0) FAVORITE_TAG else PLAYLIST_TAG
+                if (container.id != containerId) {
+                    container.id = containerId
+                }
+                val fragmentManager = hostFragment.childFragmentManager
 
-                // 3. Проверяем, не отображен ли уже нужный фрагмент в этом контейнере.
-                // Это предотвращает лишние транзакции при ненужных рекомпозициях.
-                if (fm.findFragmentById(container.id)?.tag != tag) {
-                    // 4. Если нет, выполняем транзакцию
-                    fm.commit {
+                if (fragmentManager.findFragmentById(containerId)?.tag != selectedTab.tag) {
+                    fragmentManager.commit {
                         setReorderingAllowed(true)
-                        // Пытаемся переиспользовать фрагмент, если он уже есть в менеджере
-                        val newFragment = fm.findFragmentByTag(tag)
-                            ?: createFragmentForIndex(selectedTab)
-                        replace(container.id, newFragment, tag)
+                        val fragment = fragmentManager.findFragmentByTag(selectedTab.tag)
+                            ?: selectedTab.createFragment()
+                        replace(containerId, fragment, selectedTab.tag)
                     }
                 }
             },
@@ -104,11 +90,18 @@ fun MediatecScreen(hostFragment: Fragment) {
     }
 }
 
-private fun createFragmentForIndex(index: Int): Fragment {
-    return when (index) {
-        0 -> FavoriteTrackFragment.newInstance()
-        else -> PlaylistsFragment.newInstance()
-    }
+private enum class MediatecTab(
+    @StringRes val titleRes: Int,
+    val tag: String
+) {
+    FAVORITES(R.string.favorite_tracks, FAVORITE_TAG) {
+        override fun createFragment(): Fragment = FavoriteTrackFragment.newInstance()
+    },
+    PLAYLISTS(R.string.playlists, PLAYLIST_TAG) {
+        override fun createFragment(): Fragment = PlaylistsFragment.newInstance()
+    };
+
+    abstract fun createFragment(): Fragment
 }
 
 private const val FAVORITE_TAG = "mediatec_favorite"

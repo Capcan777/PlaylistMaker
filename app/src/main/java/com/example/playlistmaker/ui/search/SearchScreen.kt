@@ -2,19 +2,17 @@ package com.example.playlistmaker.ui.search
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +24,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -36,8 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -48,12 +46,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import java.text.SimpleDateFormat
-import java.util.Locale
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.presentation.ui.search.TracksSearchViewModel
+import com.example.playlistmaker.ui.search.components.TrackRow
 import com.example.playlistmaker.ui.search.state.SearchScreenState
+import com.example.playlistmaker.ui.search.state.TrackUiModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -105,7 +103,7 @@ fun SearchScreen(
 
             is SearchScreenState.Tracks -> {
                 TrackList(
-                    tracks = state.trackSearch.orEmpty(),
+                    tracks = state.trackSearch,
                     onItemClick = { track ->
                         viewModel.addTrackToHistory(track)
                         onTrackClick(track)
@@ -154,15 +152,39 @@ private fun SearchField(
     onValueChange: (TextFieldValue) -> Unit,
     onClear: () -> Unit
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
+    val containerColor = if (isDarkTheme) Color.White else Color(0xFFE6E8EB)
+    val iconColor = Color(0xFF7E7E92)
+    val textColor = Color(0xFF1A1B22)
+
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
+            disabledContainerColor = containerColor,
+            errorContainerColor = containerColor,
+            focusedBorderColor = containerColor,
+            unfocusedBorderColor = containerColor,
+            disabledBorderColor = containerColor,
+            errorBorderColor = containerColor,
+            focusedLeadingIconColor = iconColor,
+            unfocusedLeadingIconColor = iconColor,
+            focusedTrailingIconColor = iconColor,
+            unfocusedTrailingIconColor = iconColor,
+            cursorColor = MaterialTheme.colorScheme.primary
+        ),
         value = value,
         onValueChange = onValueChange,
-        singleLine = true, textStyle = TextStyle(MaterialTheme.colorScheme.secondary, 16.sp),
+        singleLine = true,
+        textStyle = TextStyle(textColor, 16.sp),
         leadingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.icon_search_et),
-                contentDescription = null, tint = MaterialTheme.colorScheme.onSecondary
+                contentDescription = null
             )
         },
         trailingIcon = {
@@ -173,9 +195,10 @@ private fun SearchField(
         placeholder = {
             Text(
                 text = stringResource(R.string.search),
-                style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSecondary),
+                style = MaterialTheme.typography.bodyMedium.copy(color = iconColor),
                 fontSize = 16.sp,
-                fontWeight = FontWeight(400)
+                fontWeight = FontWeight(400),
+                modifier = Modifier.padding(top = 0.dp)
             )
         }
     )
@@ -188,13 +211,14 @@ private fun ClearIcon(onClick: () -> Unit) {
         contentDescription = null,
         modifier = Modifier
             .clickable { onClick() }
-            .padding(4.dp), tint = MaterialTheme.colorScheme.onSecondary
+            .padding(4.dp),
+        tint = Color(0xFF7E7E92)
     )
 }
 
 @Composable
 private fun TrackList(
-    tracks: List<Track>,
+    tracks: List<TrackUiModel>,
     onItemClick: (Track) -> Unit
 ) {
     LazyColumn(
@@ -202,15 +226,19 @@ private fun TrackList(
         verticalArrangement = Arrangement.Top,
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        items(tracks) { track ->
-            TrackRow(track = track, onClick = { onItemClick(track) })
+        items(tracks) { uiTrack ->
+            TrackRow(
+                track = uiTrack.track,
+                formattedTime = uiTrack.formattedTime,
+                onClick = { onItemClick(uiTrack.track) }
+            )
         }
     }
 }
 
 @Composable
 private fun HistoryBlock(
-    history: List<Track>,
+    history: List<TrackUiModel>,
     onClear: () -> Unit,
     onItemClick: (Track) -> Unit
 ) {
@@ -227,8 +255,12 @@ private fun HistoryBlock(
         LazyColumn(
             verticalArrangement = Arrangement.Top
         ) {
-            items(history) { track ->
-                TrackRow(track = track, onClick = { onItemClick(track) })
+            items(history) { uiTrack ->
+                TrackRow(
+                    track = uiTrack.track,
+                    formattedTime = uiTrack.formattedTime,
+                    onClick = { onItemClick(uiTrack.track) }
+                )
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
@@ -252,91 +284,6 @@ private fun HistoryBlock(
                 color = MaterialTheme.colorScheme.background
             )
         }
-    }
-}
-
-@Composable
-private fun TrackRow(
-    track: Track,
-    onClick: () -> Unit
-) {
-    val trackTime = remember(track.trackTimeMillis) {
-        SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Постер трека
-        AsyncImage(
-            model = track.artworkUrl100,
-            contentDescription = null,
-            placeholder = painterResource(id = R.drawable.placeholder_24),
-            modifier = Modifier
-                .size(45.dp)
-                .clip(RoundedCornerShape(2.dp)),
-            contentScale = ContentScale.Crop
-        )
-
-        // Текстовая информация
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 8.dp, vertical = 14.dp)
-        ) {
-            // Название трека
-            Text(
-                text = track.trackName ?: "",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = 16.sp
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(end = 16.dp),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            // Артист, точка и время
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = track.artistName ?: "",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 11.sp
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.icon_dot),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(4.dp)
-                )
-
-                Text(
-                    text = trackTime,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 11.sp
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                )
-            }
-        }
-
-        // Стрелка справа
-        Image(
-            painter = painterResource(id = R.drawable.icon_arrow_forward),
-            contentDescription = null,
-            modifier = Modifier.padding(end = 5.dp)
-        )
     }
 }
 
@@ -369,7 +316,3 @@ private fun Placeholder(
         }
     }
 }
-//@Composable
-//private fun HistoryTracks(items: List<Track>) {
-//    Column { items.forEach {  }}
-//}
